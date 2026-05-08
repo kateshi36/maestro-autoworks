@@ -1,6 +1,6 @@
 ### Maestro Autoworks
 
 ### Contributors 
-- Clyde Ilardegfgfg
+- Clyde Ilarde
 - Patrick Dalupang
 - Yzavelle David
