@@ -1,0 +1,284 @@
+-- =====================================================
+-- MAESTRO AUTOWORKS DATABASE SETUP
+-- =====================================================
+
+CREATE DATABASE IF NOT EXISTS maestro_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE maestro_db;
+
+-- =====================================================
+-- USERS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('customer','admin') NOT NULL DEFAULT 'customer',
+    phone VARCHAR(30),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================
+-- SERVICES TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS services (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    duration_hr DECIMAL(4,1) NOT NULL DEFAULT 1.0,
+    price DECIMAL(10,2),
+    category VARCHAR(80),
+    active TINYINT(1) NOT NULL DEFAULT 1
+);
+
+-- =====================================================
+-- APPOINTMENTS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS appointments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    service_id INT NOT NULL,
+    vehicle_make VARCHAR(80),
+    vehicle_model VARCHAR(80),
+    vehicle_year YEAR,
+    plate_no VARCHAR(20),
+    appt_date DATE NOT NULL,
+    appt_time TIME NOT NULL,
+    notes TEXT,
+    status ENUM('pending','confirmed','declined','completed','cancelled')
+        NOT NULL DEFAULT 'pending',
+    admin_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_appointments_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointments_service
+        FOREIGN KEY (service_id)
+        REFERENCES services(id)
+        ON DELETE RESTRICT
+);
+
+-- =====================================================
+-- NOTIFICATIONS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    appt_id INT,
+    type ENUM(
+        'booking_received',
+        'booking_confirmed',
+        'booking_declined',
+        'booking_completed',
+        'booking_cancelled',
+        'reminder'
+    ) NOT NULL,
+
+    message TEXT NOT NULL,
+    is_read TINYINT(1) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_notifications_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_notifications_appointment
+        FOREIGN KEY (appt_id)
+        REFERENCES appointments(id)
+        ON DELETE SET NULL
+);
+
+-- =====================================================
+-- INSERT DEFAULT SERVICES
+-- =====================================================
+INSERT INTO services (
+    name,
+    description,
+    duration_hr,
+    price,
+    category
+) VALUES
+(
+    'Oil Change',
+    'Full synthetic or conventional oil & filter replacement.',
+    0.5,
+    650.00,
+    'Maintenance'
+),
+(
+    'Brake Inspection & Pad Replacement',
+    'Inspect rotors, calipers, and replace pads.',
+    2.0,
+    2500.00,
+    'Brakes'
+),
+(
+    'Tire Rotation & Balancing',
+    'Rotate all four tires and balance for even wear.',
+    1.0,
+    800.00,
+    'Tires'
+),
+(
+    'Battery Replacement',
+    'Test and replace car battery with warranty.',
+    0.5,
+    950.00,
+    'Electrical'
+),
+(
+    'Full Tune-Up',
+    'Spark plugs, air filter, fuel filter, and timing check.',
+    3.0,
+    3500.00,
+    'Maintenance'
+),
+(
+    'Air Conditioning Service',
+    'Refrigerant recharge, leak check, compressor inspection.',
+    2.0,
+    1800.00,
+    'Comfort'
+),
+(
+    'Wheel Alignment',
+    'Four-wheel computerised alignment to manufacturer specs.',
+    1.5,
+    1200.00,
+    'Tires'
+),
+(
+    'Transmission Service',
+    'Fluid flush and filter change for automatic or manual.',
+    2.5,
+    2800.00,
+    'Drivetrain'
+),
+(
+    'Engine Diagnostics',
+    'OBD-II scan and full fault-code analysis report.',
+    1.0,
+    750.00,
+    'Diagnostics'
+),
+(
+    'Suspension Check & Repair',
+    'Inspect shocks, struts, tie rods, and bushings.',
+    3.0,
+    4500.00,
+    'Suspension'
+);
+
+-- =====================================================
+-- DEFAULT ADMIN ACCOUNT
+-- =====================================================
+-- Email: admin@maestroautoworks.ph
+-- Username: admin
+-- Password: Admin@1234
+
+INSERT IGNORE INTO users (
+    first_name,
+    last_name,
+    username,
+    email,
+    password,
+    role
+)
+VALUES (
+    'Maestro',
+    'Admin',
+    'admin',
+    'admin@maestroautoworks.ph',
+    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+    'admin'
+);
+
+-- =====================================================
+-- OPTIONAL SAMPLE CUSTOMER ACCOUNT
+-- Password: Customer@123
+-- =====================================================
+INSERT INTO users (
+    first_name,
+    last_name,
+    username,
+    email,
+    password,
+    role,
+    phone
+)
+VALUES (
+    'Juan',
+    'Dela Cruz',
+    'juan',
+    'juan@example.com',
+    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+    'customer',
+    '09171234567'
+);
+
+-- =====================================================
+-- SAMPLE APPOINTMENTS (last 30 days — populates admin_reports)
+-- Requires: users.id=2 (juan) and services seeded above
+-- =====================================================
+INSERT INTO appointments (user_id, service_id, vehicle_make, vehicle_model, vehicle_year, plate_no, appt_date, appt_time, notes, status, admin_notes) VALUES
+(2, 9, 'Kia', 'Seltos', 2023, 'PQR 6789', '2026-04-27', '10:00:00', NULL, 'declined', NULL),
+(2, 1, 'Suzuki', 'Ertiga', 2017, 'STU 0123', '2026-04-30', '13:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 4, 'Ford', 'Ranger', 2018, 'GHI 3456', '2026-04-11', '16:00:00', NULL, 'cancelled', NULL),
+(2, 3, 'Honda', 'Civic', 2019, 'XYZ 5678', '2026-04-13', '16:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 9, 'Toyota', 'Vios', 2020, 'ABC 1234', '2026-04-14', '14:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 3, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-15', '14:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 10, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-26', '15:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 7, 'Hyundai', 'Tucson', 2020, 'MNO 2345', '2026-04-22', '11:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 8, 'Ford', 'Ranger', 2018, 'GHI 3456', '2026-05-01', '10:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 6, 'Honda', 'Civic', 2019, 'XYZ 5678', '2026-04-16', '10:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 7, 'Suzuki', 'Ertiga', 2017, 'STU 0123', '2026-04-16', '14:00:00', NULL, 'pending', NULL),
+(2, 8, 'Kia', 'Seltos', 2023, 'PQR 6789', '2026-04-30', '16:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 1, 'Kia', 'Seltos', 2023, 'PQR 6789', '2026-05-01', '09:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 8, 'Honda', 'Civic', 2019, 'XYZ 5678', '2026-05-02', '15:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 7, 'Honda', 'Civic', 2019, 'XYZ 5678', '2026-05-08', '11:00:00', NULL, 'cancelled', NULL),
+(2, 9, 'Kia', 'Seltos', 2023, 'PQR 6789', '2026-04-30', '08:00:00', NULL, 'declined', NULL),
+(2, 1, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-28', '11:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 6, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-27', '08:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 4, 'Honda', 'Civic', 2019, 'XYZ 5678', '2026-05-04', '13:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 9, 'Ford', 'Ranger', 2018, 'GHI 3456', '2026-04-19', '10:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 5, 'Hyundai', 'Tucson', 2020, 'MNO 2345', '2026-04-19', '16:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 3, 'Mitsubishi', 'Montero', 2021, 'DEF 9012', '2026-04-11', '08:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 7, 'Kia', 'Seltos', 2023, 'PQR 6789', '2026-05-07', '14:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 3, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-27', '10:00:00', NULL, 'pending', NULL),
+(2, 8, 'Suzuki', 'Ertiga', 2017, 'STU 0123', '2026-05-05', '08:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 8, 'Ford', 'Ranger', 2018, 'GHI 3456', '2026-05-02', '09:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 10, 'Toyota', 'Vios', 2020, 'ABC 1234', '2026-04-17', '15:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 7, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-18', '10:00:00', NULL, 'completed', 'Job completed successfully.'),
+(2, 10, 'Honda', 'Civic', 2019, 'XYZ 5678', '2026-05-06', '14:00:00', NULL, 'pending', NULL),
+(2, 8, 'Kia', 'Seltos', 2023, 'PQR 6789', '2026-04-11', '10:00:00', NULL, 'pending', NULL),
+(2, 9, 'Suzuki', 'Ertiga', 2017, 'STU 0123', '2026-05-08', '14:00:00', NULL, 'cancelled', NULL),
+(2, 10, 'Nissan', 'Navara', 2022, 'JKL 7890', '2026-04-28', '13:00:00', NULL, 'pending', NULL),
+(2, 1, 'Ford', 'Ranger', 2018, 'GHI 3456', '2026-04-13', '10:00:00', NULL, 'pending', NULL),
+(2, 3, 'Hyundai', 'Tucson', 2020, 'MNO 2345', '2026-04-14', '08:00:00', NULL, 'confirmed', 'Slot confirmed.'),
+(2, 7, 'Suzuki', 'Ertiga', 2017, 'STU 0123', '2026-04-13', '09:00:00', NULL, 'confirmed', 'Slot confirmed.');
+
+-- =====================================================
+-- VERIFY TABLES
+-- =====================================================
+SHOW TABLES;
+
+-- =====================================================
+-- VERIFY SERVICES
+-- =====================================================
+SELECT * FROM services;
+
+-- =====================================================
+-- VERIFY USERS
+-- =====================================================
+SELECT id, username, email, role FROM users;
