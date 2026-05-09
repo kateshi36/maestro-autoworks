@@ -15,6 +15,65 @@ unset($_SESSION['error']);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .role-option { position: relative; cursor: pointer; }
+        .role-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .role-card {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 10px; padding: 18px 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.08);
+            background: var(--black-input);
+            transition: all .2s; text-align: center; user-select: none;
+        }
+        .role-card svg { width: 28px; height: 28px; fill: var(--muted); transition: fill .2s; }
+        .role-card-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            color: var(--muted); transition: color .2s;
+        }
+        .role-card-sub { font-size: 11px; color: rgba(255,255,255,0.3); line-height: 1.4; }
+        .role-option input:checked + .role-card {
+            border-color: var(--yellow);
+            background: rgba(245,166,35,0.08);
+        }
+        .role-option input:checked + .role-card svg { fill: var(--yellow); }
+        .role-option input:checked + .role-card .role-card-label { color: var(--yellow); }
+        .role-card:hover { border-color: rgba(245,166,35,0.4); background: rgba(245,166,35,0.05); }
+
+        .role-section-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .role-section-label::before {
+            content: ''; display: block; width: 16px; height: 2px;
+            background: var(--yellow); flex-shrink: 0;
+        }
+
+        /* Admin notice strip shown when admin role is selected */
+        .admin-notice {
+            display: none;
+            align-items: flex-start; gap: 10px;
+            background: rgba(245,166,35,0.06);
+            border: 1px solid rgba(245,166,35,0.25);
+            border-radius: 8px; padding: 12px 14px;
+            margin-bottom: 20px;
+            font-size: 12px; color: var(--muted); line-height: 1.6;
+        }
+        .admin-notice.visible { display: flex; }
+        .admin-notice svg { width: 15px; height: 15px; fill: var(--yellow); flex-shrink: 0; margin-top: 1px; }
+    </style>
 </head>
 <body>
 
@@ -24,12 +83,10 @@ unset($_SESSION['error']);
         <svg class="gear-bg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="white">
             <path d="M43.1 5.1l-3.2 9.5c-2.1.6-4.1 1.4-6 2.4L25 12.5l-9.9 9.9 4.5 8.9c-1 1.9-1.8 3.9-2.4 6L7.7 40.5v14l9.5 3.2c.6 2.1 1.4 4.1 2.4 6L15.1 72.5l9.9 9.9 8.9-4.5c1.9 1 3.9 1.8 6 2.4l3.2 9.5h14l3.2-9.5c2.1-.6 4.1-1.4 6-2.4l8.9 4.5 9.9-9.9-4.5-8.9c1-1.9 1.8-3.9 2.4-6l9.5-3.2v-14l-9.5-3.2c-.6-2.1-1.4-4.1-2.4-6l4.5-8.9-9.9-9.9-8.9 4.5c-1.9-1-3.9-1.8-6-2.4l-3.2-9.5h-14zm7 20c13.8 0 25 11.2 25 25s-11.2 25-25 25-25-11.2-25-25 11.2-25 25-25zm0 10c-8.3 0-15 6.7-15 15s6.7 15 15 15 15-6.7 15-15-6.7-15-15-15z"/>
         </svg>
-
         <div class="inner">
             <span class="tag">We are Maestro Autoworks,</span>
             <h2>Your Trusted<br><span>Auto Repair Shop</span></h2>
             <p>Access your appointments, service history, and account details — all in one place.</p>
-
             <div class="features">
                 <div class="feature-pill">
                     <div class="icon">
@@ -70,9 +127,9 @@ unset($_SESSION['error']);
 
         <div class="card">
             <div class="card-head">
-                <div class="card-label">Client Portal</div>
-                <div class="card-title">Sign In to<br>Your Account</div>
-                <div class="card-sub">Enter your credentials to continue</div>
+                <div class="card-label">Portal Access</div>
+                <div class="card-title" id="card-title">Sign In to<br>Your Account</div>
+                <div class="card-sub">Choose your role to continue</div>
             </div>
 
             <?php if ($error): ?>
@@ -82,7 +139,36 @@ unset($_SESSION['error']);
             </div>
             <?php endif; ?>
 
+            <!-- Role Selector -->
+            <div class="role-section-label">I am a</div>
+            <div class="role-selector">
+                <label class="role-option">
+                    <input type="radio" name="role_choice" value="customer" id="role-customer" checked>
+                    <div class="role-card">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                        <div class="role-card-label">Customer</div>
+                        <div class="role-card-sub">Book services &amp; track history</div>
+                    </div>
+                </label>
+                <label class="role-option">
+                    <input type="radio" name="role_choice" value="admin" id="role-admin">
+                    <div class="role-card">
+                        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l6 2.67V11c0 3.7-2.5 7.17-6 8.38-3.5-1.21-6-4.68-6-8.38V5.85l6-2.67z"/></svg>
+                        <div class="role-card-label">Admin</div>
+                        <div class="role-card-sub">Staff &amp; management access</div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Admin notice (shown when admin is selected) -->
+            <div class="admin-notice" id="admin-notice">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l6 2.67V11c0 3.7-2.5 7.17-6 8.38-3.5-1.21-6-4.68-6-8.38V5.85l6-2.67z"/></svg>
+                Admin access is restricted to authorized Maestro Autoworks staff only.
+            </div>
+
+            <!-- Single unified form — role is passed as a hidden field -->
             <form method="POST" action="login_process.php">
+                <input type="hidden" name="role" id="role-input" value="customer">
 
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -114,9 +200,9 @@ unset($_SESSION['error']);
                     <a href="forgot_password.php" class="forgot-link">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="btn-login">
+                <button type="submit" class="btn-login" id="submit-btn">
                     <svg viewBox="0 0 24 24"><path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/></svg>
-                    Sign In
+                    <span id="submit-label">Sign In</span>
                 </button>
 
             </form>
@@ -132,6 +218,27 @@ unset($_SESSION['error']);
 </div>
 
 <script>
+const radios = document.querySelectorAll('input[name="role_choice"]');
+const roleInput = document.getElementById('role-input');
+const adminNotice = document.getElementById('admin-notice');
+const submitLabel = document.getElementById('submit-label');
+const cardTitle = document.getElementById('card-title');
+
+radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        roleInput.value = radio.value;
+        if (radio.value === 'admin') {
+            adminNotice.classList.add('visible');
+            submitLabel.textContent = 'Sign In as Admin';
+            cardTitle.innerHTML = 'Admin<br>Sign In';
+        } else {
+            adminNotice.classList.remove('visible');
+            submitLabel.textContent = 'Sign In';
+            cardTitle.innerHTML = 'Sign In to<br>Your Account';
+        }
+    });
+});
+
 function togglePassword() {
     const input = document.getElementById('password');
     const icon  = document.getElementById('eye-icon');

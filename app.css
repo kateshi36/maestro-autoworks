@@ -8,10 +8,15 @@
     --yellow:     #F5A623;
     --yellow-dk:  #D4891A;
     --yellow-lt:  rgba(245,166,35,0.12);
-    --navy:       #0E1625;
-    --navy-mid:   #16243A;
-    --navy-card:  #1C2E47;
-    --navy-input: #243350;
+    --navy:       #0a0a0a;
+    --black:      #0a0a0a;
+    --black-mid:  #111111;
+    --black-card: #1a1a1a;
+    --black-input:#2a2a2a;
+    --black-ele:  #222222;
+    --navy-mid:   #111111;
+    --navy-card:  #1a1a1a;
+    --navy-input: #2a2a2a;
     --border:     rgba(245,166,35,0.22);
     --border-sub: rgba(255,255,255,0.07);
     --text:       #E8EDF5;
@@ -31,7 +36,7 @@
 html, body {
     min-height: 100%;
     font-family: 'Barlow', sans-serif;
-    background: var(--navy);
+    background: var(--black);
     color: var(--text);
     font-size: 15px;
     line-height: 1.6;
@@ -44,7 +49,7 @@ a:hover { opacity: .8; }
 .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     height: var(--topbar-h);
-    background: var(--navy-mid);
+    background: var(--black-mid);
     border-bottom: 1px solid var(--border-sub);
     display: flex; align-items: center;
     padding: 0 28px;
@@ -64,7 +69,7 @@ a:hover { opacity: .8; }
     display: flex; align-items: center; justify-content: center;
 }
 
-.topbar-logo .logo-badge svg { width: 14px; height: 14px; fill: var(--navy); }
+.topbar-logo .logo-badge svg { width: 14px; height: 14px; fill: var(--black); }
 
 .topbar-nav {
     display: flex; align-items: center; gap: 4px;
@@ -104,7 +109,7 @@ a:hover { opacity: .8; }
 
 .user-chip {
     display: flex; align-items: center; gap: 10px;
-    background: var(--navy-card); border: 1px solid var(--border-sub);
+    background: var(--black-card); border: 1px solid var(--border-sub);
     border-radius: 8px; padding: 6px 14px 6px 8px;
     cursor: pointer; transition: border-color .2s;
 }
@@ -112,7 +117,7 @@ a:hover { opacity: .8; }
 
 .user-avatar {
     width: 28px; height: 28px; border-radius: 6px;
-    background: var(--yellow); color: var(--navy);
+    background: var(--yellow); color: var(--black);
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 800; font-size: 13px;
     display: flex; align-items: center; justify-content: center;
@@ -123,7 +128,7 @@ a:hover { opacity: .8; }
 
 .dropdown-menu {
     position: absolute; top: calc(100% + 8px); right: 0;
-    background: var(--navy-card); border: 1px solid var(--border-sub);
+    background: var(--black-card); border: 1px solid var(--border-sub);
     border-radius: 10px; min-width: 180px;
     box-shadow: 0 16px 40px rgba(0,0,0,0.5);
     overflow: hidden; z-index: 200;
@@ -176,7 +181,7 @@ a:hover { opacity: .8; }
 
 /* ── CARDS ───────────────────────────────────────────────────────────────── */
 .card {
-    background: var(--navy-card);
+    background: var(--black-card);
     border: 1px solid var(--border-sub);
     border-radius: 14px; padding: 28px;
 }
@@ -199,7 +204,7 @@ a:hover { opacity: .8; }
 }
 
 .stat-tile {
-    background: var(--navy-card);
+    background: var(--black-card);
     border: 1px solid var(--border-sub);
     border-radius: 12px; padding: 20px 22px;
     position: relative; overflow: hidden;
@@ -298,7 +303,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .btn svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
 
 .btn-primary {
-    background: var(--yellow); color: var(--navy);
+    background: var(--yellow); color: var(--black);
     box-shadow: 0 6px 20px rgba(245,166,35,0.25);
 }
 .btn-primary:hover {
@@ -342,7 +347,7 @@ label, .lbl {
 input[type="password"], input[type="date"], input[type="time"],
 input[type="number"], select, textarea {
     width: 100%;
-    background: var(--navy-input);
+    background: var(--black-input);
     border: 1.5px solid rgba(255,255,255,0.08);
     border-radius: 8px;
     padding: 12px 14px;
@@ -356,12 +361,12 @@ input[type="number"], select, textarea {
 input[type="date"]:focus, input[type="time"]:focus,
 input[type="number"]:focus, select:focus, textarea:focus {
     border-color: var(--yellow);
-    background: rgba(36,51,80,0.9);
+    background: rgba(26,26,26,0.9);
 }
 
 input::placeholder, textarea::placeholder { color: var(--muted); font-size: 14px; }
 
-select option { background: var(--navy-card); }
+select option { background: var(--black-card); }
 
 textarea { resize: vertical; min-height: 100px; }
 
@@ -422,7 +427,7 @@ textarea { resize: vertical; min-height: 100px; }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 
 .modal {
-    background: var(--navy-card);
+    background: var(--black-card);
     border: 1px solid var(--border-sub);
     border-radius: 16px;
     width: 100%; max-width: 500px; max-height: 90vh;
@@ -453,7 +458,7 @@ textarea { resize: vertical; min-height: 100px; }
 .notif-panel {
     position: absolute; top: calc(100% + 10px); right: 0;
     width: 340px; max-height: 440px; overflow-y: auto;
-    background: var(--navy-card); border: 1px solid var(--border-sub);
+    background: var(--black-card); border: 1px solid var(--border-sub);
     border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.5);
     z-index: 200; display: none;
 }
@@ -553,7 +558,7 @@ textarea { resize: vertical; min-height: 100px; }
 }
 
 .service-card {
-    background: var(--navy-card);
+    background: var(--black-card);
     border: 1px solid var(--border-sub);
     border-radius: 14px; padding: 24px;
     transition: border-color .25s, transform .2s;

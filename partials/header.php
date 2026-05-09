@@ -53,7 +53,7 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         <a href="home.php"      class="<?= $currentPage==='home'      ?'active':'' ?>">Home</a>
         <a href="services.php"  class="<?= $currentPage==='services'  ?'active':'' ?>">Services</a>
         <?php if ($isAdmin): ?>
-            <a href="admin_dashboard.php" class="<?= in_array($currentPage,['admin_dashboard','admin_appointments'])?'active':'' ?>">Dashboard</a>
+            <a href="admin_dashboard.php" class="<?= $currentPage==='admin_dashboard'?'active':'' ?>">Dashboard</a>
             <a href="admin_appointments.php" class="<?= $currentPage==='admin_appointments'?'active':'' ?>">Appointments</a>
             <a href="admin_reports.php"  class="<?= $currentPage==='admin_reports' ?'active':'' ?>">Reports</a>
         <?php else: ?>

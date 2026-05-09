@@ -5,10 +5,14 @@
 :root {
     --yellow:    #F5A623;
     --yellow-dk: #D4891A;
-    --navy:      #0E1625;
-    --navy-mid:  #16243A;
-    --navy-card: #1C2E47;
-    --navy-input:#243350;
+    --navy:      #0a0a0a;
+    --black:     #0a0a0a;
+    --black-mid: #111111;
+    --black-card:#1a1a1a;
+    --black-input:#2a2a2a;
+    --navy-mid:  #111111;
+    --navy-card: #1a1a1a;
+    --navy-input:#2a2a2a;
     --border:    rgba(245,166,35,0.25);
     --text:      #E8EDF5;
     --muted:     #7A8EA8;
@@ -20,7 +24,7 @@
 html, body {
     height: 100%;
     font-family: 'Barlow', sans-serif;
-    background-color: var(--navy);
+    background-color: var(--black);
     color: var(--text);
 }
 
@@ -33,7 +37,7 @@ html, body {
 
 .left-panel {
     position: relative;
-    background: var(--navy-mid);
+    background: var(--black-mid);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -110,7 +114,7 @@ html, body {
     flex-shrink: 0;
 }
 
-.feature-pill .icon svg { width: 18px; height: 18px; fill: var(--navy); }
+.feature-pill .icon svg { width: 18px; height: 18px; fill: var(--black); }
 
 .feature-pill span {
     font-family: 'Barlow Condensed', sans-serif;
@@ -119,7 +123,7 @@ html, body {
 }
 
 .right-panel {
-    background: var(--navy);
+    background: var(--black);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     padding: 48px 40px; position: relative;
@@ -153,7 +157,7 @@ html, body {
     display: flex; align-items: center; justify-content: center;
 }
 
-.logo-icon svg { width: 16px; height: 16px; fill: var(--navy); }
+.logo-icon svg { width: 16px; height: 16px; fill: var(--black); }
 
 .back-link {
     font-size: 13px; color: var(--muted);
@@ -166,7 +170,7 @@ html, body {
 
 .card {
     width: 100%; max-width: 420px;
-    background: var(--navy-card);
+    background: var(--black-card);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 16px; padding: 42px 40px;
     box-shadow: 0 30px 80px rgba(0,0,0,0.5);
@@ -228,7 +232,7 @@ label {
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    background: var(--navy-input);
+    background: var(--black-input);
     border: 1.5px solid rgba(255,255,255,0.08);
     border-radius: 8px;
     padding: 13px 14px 13px 44px;
@@ -241,7 +245,7 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="password"]:focus {
     border-color: var(--yellow);
-    background: rgba(36,51,80,0.9);
+    background: rgba(26,26,26,0.9);
 }
 
 input::placeholder { color: var(--muted); font-size: 14px; }
@@ -272,7 +276,7 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 .custom-check {
     width: 16px; height: 16px;
     border: 1.5px solid rgba(255,255,255,0.2);
-    border-radius: 4px; background: var(--navy-input);
+    border-radius: 4px; background: var(--black-input);
     display: flex; align-items: center; justify-content: center;
     transition: all .2s; flex-shrink: 0;
 }
@@ -281,7 +285,7 @@ input::placeholder { color: var(--muted); font-size: 14px; }
     background: var(--yellow); border-color: var(--yellow);
 }
 
-.custom-check svg { width: 9px; height: 9px; fill: var(--navy); display: none; }
+.custom-check svg { width: 9px; height: 9px; fill: var(--black); display: none; }
 .checkbox-wrap input:checked + .custom-check svg { display: block; }
 
 .forgot-link {
@@ -293,7 +297,7 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 
 .btn-login {
     width: 100%;
-    background: var(--yellow); color: var(--navy);
+    background: var(--yellow); color: var(--black);
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 16px; font-weight: 700;
     letter-spacing: 1.5px; text-transform: uppercase;
@@ -311,7 +315,7 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 }
 
 .btn-login:active { transform: translateY(0); }
-.btn-login svg { width: 16px; height: 16px; fill: var(--navy); }
+.btn-login svg { width: 16px; height: 16px; fill: var(--black); }
 
 .divider {
     display: flex; align-items: center;
@@ -353,7 +357,7 @@ input::placeholder { color: var(--muted); font-size: 14px; }
 
 input[type="email"] {
     width: 100%;
-    background: var(--navy-input);
+    background: var(--black-input);
     border: 1.5px solid rgba(255,255,255,0.08);
     border-radius: 8px;
     padding: 13px 14px 13px 44px;
@@ -366,7 +370,7 @@ input[type="email"] {
 
 input[type="email"]:focus {
     border-color: var(--yellow);
-    background: rgba(36,51,80,0.9);
+    background: rgba(26,26,26,0.9);
 }
 
 input[type="email"]::placeholder { color: var(--muted); font-size: 14px; }
