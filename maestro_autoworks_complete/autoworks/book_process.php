@@ -59,6 +59,21 @@ $dbl = $pdo->prepare("
 $dbl->execute([$me['id'], $appt_date, $appt_time]);
 if ($dbl->fetch()) bookError('You already have a booking at this date and time.');
 
+$capacityStmt = $pdo->prepare("
+    SELECT COUNT(*) 
+    FROM appointments
+    WHERE appt_date = ?
+    AND status IN ('pending','confirmed')
+");
+
+$capacityStmt->execute([$appt_date]);
+
+$currentBookings = $capacityStmt->fetchColumn();
+
+if ($currentBookings >= 5) {
+    bookError('Maximum vehicle capacity reached for this date.');
+}
+
 // ── Insert appointment ────────────────────────────────────────────────────
 $ins = $pdo->prepare("
     INSERT INTO appointments

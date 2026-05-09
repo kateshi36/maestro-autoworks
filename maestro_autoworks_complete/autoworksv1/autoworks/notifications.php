@@ -17,20 +17,28 @@ $offset  = ($page - 1) * $perPage;
 $total = (int)$pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ?")
     ->execute([$me['id']]) ? $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ?")->execute([$me['id']]) : 0;
 
+// 1. Fetch total count for pagination
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ?");
 $countStmt->execute([$me['id']]);
 $total = (int)$countStmt->fetchColumn();
 
+// 2. Prepare the notification fetch query
 $notifStmt = $pdo->prepare("
     SELECT n.*, a.appt_date, a.appt_time, s.name AS service_name
     FROM notifications n
     LEFT JOIN appointments a ON a.id = n.appt_id
     LEFT JOIN services     s ON s.id = a.service_id
-    WHERE n.user_id = ?
+    WHERE n.user_id = :user_id
     ORDER BY n.created_at DESC
-    LIMIT ? OFFSET ?
+    LIMIT :limit OFFSET :offset
 ");
-$notifStmt->execute([$me['id'], $perPage, $offset]);
+
+// 3. Bind values specifically as Integers to avoid quotes
+$notifStmt->bindValue(':user_id', $me['id'], PDO::PARAM_INT);
+$notifStmt->bindValue(':limit', (int)$perPage, PDO::PARAM_INT);
+$notifStmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+$notifStmt->execute();
 $notifs = $notifStmt->fetchAll();
 
 $totalPages = max(1, ceil($total / $perPage));
