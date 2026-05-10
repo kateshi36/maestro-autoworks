@@ -17,13 +17,25 @@ $preselect = (int)($_GET['service'] ?? 0);
 $today     = date('Y-m-d');
 $maxDate   = date('Y-m-d', strtotime('+60 days'));
 
-// Generate time slots 8am–5pm every 30 min, Mon–Sat only
+// Generate time slots 8am-5pm every 30 min
 $slots = [];
 $base = strtotime('08:00');
 while ($base <= strtotime('17:00')) {
     $slots[] = date('H:i', $base);
     $base += 1800;
 }
+
+// Fully booked dates (>=5 pending/confirmed bookings)
+$fullDatesStmt = $pdo->prepare("
+    SELECT appt_date
+    FROM   appointments
+    WHERE  appt_date BETWEEN ? AND ?
+      AND  status IN ('pending','confirmed')
+    GROUP  BY appt_date
+    HAVING COUNT(*) >= 5
+");
+$fullDatesStmt->execute([$today, $maxDate]);
+$fullDates = array_column($fullDatesStmt->fetchAll(), 'appt_date');
 ?>
 
 <main class="page-shell">
@@ -105,6 +117,10 @@ while ($base <= strtotime('17:00')) {
                     <div id="dayWarning" class="alert alert-warning" style="display:none;margin-top:14px;margin-bottom:0;">
                         <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
                         We are closed on Sundays. Please choose another day.
+                    </div>
+                    <div id="fullBookedWarning" class="alert alert-error" style="display:none;margin-top:14px;margin-bottom:0;">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        This date is fully booked (max 5 vehicles reached). Please choose another date.
                     </div>
                 </div>
 
@@ -213,6 +229,8 @@ while ($base <= strtotime('17:00')) {
     const yearI    = document.querySelector('[name=vehicle_year]');
     const dayWarn  = document.getElementById('dayWarning');
     const submitBtn = document.querySelector('#bookForm [type=submit]');
+    const fullBookedWarn = document.getElementById('fullBookedWarning');
+    const fullDates = <?php echo json_encode($fullDates); ?>;
 
     function updateSummary () {
         const opt = svcSel.options[svcSel.selectedIndex];
@@ -237,11 +255,18 @@ while ($base <= strtotime('17:00')) {
     }
 
     function checkDay () {
-        if (!dateSel.value) { dayWarn.style.display='none'; return; }
-        const dow = new Date(dateSel.value+'T00:00').getDay(); // 0=Sun
-        const isSun = dow === 0;
-        dayWarn.style.display = isSun ? 'flex' : 'none';
-        submitBtn.disabled = isSun;
+        if (!dateSel.value) {
+            dayWarn.style.display       = 'none';
+            fullBookedWarn.style.display = 'none';
+            submitBtn.disabled = false;
+            return;
+        }
+        const dow    = new Date(dateSel.value + 'T00:00').getDay(); // 0=Sun
+        const isSun  = dow === 0;
+        const isFull = fullDates.includes(dateSel.value);
+        dayWarn.style.display        = isSun  ? 'flex' : 'none';
+        fullBookedWarn.style.display = isFull ? 'flex' : 'none';
+        submitBtn.disabled = isSun || isFull;
     }
 
     [svcSel, dateSel, timeSel].forEach(el => el.addEventListener('change', () => { updateSummary(); checkDay(); }));

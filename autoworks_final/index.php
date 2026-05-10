@@ -100,7 +100,7 @@ if (isset($_SESSION['user_id'])) {
             display: flex; align-items: center; justify-content: center;
         }
 
-        .nav-logo-badge svg { width: 20px; height: 20px; fill: var(--black); }
+        .nav-logo-badge { width:38px;height:38px;border-radius:50%;overflow:hidden;background:#000;flex-shrink:0; } .nav-logo-badge svg { display:none; }
 
         .nav-links {
             display: flex; align-items: center; gap: 4px; flex: 1;
@@ -704,9 +704,9 @@ if (isset($_SESSION['user_id'])) {
 <nav class="nav" role="navigation">
     <a href="index.php" class="nav-logo">
         <div class="nav-logo-badge">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <img src="logo.png" alt="Maestro Autoworks Logo" style="width:38px;height:38px;object-fit:cover;border-radius:50%;display:block;">
         </div>
-        Maestro<span style="color:var(--yellow)">Auto</span>
+        Maestro<span style="color:var(--yellow)">Autoworks</span>
     </a>
 
     <div class="nav-links">

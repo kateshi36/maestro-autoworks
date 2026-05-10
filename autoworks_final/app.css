@@ -64,12 +64,21 @@ a:hover { opacity: .8; }
 }
 
 .topbar-logo .logo-badge {
-    background: var(--yellow); border-radius: 5px;
-    width: 26px; height: 26px;
+    width: 38px; height: 38px;
     display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #000;
+    flex-shrink: 0;
 }
 
-.topbar-logo .logo-badge svg { width: 14px; height: 14px; fill: var(--black); }
+.topbar-logo .logo-badge img {
+    width: 38px; height: 38px;
+    object-fit: cover;
+    display: block;
+}
+
+.topbar-logo .logo-badge svg { display: none; }
 
 .topbar-nav {
     display: flex; align-items: center; gap: 4px;

@@ -1,4 +1,7 @@
 <?php
+// ─── Output buffering (prevents "headers already sent" errors) ───────────────
+ob_start();
+
 // ─── Database Connection ────────────────────────────────────────────────────
 $host   = 'localhost';
 $dbname = 'maestro_db';

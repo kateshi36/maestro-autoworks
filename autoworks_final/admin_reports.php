@@ -12,7 +12,10 @@ $rangePreset = $_GET['range'] ?? '30';
 $customFrom  = $_GET['from']  ?? '';
 $customTo    = $_GET['to']    ?? '';
 
-if ($rangePreset === 'custom' && $customFrom && $customTo) {
+if ($rangePreset === 'all') {
+    $dateFrom = '2000-01-01';
+    $dateTo   = date('Y-m-d', strtotime('+1 day')); // include today
+} elseif ($rangePreset === 'custom' && $customFrom && $customTo) {
     $dateFrom = $customFrom;
     $dateTo   = $customTo;
 } else {
@@ -94,10 +97,11 @@ $listStmt = $pdo->prepare("
     FROM appointments a
     JOIN users    u ON u.id = a.user_id
     JOIN services s ON s.id = a.service_id
-    WHERE a.appt_date BETWEEN ? AND ?
-    ORDER BY a.appt_date ASC, a.appt_time ASC
+    WHERE (a.appt_date BETWEEN ? AND ?)
+       OR (a.status = 'completed' AND DATE(a.updated_at) BETWEEN ? AND ?)
+    ORDER BY a.appt_date DESC, a.appt_time ASC
 ");
-$listStmt->execute([$dateFrom, $dateTo]);
+$listStmt->execute([$dateFrom, $dateTo, $dateFrom, $dateTo]);
 $allAppts = $listStmt->fetchAll();
 
 // ── CSV export ────────────────────────────────────────────────────────────
@@ -123,6 +127,44 @@ $chartLabels = json_encode(array_column($daily, 'appt_date'));
 $chartData   = json_encode(array_column($daily, 'count'));
 $dowLabels   = json_encode(array_column($dowData, 'day_name'));
 $dowCounts   = json_encode(array_column($dowData, 'count'));
+
+// ── PMS: Average task time per service ────────────────────────────────────
+$efficiencyStmt = $pdo->query("
+    SELECT  s.name                                             AS service_name,
+            s.category,
+            COUNT(DISTINCT a.id)                              AS jobs_tracked,
+            COUNT(rt.id)                                      AS total_tasks,
+            ROUND(AVG(
+                TIMESTAMPDIFF(MINUTE, rt.started_at, rt.completed_at)
+            ) / 60, 1)                                        AS avg_task_hours,
+            ROUND(SUM(
+                TIMESTAMPDIFF(MINUTE, rt.started_at, rt.completed_at)
+            ) / 60, 1)                                        AS total_hours_logged
+    FROM    repair_tasks rt
+    JOIN    appointments a ON a.id  = rt.appt_id
+    JOIN    services     s ON s.id  = a.service_id
+    WHERE   rt.status       = 'completed'
+      AND   rt.started_at   IS NOT NULL
+      AND   rt.completed_at IS NOT NULL
+    GROUP   BY s.id, s.name, s.category
+    ORDER   BY avg_task_hours DESC
+");
+$efficiency = $efficiencyStmt ? $efficiencyStmt->fetchAll() : [];
+
+// ── PMS: Mechanic workload summary ────────────────────────────────────────
+$mechanicStmt = $pdo->query("
+    SELECT  assigned_to,
+            COUNT(*)                                          AS tasks_handled,
+            SUM(status = 'completed')                        AS tasks_completed,
+            ROUND(AVG(
+                TIMESTAMPDIFF(MINUTE, started_at, completed_at)
+            ) / 60, 1)                                        AS avg_hours_per_task
+    FROM    repair_tasks
+    WHERE   assigned_to IS NOT NULL
+    GROUP   BY assigned_to
+    ORDER   BY tasks_completed DESC
+");
+$mechanicLoad = $mechanicStmt ? $mechanicStmt->fetchAll() : [];
 ?>
 
 <main class="page-shell">
@@ -159,6 +201,7 @@ $dowCounts   = json_encode(array_column($dowData, 'count'));
                     <option value="90"     <?= $rangePreset==='90'    ?'selected':'' ?>>Last 90 days</option>
                     <option value="365"    <?= $rangePreset==='365'   ?'selected':'' ?>>Last 12 months</option>
                     <option value="custom" <?= $rangePreset==='custom'?'selected':'' ?>>Custom range</option>
+                    <option value="all"    <?= $rangePreset==='all'    ?'selected':'' ?>>All time</option>
                 </select>
             </div>
             <?php if ($rangePreset === 'custom'): ?>
@@ -333,6 +376,135 @@ $dowCounts   = json_encode(array_column($dowData, 'count'));
             </div>
             <?php endif; ?>
         </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         PMS SECTION — Repair Efficiency & Mechanic Workload
+    ═══════════════════════════════════════════════════════════════════ -->
+    <div style="margin-top:40px;">
+        <div class="section-head" style="margin-bottom:8px;">
+            <div>
+                <div class="section-title">PMS — Repair Efficiency by Service</div>
+                <div class="section-sub">
+                    Average task duration per service, calculated from tracked start/end times.
+                    Data grows as more jobs are logged through the Repair Tracker.
+                </div>
+            </div>
+            <a href="admin_pms.php" class="btn btn-secondary btn-sm">Open Repair Tracker</a>
+        </div>
+
+        <?php if (empty($efficiency)): ?>
+            <div class="card" style="padding:32px;text-align:center;color:#9ca3af;font-size:14px;">
+                No task time data yet. Start tracking tasks in the
+                <a href="admin_pms.php">Repair Tracker</a> to populate this report.
+            </div>
+        <?php else: ?>
+            <div class="card" style="padding:0;">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Service</th>
+                            <th>Category</th>
+                            <th>Jobs Tracked</th>
+                            <th>Total Tasks Logged</th>
+                            <th>Avg. Hours / Task</th>
+                            <th>Total Hours Logged</th>
+                        </tr></thead>
+                        <tbody>
+                        <?php foreach ($efficiency as $e): ?>
+                            <tr>
+                                <td style="font-weight:600;">
+                                    <?= htmlspecialchars($e['service_name']) ?>
+                                </td>
+                                <td>
+                                    <span style="display:inline-block;padding:2px 10px;
+                                        border-radius:99px;font-size:12px;font-weight:600;
+                                        background:#f3f4f6;color:#374151;">
+                                        <?= htmlspecialchars($e['category']) ?>
+                                    </span>
+                                </td>
+                                <td><?= (int)$e['jobs_tracked'] ?></td>
+                                <td><?= (int)$e['total_tasks'] ?></td>
+                                <td>
+                                    <span style="font-weight:700;color:var(--yellow);">
+                                        <?= $e['avg_task_hours'] ?? '—' ?> hrs
+                                    </span>
+                                </td>
+                                <td><?= $e['total_hours_logged'] ?? '—' ?> hrs</td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Mechanic Workload -->
+    <div style="margin-top:32px;margin-bottom:40px;">
+        <div class="section-head" style="margin-bottom:8px;">
+            <div>
+                <div class="section-title">PMS — Mechanic Workload Summary</div>
+                <div class="section-sub">
+                    Tasks assigned and completed per mechanic, with average time per task.
+                </div>
+            </div>
+        </div>
+
+        <?php if (empty($mechanicLoad)): ?>
+            <div class="card" style="padding:32px;text-align:center;color:#9ca3af;font-size:14px;">
+                No mechanic assignment data yet. Assign mechanics when adding tasks in the
+                <a href="admin_pms.php">Repair Tracker</a>.
+            </div>
+        <?php else: ?>
+            <div class="card" style="padding:0;">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Mechanic</th>
+                            <th>Tasks Assigned</th>
+                            <th>Tasks Completed</th>
+                            <th>Completion Rate</th>
+                            <th>Avg. Hours / Task</th>
+                        </tr></thead>
+                        <tbody>
+                        <?php foreach ($mechanicLoad as $m): ?>
+                            <?php
+                            $rate = $m['tasks_handled'] > 0
+                                ? round($m['tasks_completed'] / $m['tasks_handled'] * 100)
+                                : 0;
+                            ?>
+                            <tr>
+                                <td style="font-weight:600;">
+                                    <?= htmlspecialchars($m['assigned_to']) ?>
+                                </td>
+                                <td><?= (int)$m['tasks_handled'] ?></td>
+                                <td><?= (int)$m['tasks_completed'] ?></td>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div style="flex:1;max-width:80px;background:#e5e7eb;
+                                                    border-radius:99px;height:6px;overflow:hidden;">
+                                            <div style="width:<?= $rate ?>%;height:100%;
+                                                        background:#4CAF7D;border-radius:99px;">
+                                            </div>
+                                        </div>
+                                        <span style="font-size:13px;font-weight:600;">
+                                            <?= $rate ?>%
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="font-weight:700;color:var(--yellow);">
+                                        <?= $m['avg_hours_per_task'] ?? '—' ?> hrs
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
 </main>

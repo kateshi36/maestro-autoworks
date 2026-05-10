@@ -44,9 +44,9 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 <header class="topbar">
     <a href="<?= $isAdmin ? 'admin_dashboard.php' : 'dashboard.php' ?>" class="topbar-logo">
         <div class="logo-badge">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <img src="logo.png" alt="Maestro Autoworks Logo">
         </div>
-        Maestro<span style="color:var(--yellow)">Auto</span>
+        Maestro<span style="color:var(--yellow)">Autoworks</span>
     </a>
 
     <nav class="topbar-nav">
@@ -56,6 +56,7 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
             <a href="admin_dashboard.php" class="<?= $currentPage==='admin_dashboard'?'active':'' ?>">Dashboard</a>
             <a href="admin_appointments.php" class="<?= $currentPage==='admin_appointments'?'active':'' ?>">Appointments</a>
             <a href="admin_reports.php"  class="<?= $currentPage==='admin_reports' ?'active':'' ?>">Reports</a>
+            <a href="admin_pms.php"     class="<?= $currentPage==='admin_pms'     ?'active':'' ?>">Repair Tracker</a>
         <?php else: ?>
             <a href="dashboard.php"    class="<?= $currentPage==='dashboard'    ?'active':'' ?>">My Dashboard</a>
             <a href="book.php"         class="<?= $currentPage==='book'         ?'active':'' ?>">Book Service</a>
