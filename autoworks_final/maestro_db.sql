@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS maestro_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE maestro_db;
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
