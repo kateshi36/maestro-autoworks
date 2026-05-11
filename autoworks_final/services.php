@@ -5,8 +5,9 @@ require 'db.php';
 $pageTitle = 'Services — Maestro Autoworks';
 require 'partials/header.php';
 
+// Fetch ALL services (active and inactive) so customers can see unavailable ones
 $services = $pdo->query(
-    "SELECT * FROM services WHERE active = 1 ORDER BY category, name"
+    "SELECT * FROM services ORDER BY active DESC, category, name"
 )->fetchAll();
 
 $categories = array_unique(array_column($services, 'category'));
@@ -31,7 +32,25 @@ $categories = array_unique(array_column($services, 'category'));
 
     <div class="services-grid" id="servicesGrid">
         <?php foreach ($services as $svc): ?>
-        <div class="service-card" data-category="<?= htmlspecialchars($svc['category']) ?>">
+        <?php $isAvailable = (bool)$svc['active']; ?>
+        <div class="service-card"
+             data-category="<?= htmlspecialchars($svc['category']) ?>"
+             style="<?= !$isAvailable ? 'opacity:0.65;position:relative;' : 'position:relative;' ?>">
+
+            <?php if (!$isAvailable): ?>
+            <div style="
+                position:absolute;top:14px;right:14px;
+                background:#E05252;color:#fff;
+                font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+                padding:3px 10px;border-radius:20px;
+                display:flex;align-items:center;gap:5px;">
+                <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:#fff;flex-shrink:0;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
+                </svg>
+                Not Available
+            </div>
+            <?php endif; ?>
+
             <div class="service-category"><?= htmlspecialchars($svc['category']) ?></div>
             <div class="service-name"><?= htmlspecialchars($svc['name']) ?></div>
             <div class="service-desc"><?= htmlspecialchars($svc['description']) ?></div>
@@ -43,10 +62,19 @@ $categories = array_unique(array_column($services, 'category'));
                 </div>
             </div>
             <div style="margin-top:16px;">
-                <a href="book.php?service=<?= $svc['id'] ?>" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">
-                    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"/></svg>
-                    Book This Service
-                </a>
+                <?php if ($isAvailable): ?>
+                    <a href="book.php?service=<?= $svc['id'] ?>" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">
+                        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"/></svg>
+                        Book This Service
+                    </a>
+                <?php else: ?>
+                    <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;cursor:not-allowed;opacity:0.6;" disabled>
+                        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
+                        </svg>
+                        Currently Unavailable
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
         <?php endforeach; ?>

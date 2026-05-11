@@ -50,16 +50,17 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
     </a>
 
     <nav class="topbar-nav">
-        <a href="home.php"      class="<?= $currentPage==='home'      ?'active':'' ?>">Home</a>
-        <a href="services.php"  class="<?= $currentPage==='services'  ?'active':'' ?>">Services</a>
         <?php if ($isAdmin): ?>
-            <a href="admin_dashboard.php" class="<?= $currentPage==='admin_dashboard'?'active':'' ?>">Dashboard</a>
-            <a href="admin_appointments.php" class="<?= $currentPage==='admin_appointments'?'active':'' ?>">Appointments</a>
-            <a href="admin_reports.php"  class="<?= $currentPage==='admin_reports' ?'active':'' ?>">Reports</a>
-            <a href="admin_pms.php"     class="<?= $currentPage==='admin_pms'     ?'active':'' ?>">Repair Tracker</a>
+            <a href="admin_dashboard.php"    class="<?= $currentPage==='admin_dashboard'    ?'active':'' ?>">Dashboard</a>
+            <a href="admin_appointments.php" class="<?= $currentPage==='admin_appointments' ?'active':'' ?>">Appointments</a>
+            <a href="admin_services.php"     class="<?= $currentPage==='admin_services'     ?'active':'' ?>">Services</a>
+            <a href="admin_reports.php"      class="<?= $currentPage==='admin_reports'      ?'active':'' ?>">Reports</a>
+            <a href="admin_pms.php"          class="<?= $currentPage==='admin_pms'          ?'active':'' ?>">Repair Tracker</a>
         <?php else: ?>
-            <a href="dashboard.php"    class="<?= $currentPage==='dashboard'    ?'active':'' ?>">My Dashboard</a>
-            <a href="book.php"         class="<?= $currentPage==='book'         ?'active':'' ?>">Book Service</a>
+            <a href="home.php"      class="<?= $currentPage==='home'      ?'active':'' ?>">Home</a>
+            <a href="services.php"  class="<?= $currentPage==='services'  ?'active':'' ?>">Services</a>
+            <a href="dashboard.php" class="<?= $currentPage==='dashboard' ?'active':'' ?>">My Dashboard</a>
+            <a href="book.php"      class="<?= $currentPage==='book'      ?'active':'' ?>">Book Service</a>
         <?php endif; ?>
     </nav>
 

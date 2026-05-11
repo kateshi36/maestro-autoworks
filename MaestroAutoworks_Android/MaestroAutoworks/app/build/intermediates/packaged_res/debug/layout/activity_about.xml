@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AboutActivity: RadioButton & Background Color, CheckBox & Text Color -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:id="@+id/layoutRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="App Appearance"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Customize how the app looks."
+            android:textColor="@color/muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- ── RADIO BUTTONS: Background Color -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="BACKGROUND THEME"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+
+        <RadioGroup
+            android:id="@+id/rgBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp">
+
+            <RadioButton android:id="@+id/rbDark"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🖤  Dark (Default)"
+                android:textColor="@color/white" android:buttonTint="@color/yellow"
+                android:checked="true"/>
+
+            <RadioButton android:id="@+id/rbGray"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🩶  Gray"
+                android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+            <RadioButton android:id="@+id/rbDarkBlue"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🔵  Dark Blue"
+                android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+            <RadioButton android:id="@+id/rbDarkGreen"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🟢  Dark Green"
+                android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+        </RadioGroup>
+
+        <!-- ── CHECKBOXES: Text Color -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="TEXT STYLE OPTIONS"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+
+        <CheckBox android:id="@+id/cbBold"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="Bold text labels"
+            android:textColor="@color/muted" android:buttonTint="@color/yellow"
+            android:layout_marginBottom="8dp"/>
+
+        <CheckBox android:id="@+id/cbYellow"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="Highlight text in yellow"
+            android:textColor="@color/muted" android:buttonTint="@color/yellow"
+            android:layout_marginBottom="8dp"/>
+
+        <CheckBox android:id="@+id/cbLarge"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="Large text size"
+            android:textColor="@color/muted" android:buttonTint="@color/yellow"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Preview text -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="PREVIEW" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvPreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maestro Autoworks — Expert Auto Repair"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:padding="16dp"
+            android:background="@color/black_card"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- About shop info -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ABOUT THE SHOP" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Founded in 2010, Maestro Autoworks has grown from a small garage in Quezon City into one of the most trusted auto repair shops in Metro Manila.\n\nOur team of certified mechanics combines modern diagnostic technology with old-school craftsmanship."
+            android:textColor="@color/muted"
+            android:textSize="14sp"
+            android:lineSpacingMultiplier="1.5"
+            android:layout_marginBottom="24dp"/>
+
+    </LinearLayout>
+</ScrollView>
