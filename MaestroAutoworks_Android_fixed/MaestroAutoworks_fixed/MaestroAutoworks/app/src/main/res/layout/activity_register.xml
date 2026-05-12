@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- RegisterActivity: EditText, TextView, Button, Toast, Simple Computation & Validation -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Your Account"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- First Name -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="First Name *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Juan"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Last Name -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Last Name *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etLastName"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Dela Cruz"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Username -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Username *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="juandelacruz"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Email -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Email *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="juan@email.com"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Phone -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Phone Number *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="09XX-XXX-XXXX"
+            android:inputType="phone"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Password -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Password *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="At least 6 characters"
+            android:inputType="textPassword"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Confirm Password -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Confirm Password *" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Repeat password"
+            android:inputType="textPassword"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Validation result TextView -->
+        <TextView
+            android:id="@+id/tvValidation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Computation: character count -->
+        <TextView
+            android:id="@+id/tvCharCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password strength: —"
+            android:textColor="@color/muted"
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="CREATE ACCOUNT"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvGoLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? Sign In"
+            android:textColor="@color/yellow"
+            android:gravity="center"
+            android:padding="12dp"/>
+
+    </LinearLayout>
+</ScrollView>

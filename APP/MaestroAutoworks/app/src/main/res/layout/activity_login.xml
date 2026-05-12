@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LoginActivity: EditText PasswordType, TextColor, Button, Toast -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MAESTRO AUTOWORKS"
+            android:textColor="@color/yellow"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="32dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign In to Your Account"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Role Selector -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login as"
+            android:textColor="@color/muted"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/roleToggleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:orientation="horizontal"
+            android:background="@color/black_card"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/btnRoleCustomer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Customer"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/btnRoleAdmin"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Admin"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:backgroundTint="@color/black_card"
+                android:textColor="@color/muted"/>
+
+        </LinearLayout>
+
+        <!-- Username -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Username" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Enter your username"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Password — inputType="textPassword" -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Password" android:textColor="@color/muted" android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Enter your password"
+            android:inputType="textPassword"
+            android:textColor="@color/yellow"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- TextColor toggle demo -->
+        <TextView
+            android:id="@+id/tvPasswordInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password text color: YELLOW (secure mode)"
+            android:textColor="@color/yellow"
+            android:textSize="11sp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="SIGN IN"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvGoRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? Sign Up"
+            android:textColor="@color/yellow"
+            android:gravity="center"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="← Back to Home"
+            android:textColor="@color/muted"
+            android:gravity="center"
+            android:padding="12dp"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp"
+            android:gravity="center_vertical">
+
+            <Button android:id="@+id/btnAdminSvcBack"
+                android:layout_width="wrap_content" android:layout_height="40dp"
+                android:text="← Back" android:backgroundTint="@color/black_card"
+                android:textColor="@color/white" android:layout_marginEnd="12dp"/>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="ADMIN · SERVICES"
+                    android:textColor="@color/yellow" android:textSize="10sp" android:letterSpacing="0.15"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Manage Services"
+                    android:textColor="@color/white" android:textSize="18sp" android:textStyle="bold"/>
+            </LinearLayout>
+
+            <Button android:id="@+id/btnAddService"
+                android:layout_width="wrap_content" android:layout_height="40dp"
+                android:text="+ Add" android:backgroundTint="@color/yellow"
+                android:textColor="@color/black" android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Stats Strip -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp">
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/black_card" android:padding="12dp" android:layout_marginEnd="4dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Available" android:textColor="@color/muted" android:textSize="11sp"/>
+                <TextView android:id="@+id/tvSvcAvailable"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="0" android:textColor="@color/success" android:textSize="24sp" android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/black_card" android:padding="12dp" android:layout_marginStart="4dp" android:layout_marginEnd="4dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Unavailable" android:textColor="@color/muted" android:textSize="11sp"/>
+                <TextView android:id="@+id/tvSvcUnavailable"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="0" android:textColor="@color/danger" android:textSize="24sp" android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/black_card" android:padding="12dp" android:layout_marginStart="4dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Total" android:textColor="@color/muted" android:textSize="11sp"/>
+                <TextView android:id="@+id/tvSvcTotal"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="0" android:textColor="#7B61FF" android:textSize="24sp" android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Service List -->
+        <ListView android:id="@+id/lvAdminServices"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:divider="@color/black" android:dividerHeight="8dp"/>
+
+    </LinearLayout>
+</ScrollView>

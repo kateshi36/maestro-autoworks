@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WebViewActivity: WebView -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:padding="8dp" android:background="@color/black_card">
+
+        <Button
+            android:id="@+id/btnWebBack"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="← Back"
+            android:textSize="12sp"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/yellow"/>
+
+        <TextView
+            android:id="@+id/tvWebTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Maestro Autoworks Website"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/btnWebRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="↺"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/yellow"/>
+    </LinearLayout>
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
