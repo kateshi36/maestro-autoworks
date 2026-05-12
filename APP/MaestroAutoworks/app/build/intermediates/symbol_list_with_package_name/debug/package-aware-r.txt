@@ -3207,7 +3207,6 @@ id btnSignIn
 id btnToggleService
 id btnViewReports
 id btnVisitWebsite
-id btnWeb
 id buttonPanel
 id cache_measures
 id callMeasure

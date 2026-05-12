@@ -45,7 +45,6 @@ id btnSignIn
 id btnToggleService
 id btnViewReports
 id btnVisitWebsite
-id btnWeb
 id cbBold
 id cbCarWash
 id cbInspection

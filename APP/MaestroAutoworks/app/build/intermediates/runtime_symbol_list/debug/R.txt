@@ -3206,7 +3206,6 @@ int id btnSignIn 0x7f08007b
 int id btnToggleService 0x7f08007c
 int id btnViewReports 0x7f08007d
 int id btnVisitWebsite 0x7f080276
-int id btnWeb 0x7f08007e
 int id buttonPanel 0x7f080081
 int id cache_measures 0x7f080082
 int id callMeasure 0x7f080083

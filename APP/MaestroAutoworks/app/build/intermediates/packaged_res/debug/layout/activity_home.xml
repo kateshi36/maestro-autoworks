@@ -83,14 +83,6 @@
             android:layout_marginBottom="12dp"/>
 
         <!-- WebView -->
-        <Button
-            android:id="@+id/btnWeb"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="🌐  Visit Website"
-            android:backgroundTint="@color/black_card"
-            android:textColor="@color/white"
-            android:layout_marginBottom="32dp"/>
 
         <!-- Logout -->
         <Button
