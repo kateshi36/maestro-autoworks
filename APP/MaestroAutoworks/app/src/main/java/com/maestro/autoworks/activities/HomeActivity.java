@@ -36,7 +36,6 @@ public class HomeActivity extends AppCompatActivity {
         Button btnServices     = findViewById(R.id.btnServices);
         Button btnSearch       = findViewById(R.id.btnSearch);
         Button btnAbout        = findViewById(R.id.btnAbout);
-        Button btnWeb          = findViewById(R.id.btnWeb);
         Button btnLogout       = findViewById(R.id.btnLogout);
 
         // Intent: BookActivity
