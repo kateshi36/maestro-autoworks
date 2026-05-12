@@ -60,8 +60,6 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, AboutActivity.class)));
 
         // Intent: WebViewActivity
-        btnWeb.setOnClickListener(v ->
-            startActivity(new Intent(this, WebViewActivity.class)));
 
         // Logout
         btnLogout.setOnClickListener(v -> {

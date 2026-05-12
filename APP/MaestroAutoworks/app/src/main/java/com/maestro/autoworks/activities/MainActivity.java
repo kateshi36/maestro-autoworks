@@ -67,14 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // ── Visit Website ─────────────────────────────────────────────────
-        if (btnVisitWebsite != null) {
-            btnVisitWebsite.setOnClickListener(v -> {
-                Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra(WebViewActivity.EXTRA_URL, WEBSITE_URL);
-                intent.putExtra(WebViewActivity.EXTRA_TITLE, "Maestro Autoworks Website");
-                startActivity(intent);
-            });
-        }
+
     }
 
     /** Called by the Sign Up FREE button in the CTA banner (onClick="onClickRegister"). */

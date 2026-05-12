@@ -3207,8 +3207,6 @@ int id btnToggleService 0x7f08007c
 int id btnViewReports 0x7f08007d
 int id btnVisitWebsite 0x7f080276
 int id btnWeb 0x7f08007e
-int id btnWebBack 0x7f08007f
-int id btnWebRefresh 0x7f080080
 int id buttonPanel 0x7f080081
 int id cache_measures 0x7f080082
 int id callMeasure 0x7f080083
@@ -3688,7 +3686,6 @@ int id tvSvcUnavailable 0x7f080258
 int id tvTodayCount 0x7f080259
 int id tvTotal 0x7f08025a
 int id tvValidation 0x7f08025b
-int id tvWebTitle 0x7f08025c
 int id tvWelcome 0x7f08025d
 int id unchecked 0x7f08025e
 int id uniform 0x7f08025f
@@ -3704,8 +3701,6 @@ int id view_tree_saved_state_registry_owner 0x7f080268
 int id view_tree_view_model_store_owner 0x7f080269
 int id visible 0x7f08026a
 int id visible_removing_fragment_view_tag 0x7f08026b
-int id webProgressBar 0x7f08027b
-int id webView 0x7f08026c
 int id west 0x7f08026d
 int id withText 0x7f08026e
 int id with_icon 0x7f08026f
@@ -3843,7 +3838,6 @@ int layout activity_main 0x7f0b0026
 int layout activity_register 0x7f0b0027
 int layout activity_search 0x7f0b0028
 int layout activity_services 0x7f0b0029
-int layout activity_webview 0x7f0b002a
 int layout custom_dialog 0x7f0b002b
 int layout design_bottom_navigation_item 0x7f0b002c
 int layout design_bottom_sheet_dialog 0x7f0b002d

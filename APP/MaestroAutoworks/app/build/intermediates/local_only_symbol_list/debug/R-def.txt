@@ -46,8 +46,6 @@ id btnToggleService
 id btnViewReports
 id btnVisitWebsite
 id btnWeb
-id btnWebBack
-id btnWebRefresh
 id cbBold
 id cbCarWash
 id cbInspection
@@ -154,10 +152,7 @@ id tvSvcUnavailable
 id tvTodayCount
 id tvTotal
 id tvValidation
-id tvWebTitle
 id tvWelcome
-id webProgressBar
-id webView
 layout activity_about
 layout activity_admin_appointments
 layout activity_admin_dashboard
@@ -172,7 +167,6 @@ layout activity_main
 layout activity_register
 layout activity_search
 layout activity_services
-layout activity_webview
 layout dialog_add_service
 layout dialog_admin_action
 layout list_item_admin_appointment

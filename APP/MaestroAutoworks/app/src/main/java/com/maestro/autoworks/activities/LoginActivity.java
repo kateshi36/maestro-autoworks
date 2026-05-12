@@ -103,14 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(this, RegisterActivity.class)));
 
         // ── Visit Website ─────────────────────────────────────────────────
-        if (btnVisitWebsite != null) {
-            btnVisitWebsite.setOnClickListener(v -> {
-                Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra(WebViewActivity.EXTRA_URL, WEBSITE_URL);
-                intent.putExtra(WebViewActivity.EXTRA_TITLE, "Maestro Autoworks Website");
-                startActivity(intent);
-            });
-        }
+
 
         // ── Back ──────────────────────────────────────────────────────────
         tvBack.setOnClickListener(v -> finish());
