@@ -92,6 +92,14 @@
 
         <!-- A2. Admin Appointments -->
         <activity
+            android:name="com.maestro.autoworks.activities.AdminReportsActivity"
+            android:exported="false"
+            android:label="Reports — Maestro Autoworks" />
+        <activity
+            android:name="com.maestro.autoworks.activities.AdminPmsActivity"
+            android:exported="false"
+            android:label="Repair Tracker — Maestro Autoworks" />
+        <activity
             android:name="com.maestro.autoworks.activities.AdminAppointmentsActivity"
             android:exported="false" />
 

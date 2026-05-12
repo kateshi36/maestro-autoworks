@@ -1356,6 +1356,9 @@ color background_material_dark
 color background_material_light
 color black
 color black_card
+color black_ele
+color black_input
+color blue
 color bright_foreground_disabled_material_dark
 color bright_foreground_disabled_material_light
 color bright_foreground_inverse_material_dark
@@ -2082,6 +2085,7 @@ color primary_text_default_material_dark
 color primary_text_default_material_light
 color primary_text_disabled_material_dark
 color primary_text_disabled_material_light
+color purple
 color ripple_material_dark
 color ripple_material_light
 color secondary_text_default_material_dark
@@ -3186,19 +3190,23 @@ id btnAppointments
 id btnBook
 id btnBookNow
 id btnEditService
+id btnExploreServices
 id btnFilter
 id btnLogin
 id btnLogout
 id btnManageAppointments
 id btnManageServices
+id btnPmsBack
 id btnRegister
-id btnRoleAdmin
-id btnRoleCustomer
+id btnRepairTracker
+id btnReportsBack
 id btnSearch
 id btnSearchGo
 id btnServices
 id btnSignIn
 id btnToggleService
+id btnViewReports
+id btnVisitWebsite
 id btnWeb
 id btnWebBack
 id btnWebRefresh
@@ -3231,6 +3239,8 @@ id clip_vertical
 id clockwise
 id closest
 id collapseActionView
+id completionBarBg
+id completionBarFill
 id compress
 id confirm_button
 id constraint
@@ -3247,6 +3257,7 @@ id currentState
 id custom
 id customPanel
 id cut
+id dailyActivityContainer
 id date_picker_actions
 id decelerate
 id decelerateAndComplete
@@ -3355,6 +3366,7 @@ id jumpToEnd
 id jumpToStart
 id labeled
 id layout
+id layoutAdminNotice
 id layoutRoot
 id layoutTimeSlot
 id left
@@ -3481,6 +3493,8 @@ id pathRelative
 id peekHeight
 id percent
 id pin
+id pmsJobsContainer
+id pmsSummaryStats
 id position
 id postLayout
 id pressed
@@ -3505,9 +3519,14 @@ id right
 id rightToLeft
 id right_icon
 id right_side
-id roleToggleLayout
 id rounded
 id row_index_key
+id rptCancelled
+id rptCompleted
+id rptConfirmed
+id rptDeclined
+id rptPending
+id rptTotal
 id save_non_transition_alpha
 id save_overlay_view
 id sawtooth
@@ -3577,6 +3596,8 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
+id tabAdmin
+id tabCustomer
 id tabMode
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
@@ -3614,6 +3635,7 @@ id title_template
 id toggle
 id top
 id topPanel
+id topServicesContainer
 id touch_outside
 id transitionToEnd
 id transitionToStart
@@ -3630,6 +3652,7 @@ id tvAdminApptPrice
 id tvAdminApptService
 id tvAdminApptStatus
 id tvAdminName
+id tvAdminTabLabel
 id tvApptCount
 id tvApptDate
 id tvApptEmpty
@@ -3638,6 +3661,7 @@ id tvApptService
 id tvApptStatus
 id tvBack
 id tvCharCount
+id tvCompletionRate
 id tvDialogMessage
 id tvEmpty
 id tvGoLogin
@@ -3653,6 +3677,7 @@ id tvServiceDesc
 id tvServiceDuration
 id tvServiceName
 id tvServicePrice
+id tvServicesCount
 id tvSvcAvailable
 id tvSvcCat
 id tvSvcDur
@@ -3680,6 +3705,7 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
+id webProgressBar
 id webView
 id west
 id withText
@@ -3807,6 +3833,8 @@ layout abc_tooltip
 layout activity_about
 layout activity_admin_appointments
 layout activity_admin_dashboard
+layout activity_admin_pms
+layout activity_admin_reports
 layout activity_admin_services
 layout activity_appointments
 layout activity_book

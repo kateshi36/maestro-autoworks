@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-60:12
-INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-60:12
-INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-60:12
-INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-60:12
+ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:2:1-66:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\ilard\.gradle\caches\transforms-3\99dc24b8086e9e02f60cbc0643cdc897\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\ilard\.gradle\caches\transforms-3\1f371f754bd6786f9a76f8e2fd18482b\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\ilard\.gradle\caches\transforms-3\6bb17d2c54c905aa7b0c5b5bfe3537f3\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -58,8 +58,8 @@ ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\A
 	android:name
 		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:4:22-64
 application
-ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:6:5-59:19
-INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:6:5-59:19
+ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:6:5-65:19
+INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:6:5-65:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\ilard\.gradle\caches\transforms-3\99dc24b8086e9e02f60cbc0643cdc897\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\ilard\.gradle\caches\transforms-3\99dc24b8086e9e02f60cbc0643cdc897\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\ilard\.gradle\caches\transforms-3\1f371f754bd6786f9a76f8e2fd18482b\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -168,18 +168,34 @@ ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\A
 		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:51:69-93
 	android:name
 		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:51:19-68
+activity#com.maestro.autoworks.activities.AdminReportsActivity
+ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:54:9-56:39
+	android:label
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:55:13-56
+	android:exported
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:56:13-37
+	android:name
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:54:19-66
+activity#com.maestro.autoworks.activities.AdminPmsActivity
+ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:57:9-59:39
+	android:label
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:58:13-63
+	android:exported
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:59:13-37
+	android:name
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:57:19-62
 activity#com.maestro.autoworks.activities.AdminAppointmentsActivity
-ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:54:9-98
+ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:60:9-98
 	android:exported
-		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:54:72-96
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:60:72-96
 	android:name
-		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:54:19-71
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:60:19-71
 activity#com.maestro.autoworks.activities.AdminServicesActivity
-ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:57:9-94
+ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:63:9-94
 	android:exported
-		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:57:68-92
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:63:68-92
 	android:name
-		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:57:19-67
+		ADDED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml:63:19-67
 uses-sdk
 INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\xampp\htdocs\Maestro-Autoworks\APP\MaestroAutoworks\app\src\main\AndroidManifest.xml

@@ -136,6 +136,18 @@
             android:backgroundTint="@color/yellow" android:textColor="@color/black"
             android:textStyle="bold" android:layout_marginBottom="8dp"/>
 
+        <Button android:id="@+id/btnViewReports"
+            android:layout_width="match_parent" android:layout_height="50dp"
+            android:text="📊 Reports" android:backgroundTint="@color/black_ele"
+            android:textColor="@color/yellow" android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Button android:id="@+id/btnRepairTracker"
+            android:layout_width="match_parent" android:layout_height="50dp"
+            android:text="🔧 Repair Tracker" android:backgroundTint="@color/black_ele"
+            android:textColor="@color/yellow" android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
         <Button android:id="@+id/btnManageServices"
             android:layout_width="match_parent" android:layout_height="50dp"
             android:text="🔧  Manage Services"
