@@ -17,6 +17,20 @@
     <string name="app_name">Maestro Autoworks</string>
     <string name="shop_url">https://www.maestroautoworks.ph</string>
     <string name="tagline">Expert Auto Repair in Metro Manila</string>
+    <style name="OtpBox">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@color/black_card</item>
+        <item name="android:textColorHint">@color/muted</item>
+    </style>
     <style name="Theme.MaestroAutoworks" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/yellow</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

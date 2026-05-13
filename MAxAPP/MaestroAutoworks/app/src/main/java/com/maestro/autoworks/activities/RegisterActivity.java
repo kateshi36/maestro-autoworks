@@ -37,51 +37,41 @@ import java.util.Locale;
 import java.util.Random;
 
 /**
- * RegisterActivity — 4-step registration with license verification.
+ * RegisterActivity — 8-step registration with license verification.
  *
  * Step 1 — Terms & CAPTCHA
- *   • User accepts terms of service checkbox
- *   • Solves a simple math CAPTCHA (e.g. "What is 7 + 3?")
- *
- * Step 2 — License Gate
- *   • "Do you have a valid driver's license?" Yes / No
- *   • "No" → blocked with a get-a-license-first message (cannot proceed)
- *   • "Yes" → continue to Step 3
- *
- * Step 3 — License Details
- *   • Driver's license number + expiry date
- *   • Optional conductor's license number + expiry date
- *
+ * Step 2 — License Gate (do you have a valid DL?)
+ * Step 3 — License Details (DL number, expiry, optional Conductor's)
  * Step 4 — License Photo + OCR cross-check
- *   • Camera capture or gallery pick of the physical license
- *   • OCR reads the license number from the photo
- *   • If OCR result does not contain the typed number → mismatch alert,
- *     user must retake or re-enter (loops back)
- *   • On match → account info form (name, email, password) → save
+ * Step 5 — Personal Information (name, username, birthdate, gender)
+ * Step 6 — Contact Information (email + confirm, phone)
+ * Step 7 — Review & Confirm (summary card)
+ * Step 8 — Password + Create Account
  */
 public class RegisterActivity extends AppCompatActivity {
 
     // ── Step containers ───────────────────────────────────────────────────────
-    private LinearLayout layoutStep1, layoutStep2, layoutStep3, layoutStep4, layoutStep5;
+    private LinearLayout layoutStep1, layoutStep2, layoutStep3,
+                         layoutStep4, layoutStep5, layoutStep6, layoutStep7, layoutStep8;
 
     // ── Step 1: Terms & CAPTCHA ───────────────────────────────────────────────
     private CheckBox cbTerms;
     private TextView tvCaptchaQuestion, tvCaptchaError;
     private EditText etCaptchaAnswer;
     private Button   btnStep1Next;
-    private int captchaAnswer; // correct answer
+    private int captchaAnswer;
 
     // ── Step 2: License Gate ──────────────────────────────────────────────────
-    private RadioGroup  rgHasLicense;
+    private RadioGroup   rgHasLicense;
     private LinearLayout layoutBlocked;
-    private Button   btnStep2Next;
+    private Button       btnStep2Next;
 
     // ── Step 3: License Details ───────────────────────────────────────────────
-    private EditText etDriversLicNo, etDriversExpiry;
-    private CheckBox cbHasConductors;
+    private EditText     etDriversLicNo, etDriversExpiry;
+    private CheckBox     cbHasConductors;
     private LinearLayout layoutConductors;
-    private EditText etConductorsLicNo, etConductorsExpiry;
-    private Button   btnStep3Next;
+    private EditText     etConductorsLicNo, etConductorsExpiry;
+    private Button       btnStep3Next;
 
     // ── Step 4: License Photo + OCR ───────────────────────────────────────────
     private ImageView    imgLicensePreview;
@@ -91,18 +81,27 @@ public class RegisterActivity extends AppCompatActivity {
     private Uri          licenseImageUri;
     private String       licenseImagePath;
 
-    // ── Step 5: Account Info (name, email, password) ──────────────────────────
-    private EditText etFirst, etLast, etUsername, etEmail, etPhone, etPass, etConfirm;
+    // ── Step 5: Personal Information ──────────────────────────────────────────
+    private EditText   etFirstName, etLastName, etUsername, etBirthdate;
+    private RadioGroup rgGender;
+
+    // ── Step 6: Contact Information ───────────────────────────────────────────
+    private EditText etEmail, etEmailConfirm, etPhone;
+    private TextView tvEmailValidation;
+
+    // ── Step 7: Review Card ──────────────────────────────────────────────────
+    private TextView tvSummaryName, tvSummaryUsername, tvSummaryBirthdate,
+                     tvSummaryGender, tvSummaryEmail, tvSummaryPhone, tvSummaryLicense;
+
+    // ── Step 8: Password ─────────────────────────────────────────────────────
+    private EditText etPassword, etConfirmPassword;
     private TextView tvValidation, tvCharCount;
     private Button   btnCreateAccount;
 
-    // ── Camera permission ─────────────────────────────────────────────────────
+    // ── Misc ──────────────────────────────────────────────────────────────────
     private static final int REQUEST_CAMERA_PERMISSION = 102;
-
-    // ── Step progress indicator ───────────────────────────────────────────────
     private TextView tvStepIndicator;
-
-    // ── DB ────────────────────────────────────────────────────────────────────
+    private static final int TOTAL_STEPS = 8;
     private DatabaseHelper db;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -156,6 +155,9 @@ public class RegisterActivity extends AppCompatActivity {
         layoutStep3 = findViewById(R.id.layoutStep3);
         layoutStep4 = findViewById(R.id.layoutStep4);
         layoutStep5 = findViewById(R.id.layoutStep5);
+        layoutStep6 = findViewById(R.id.layoutStep6);
+        layoutStep7 = findViewById(R.id.layoutStep7);
+        layoutStep8 = findViewById(R.id.layoutStep8);
 
         tvStepIndicator = findViewById(R.id.tvStepIndicator);
 
@@ -164,10 +166,13 @@ public class RegisterActivity extends AppCompatActivity {
         setupStep3();
         setupStep4();
         setupStep5();
+        setupStep6();
+        setupStep7();
+        setupStep8();
 
         showStep(1);
 
-        // Back to login
+        // "Already have an account?" link lives in Step 7
         TextView tvGoLogin = findViewById(R.id.tvGoLogin);
         if (tvGoLogin != null) {
             tvGoLogin.setOnClickListener(v ->
@@ -185,7 +190,10 @@ public class RegisterActivity extends AppCompatActivity {
         layoutStep3.setVisibility(step == 3 ? View.VISIBLE : View.GONE);
         layoutStep4.setVisibility(step == 4 ? View.VISIBLE : View.GONE);
         layoutStep5.setVisibility(step == 5 ? View.VISIBLE : View.GONE);
-        tvStepIndicator.setText("Step " + step + " of 5");
+        layoutStep6.setVisibility(step == 6 ? View.VISIBLE : View.GONE);
+        layoutStep7.setVisibility(step == 7 ? View.VISIBLE : View.GONE);
+        layoutStep8.setVisibility(step == 8 ? View.VISIBLE : View.GONE);
+        tvStepIndicator.setText("Step " + step + " of " + TOTAL_STEPS);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -193,11 +201,11 @@ public class RegisterActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupStep1() {
-        cbTerms          = findViewById(R.id.cbTerms);
+        cbTerms           = findViewById(R.id.cbTerms);
         tvCaptchaQuestion = findViewById(R.id.tvCaptchaQuestion);
-        tvCaptchaError   = findViewById(R.id.tvCaptchaError);
-        etCaptchaAnswer  = findViewById(R.id.etCaptchaAnswer);
-        btnStep1Next     = findViewById(R.id.btnStep1Next);
+        tvCaptchaError    = findViewById(R.id.tvCaptchaError);
+        etCaptchaAnswer   = findViewById(R.id.etCaptchaAnswer);
+        btnStep1Next      = findViewById(R.id.btnStep1Next);
 
         generateCaptcha();
 
@@ -224,7 +232,7 @@ public class RegisterActivity extends AppCompatActivity {
                 tvCaptchaError.setText("Incorrect. Try again.");
                 tvCaptchaError.setVisibility(View.VISIBLE);
                 etCaptchaAnswer.setText("");
-                generateCaptcha(); // new question on failure
+                generateCaptcha();
                 return;
             }
             tvCaptchaError.setVisibility(View.GONE);
@@ -232,17 +240,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    /** Generates a random addition/subtraction CAPTCHA and stores the correct answer. */
     private void generateCaptcha() {
         Random rng = new Random();
-        int a = rng.nextInt(10) + 1;  // 1–10
-        int b = rng.nextInt(10) + 1;  // 1–10
+        int a = rng.nextInt(10) + 1;
+        int b = rng.nextInt(10) + 1;
         boolean add = rng.nextBoolean();
         if (add) {
             captchaAnswer = a + b;
             tvCaptchaQuestion.setText("What is " + a + " + " + b + "?");
         } else {
-            // Ensure non-negative result
             if (a < b) { int tmp = a; a = b; b = tmp; }
             captchaAnswer = a - b;
             tvCaptchaQuestion.setText("What is " + a + " − " + b + "?");
@@ -254,11 +260,10 @@ public class RegisterActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupStep2() {
-        rgHasLicense   = findViewById(R.id.rgHasLicense);
-        layoutBlocked  = findViewById(R.id.layoutLicenseBlocked);
-        btnStep2Next   = findViewById(R.id.btnStep2Next);
+        rgHasLicense  = findViewById(R.id.rgHasLicense);
+        layoutBlocked = findViewById(R.id.layoutLicenseBlocked);
+        btnStep2Next  = findViewById(R.id.btnStep2Next);
 
-        // Show/hide the blocked message based on radio selection
         rgHasLicense.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbLicenseNo) {
                 layoutBlocked.setVisibility(View.VISIBLE);
@@ -277,7 +282,6 @@ public class RegisterActivity extends AppCompatActivity {
             showStep(3);
         });
 
-        // Back
         Button btnStep2Back = findViewById(R.id.btnStep2Back);
         if (btnStep2Back != null) btnStep2Back.setOnClickListener(v -> showStep(1));
     }
@@ -295,7 +299,6 @@ public class RegisterActivity extends AppCompatActivity {
         etConductorsExpiry= findViewById(R.id.etConductorsExpiry);
         btnStep3Next      = findViewById(R.id.btnStep3Next);
 
-        // Toggle conductor fields
         cbHasConductors.setOnCheckedChangeListener((btn, checked) ->
             layoutConductors.setVisibility(checked ? View.VISIBLE : View.GONE));
 
@@ -332,12 +335,12 @@ public class RegisterActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupStep4() {
-        imgLicensePreview       = findViewById(R.id.imgLicensePreview);
+        imgLicensePreview        = findViewById(R.id.imgLicensePreview);
         layoutLicensePlaceholder = findViewById(R.id.layoutLicensePlaceholder);
-        tvOcrResult             = findViewById(R.id.tvOcrResult);
-        tvOcrStatus             = findViewById(R.id.tvOcrStatus);
-        btnCaptureLicense       = findViewById(R.id.btnCaptureLicense);
-        btnStep4Next            = findViewById(R.id.btnStep4Next);
+        tvOcrResult              = findViewById(R.id.tvOcrResult);
+        tvOcrStatus              = findViewById(R.id.tvOcrStatus);
+        btnCaptureLicense        = findViewById(R.id.btnCaptureLicense);
+        btnStep4Next             = findViewById(R.id.btnStep4Next);
 
         btnCaptureLicense.setOnClickListener(v -> showPhotoPicker());
 
@@ -347,14 +350,13 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Check OCR status tag: "ok", "mismatch", "pending"
             Object tag = tvOcrStatus.getTag();
             if ("mismatch".equals(tag)) {
                 new AlertDialog.Builder(this)
                     .setTitle("License Number Mismatch")
                     .setMessage("The license number in your photo does not match what you entered in Step 3.\n\nPlease retake the photo or go back and correct the number.")
                     .setPositiveButton("Retake Photo", (d, w) -> showPhotoPicker())
-                    .setNegativeButton("Fix Number", (d, w) -> showStep(3))
+                    .setNegativeButton("Fix Number",   (d, w) -> showStep(3))
                     .show();
                 return;
             }
@@ -365,7 +367,6 @@ public class RegisterActivity extends AppCompatActivity {
         if (btnStep4Back != null) btnStep4Back.setOnClickListener(v -> showStep(3));
     }
 
-    /** Prompts the user to choose Camera or Gallery. */
     private void showPhotoPicker() {
         new AlertDialog.Builder(this)
             .setTitle("Add License Photo")
@@ -426,7 +427,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    /** Decodes and shows the license photo thumbnail. */
     private void showLicensePreview(Uri uri) {
         try {
             BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -456,48 +456,19 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * OCR simulation / cross-check.
-     *
-     * Android's built-in ML Kit Text Recognition (com.google.android.gms:play-services-mlkit-text-recognition)
-     * requires a Play Services dependency that may not be in this project's gradle yet.
-     * We implement a pragmatic approach:
-     *   1. Try to use ML Kit if available (via reflection, no hard dependency).
-     *   2. Fall back to a smart simulation that extracts digit-dash sequences
-     *      from the image filename/URI and cross-checks against the typed number.
-     *   3. In the fallback, we trust the user if the image is present but
-     *      flag obvious mismatches (empty typed number, etc.).
-     *
-     * To enable real OCR, add to app/build.gradle:
-     *   implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.0'
-     * and replace simulateOcr() with the actual ML Kit call.
-     */
     private void runOcr(Uri uri) {
-        // Show scanning indicator immediately on the UI thread
         tvOcrStatus.setTag("pending");
         tvOcrResult.setText("🔍 Reading license number…");
         tvOcrResult.setTextColor(getColor(R.color.yellow));
         tvOcrResult.setVisibility(View.VISIBLE);
         tvOcrStatus.setVisibility(View.VISIBLE);
 
-        // Brief background pause so the "scanning" message is visible,
-        // then cross-check the typed number on the UI thread.
-        // Real ML Kit OCR can be added later by including the dependency:
-        //   implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.0'
         new Thread(() -> {
             try { Thread.sleep(1200); } catch (InterruptedException ignored) {}
             runOnUiThread(this::simulateOcr);
         }).start();
     }
 
-    /**
-     * Fallback: no ML Kit. We still cross-check that:
-     *  - The user typed something in Step 3
-     *  - A photo was actually captured
-     * We give the benefit of the doubt and mark it "ok" so the flow
-     * isn't permanently blocked without real OCR. A message explains
-     * manual admin verification will happen.
-     */
     private void simulateOcr() {
         String typed = etDriversLicNo.getText().toString().trim();
         if (typed.isEmpty()) {
@@ -506,7 +477,6 @@ public class RegisterActivity extends AppCompatActivity {
             tvOcrStatus.setTag("mismatch");
             return;
         }
-        // Simulate reading — in production this is replaced by ML Kit result
         tvOcrResult.setText("✔  License number accepted.\n" +
                 "(Auto-verification requires ML Kit. Admin will manually confirm your license before your first booking.)");
         tvOcrResult.setTextColor(getColor(R.color.success));
@@ -514,15 +484,9 @@ public class RegisterActivity extends AppCompatActivity {
         btnStep4Next.setEnabled(true);
     }
 
-    /**
-     * Called after real ML Kit OCR returns text.
-     * Cross-checks the extracted text against the typed license number.
-     */
     private void handleOcrResult(String ocrText) {
-        String typed = etDriversLicNo.getText().toString().trim().toUpperCase();
-        String upper = ocrText.toUpperCase();
-
-        // Remove dashes/spaces for a loose match (e.g. "N01-23-456789" vs "N0123456789")
+        String typed     = etDriversLicNo.getText().toString().trim().toUpperCase();
+        String upper     = ocrText.toUpperCase();
         String typedClean = typed.replaceAll("[-\\s]", "");
         String ocrClean   = upper.replaceAll("[-\\s]", "");
 
@@ -551,30 +515,195 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    //  STEP 5 — Account Info
+    //  STEP 5 — Personal Information (name, username, birthdate, gender)
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupStep5() {
-        etFirst    = findViewById(R.id.etFirstName);
-        etLast     = findViewById(R.id.etLastName);
-        etUsername = findViewById(R.id.etUsername);
-        etEmail    = findViewById(R.id.etEmail);
-        etPhone    = findViewById(R.id.etPhone);
-        etPass     = findViewById(R.id.etPassword);
-        etConfirm  = findViewById(R.id.etConfirmPassword);
-        tvValidation = findViewById(R.id.tvValidation);
-        tvCharCount  = findViewById(R.id.tvCharCount);
-        btnCreateAccount = findViewById(R.id.btnRegister);
+        etFirstName = findViewById(R.id.etFirstName);
+        etLastName  = findViewById(R.id.etLastName);
+        etUsername  = findViewById(R.id.etUsername);
+        etBirthdate = findViewById(R.id.etBirthdate);
+        rgGender    = findViewById(R.id.rgGender);
+
+        Button btnStep5Next = findViewById(R.id.btnStep5Next);
+        Button btnStep5Back = findViewById(R.id.btnStep5Back);
+
+        if (btnStep5Back != null) btnStep5Back.setOnClickListener(v -> showStep(4));
+
+        if (btnStep5Next != null) btnStep5Next.setOnClickListener(v -> {
+            String firstName = etFirstName.getText().toString().trim();
+            String lastName  = etLastName.getText().toString().trim();
+            String username  = etUsername.getText().toString().trim();
+            String birthdate = etBirthdate.getText().toString().trim();
+            int    genderId  = rgGender.getCheckedRadioButtonId();
+
+            if (firstName.isEmpty()) {
+                Toast.makeText(this, "Please enter your first name.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (lastName.isEmpty()) {
+                Toast.makeText(this, "Please enter your last name.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (username.isEmpty()) {
+                Toast.makeText(this, "Please choose a username.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (username.length() < 3) {
+                Toast.makeText(this, "Username must be at least 3 characters.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (birthdate.isEmpty()) {
+                Toast.makeText(this, "Please enter your date of birth.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!birthdate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                Toast.makeText(this, "Birthdate must be in YYYY-MM-DD format.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (genderId == -1) {
+                Toast.makeText(this, "Please select your gender.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (db.usernameExists(username)) {
+                Toast.makeText(this, "Username already taken. Please choose another.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            showStep(6);
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  STEP 6 — Contact Information (email + confirm, phone)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void setupStep6() {
+        etEmail        = findViewById(R.id.etEmail);
+        etEmailConfirm = findViewById(R.id.etEmailConfirm);
+        etPhone        = findViewById(R.id.etPhone);
+        tvEmailValidation = findViewById(R.id.tvEmailValidation);
+
+        Button btnStep6Next = findViewById(R.id.btnStep6Next);
+        Button btnStep6Back = findViewById(R.id.btnStep6Back);
+
+        if (btnStep6Back != null) btnStep6Back.setOnClickListener(v -> showStep(5));
+
+        // Live email-match indicator
+        TextWatcher emailWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String e1 = etEmail.getText().toString();
+                String e2 = etEmailConfirm.getText().toString();
+                if (e2.isEmpty()) { tvEmailValidation.setText(""); return; }
+                if (e1.equals(e2)) {
+                    tvEmailValidation.setText("✔ Emails match");
+                    tvEmailValidation.setTextColor(getColor(R.color.success));
+                } else {
+                    tvEmailValidation.setText("✘ Emails do not match");
+                    tvEmailValidation.setTextColor(getColor(R.color.danger));
+                }
+            }
+        };
+        etEmail.addTextChangedListener(emailWatcher);
+        etEmailConfirm.addTextChangedListener(emailWatcher);
+
+        if (btnStep6Next != null) btnStep6Next.setOnClickListener(v -> {
+            String email   = etEmail.getText().toString().trim();
+            String confirm = etEmailConfirm.getText().toString().trim();
+
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter your email address.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (confirm.isEmpty()) {
+                Toast.makeText(this, "Please confirm your email address.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!email.equals(confirm)) {
+                Toast.makeText(this, "Email addresses do not match.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (db.emailExists(email)) {
+                Toast.makeText(this, "Email already registered. Try signing in instead.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            populateSummary();
+            showStep(7);
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  STEP 7 — Review & Confirm
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void setupStep7() {
+        tvSummaryName      = findViewById(R.id.tvSummaryName);
+        tvSummaryUsername  = findViewById(R.id.tvSummaryUsername);
+        tvSummaryBirthdate = findViewById(R.id.tvSummaryBirthdate);
+        tvSummaryGender    = findViewById(R.id.tvSummaryGender);
+        tvSummaryEmail     = findViewById(R.id.tvSummaryEmail);
+        tvSummaryPhone     = findViewById(R.id.tvSummaryPhone);
+        tvSummaryLicense   = findViewById(R.id.tvSummaryLicense);
+
+        Button btnStep7Back = findViewById(R.id.btnStep7Back);
+        Button btnStep7Next = findViewById(R.id.btnStep7Next);
+
+        if (btnStep7Back != null) btnStep7Back.setOnClickListener(v -> showStep(6));
+        if (btnStep7Next != null) btnStep7Next.setOnClickListener(v -> showStep(8));
+    }
+
+    /** Fills the review card with the values collected in steps 3–6. */
+    private void populateSummary() {
+        String first = etFirstName.getText().toString().trim();
+        String last  = etLastName.getText().toString().trim();
+        tvSummaryName.setText(first + " " + last);
+        tvSummaryUsername.setText(etUsername.getText().toString().trim());
+        tvSummaryBirthdate.setText(etBirthdate.getText().toString().trim());
+
+        String gender = "";
+        int genderId = rgGender.getCheckedRadioButtonId();
+        if      (genderId == R.id.rbGenderMale)   gender = "Male";
+        else if (genderId == R.id.rbGenderFemale) gender = "Female";
+        else if (genderId == R.id.rbGenderOther)  gender = "Prefer not to say";
+        tvSummaryGender.setText(gender.isEmpty() ? "—" : gender);
+
+        tvSummaryEmail.setText(etEmail.getText().toString().trim());
+        String phone = etPhone.getText().toString().trim();
+        tvSummaryPhone.setText(phone.isEmpty() ? "—" : phone);
+        tvSummaryLicense.setText(etDriversLicNo.getText().toString().trim());
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  STEP 8 — Password & Create Account
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void setupStep8() {
+        etPassword        = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        tvValidation      = findViewById(R.id.tvValidation);
+        tvCharCount       = findViewById(R.id.tvCharCount);
+        btnCreateAccount  = findViewById(R.id.btnRegister);
+
+        Button btnStep8Back = findViewById(R.id.btnStep8Back);
+        if (btnStep8Back != null) btnStep8Back.setOnClickListener(v -> showStep(7));
 
         // Password strength meter
-        etPass.addTextChangedListener(new TextWatcher() {
+        etPassword.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
             @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
             @Override
             public void afterTextChanged(Editable s) {
                 int len   = s.length();
                 int score = Math.min(len / 2, 5);
-                String bar = "█".repeat(score) + "░".repeat(5 - score);
+                String bar   = "█".repeat(score) + "░".repeat(5 - score);
                 String label; int color;
                 if (len == 0)      { label = "—";      color = R.color.muted; }
                 else if (len < 4)  { label = "Weak";   color = R.color.danger; }
@@ -585,13 +714,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // Live password match indicator
-        etConfirm.addTextChangedListener(new TextWatcher() {
+        // Live password-match indicator
+        etConfirmPassword.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
             @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
             @Override
             public void afterTextChanged(Editable s) {
-                String p1 = etPass.getText().toString();
+                String p1 = etPassword.getText().toString();
                 String p2 = s.toString();
                 if (p2.isEmpty()) { tvValidation.setText(""); return; }
                 if (p1.equals(p2)) {
@@ -605,23 +734,33 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         btnCreateAccount.setOnClickListener(v -> attemptRegister());
-
-        Button btnStep5Back = findViewById(R.id.btnStep5Back);
-        if (btnStep5Back != null) btnStep5Back.setOnClickListener(v -> showStep(4));
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Final validation & DB write
+    // ─────────────────────────────────────────────────────────────────────────
+
     private void attemptRegister() {
-        String firstName = etFirst.getText().toString().trim();
-        String lastName  = etLast.getText().toString().trim();
+        // Collect from all steps
+        String firstName = etFirstName.getText().toString().trim();
+        String lastName  = etLastName.getText().toString().trim();
         String username  = etUsername.getText().toString().trim();
+        String birthdate = etBirthdate.getText().toString().trim();
         String email     = etEmail.getText().toString().trim();
         String phone     = etPhone.getText().toString().trim();
-        String password  = etPass.getText().toString().trim();
-        String confirm   = etConfirm.getText().toString().trim();
+        String password  = etPassword.getText().toString().trim();
+        String confirm   = etConfirmPassword.getText().toString().trim();
 
-        if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty()
-                || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
+        // Resolve gender label from the selected radio button
+        String gender = "";
+        int genderId = rgGender.getCheckedRadioButtonId();
+        if      (genderId == R.id.rbGenderMale)   gender = "Male";
+        else if (genderId == R.id.rbGenderFemale) gender = "Female";
+        else if (genderId == R.id.rbGenderOther)  gender = "Prefer not to say";
+
+        // Password guards (step 7)
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Please enter a password.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (password.length() < 6) {
@@ -632,23 +771,26 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
+        // Final duplicate checks (race-condition safety — main checks happen per-step)
         if (db.usernameExists(username)) {
             Toast.makeText(this, "Username already taken.", Toast.LENGTH_SHORT).show();
+            showStep(5);
             return;
         }
         if (db.emailExists(email)) {
             Toast.makeText(this, "Email already registered.", Toast.LENGTH_SHORT).show();
+            showStep(6);
             return;
         }
 
+        // Build User and persist
         User user = new User();
         user.firstName               = firstName;
         user.lastName                = lastName;
         user.username                = username;
+        user.birthdate               = birthdate;
+        user.gender                  = gender;
         user.email                   = email;
         user.phone                   = phone;
         user.password                = password;

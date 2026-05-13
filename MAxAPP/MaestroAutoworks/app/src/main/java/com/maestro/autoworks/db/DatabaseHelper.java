@@ -19,7 +19,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "maestro_autoworks.db";
-    private static final int    DB_VERSION = 6;
+    private static final int    DB_VERSION = 7;
 
     // Tables
     public static final String TABLE_USERS        = "users";
@@ -34,6 +34,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_PHONE      = "phone";
     public static final String COL_PASSWORD   = "password";
     public static final String COL_ROLE       = "role";   // "customer" | "admin"
+    // Personal info fields (added in DB_VERSION 7)
+    public static final String COL_BIRTHDATE  = "birthdate";
+    public static final String COL_GENDER     = "gender";
     // License fields (added in DB_VERSION 6)
     public static final String COL_DL_NO      = "drivers_license_no";
     public static final String COL_DL_EXPIRY  = "drivers_license_expiry";
@@ -69,6 +72,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_PHONE      + " TEXT, " +
             COL_PASSWORD   + " TEXT NOT NULL, " +
             COL_ROLE       + " TEXT NOT NULL DEFAULT 'customer', " +
+            COL_BIRTHDATE + " TEXT, " +
+            COL_GENDER    + " TEXT, " +
             COL_DL_NO     + " TEXT, " +
             COL_DL_EXPIRY + " TEXT, " +
             COL_CL_NO     + " TEXT, " +
@@ -169,6 +174,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_CL_EXPIRY + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_LIC_IMAGE + " TEXT"); } catch (Exception ignored) {}
         }
+        if (oldVersion < 7) {
+            // v6 → v7: add personal info columns (birthdate, gender) to users table
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_BIRTHDATE + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_GENDER    + " TEXT"); } catch (Exception ignored) {}
+        }
     }
 
     // ── USER OPERATIONS ──────────────────────────────────────────────────────
@@ -183,6 +193,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_PHONE,      user.phone);
         cv.put(COL_PASSWORD,   user.password);
         cv.put(COL_ROLE,       "customer");
+        cv.put(COL_BIRTHDATE,  user.birthdate);
+        cv.put(COL_GENDER,     user.gender);
         cv.put(COL_DL_NO,     user.driversLicenseNo);
         cv.put(COL_DL_EXPIRY, user.driversLicenseExpiry);
         cv.put(COL_CL_NO,     user.conductorsLicenseNo);
@@ -193,11 +205,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public User loginUser(String username, String password) {
+    public User loginUser(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
+        // Allow login by email OR username
         Cursor c = db.query(TABLE_USERS, null,
-                COL_USERNAME + "=? AND " + COL_PASSWORD + "=?",
-                new String[]{username, password}, null, null, null);
+                "(" + COL_USERNAME + "=? OR " + COL_EMAIL + "=?) AND " + COL_PASSWORD + "=?",
+                new String[]{usernameOrEmail, usernameOrEmail, password}, null, null, null);
         User user = null;
         if (c.moveToFirst()) {
             user = cursorToUser(c);
@@ -228,6 +241,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (clExIdx >= 0) user.conductorsLicenseExpiry = c.getString(clExIdx);
         int licImgIdx = c.getColumnIndex(COL_LIC_IMAGE);
         if (licImgIdx >= 0) user.licenseImagePath = c.getString(licImgIdx);
+        // Personal info fields (DB_VERSION 7)
+        int bdIdx = c.getColumnIndex(COL_BIRTHDATE);
+        if (bdIdx >= 0) user.birthdate = c.getString(bdIdx);
+        int gnIdx = c.getColumnIndex(COL_GENDER);
+        if (gnIdx >= 0) user.gender = c.getString(gnIdx);
         return user;
     }
 

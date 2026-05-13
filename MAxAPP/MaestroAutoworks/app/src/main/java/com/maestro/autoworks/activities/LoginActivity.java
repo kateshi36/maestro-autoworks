@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in your email/username and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -176,19 +176,45 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Save session and route
-        session.saveSession(user.id, user.getFullName(), user.username, user.role);
+        // ── Step 10: Route to Identity Verification ──────────────────────
+        // Session is saved by IdentityVerificationActivity after OTP is confirmed.
+        String maskedContact = buildMaskedContact(user.phone, user.email);
 
-        if (user.isAdmin()) {
-            Toast.makeText(this, "Welcome, Admin " + user.firstName + "! \uD83D\uDD27", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, AdminDashboardActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "Welcome back, " + user.firstName + "! \uD83D\uDD27", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+        Intent intent = new Intent(this, IdentityVerificationActivity.class);
+        intent.putExtra(IdentityVerificationActivity.EXTRA_USER_ID,        user.id);
+        intent.putExtra(IdentityVerificationActivity.EXTRA_USERNAME,       user.username);
+        intent.putExtra(IdentityVerificationActivity.EXTRA_FULL_NAME,      user.getFullName());
+        intent.putExtra(IdentityVerificationActivity.EXTRA_ROLE,           user.role);
+        intent.putExtra(IdentityVerificationActivity.EXTRA_IS_ADMIN,       user.isAdmin());
+        intent.putExtra(IdentityVerificationActivity.EXTRA_FIRST_NAME,     user.firstName);
+        intent.putExtra(IdentityVerificationActivity.EXTRA_MASKED_CONTACT, maskedContact);
+        startActivity(intent);
+        finish(); // clear LoginActivity from back stack
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Mask the user's phone or email for display on the verify screen
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Returns a masked string such as "+63 9** ***1234" or "j***@gmail.com".
+     * Falls back to a generic label when both are absent.
+     */
+    private String buildMaskedContact(String phone, String email) {
+        if (phone != null && phone.length() >= 4) {
+            // Show last 4 digits of phone
+            String last4 = phone.substring(phone.length() - 4);
+            return "+63 9** ***" + last4;
         }
+        if (email != null && email.contains("@")) {
+            int atIdx = email.indexOf('@');
+            String local  = email.substring(0, atIdx);
+            String domain = email.substring(atIdx);
+            String maskedLocal = local.length() <= 1
+                    ? local
+                    : local.charAt(0) + "***";
+            return maskedLocal + domain;
+        }
+        return "your registered contact";
     }
 }
