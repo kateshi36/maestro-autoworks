@@ -49,28 +49,15 @@ public class MainActivity extends AppCompatActivity {
             tvSvcCount.setText(catalogCount + "+ Services Available");
         }
 
-        // Buttons
-        Button btnLogin        = findViewById(R.id.btnLogin);
-        Button btnRegister     = findViewById(R.id.btnRegister);
-        Button btnServices     = findViewById(R.id.btnExploreServices);
+        // ── Buttons ──────────────────────────────────────────────────────
+        Button btnBookNow    = findViewById(R.id.btnBookNow);    // hero button
+        Button btnBookNowCta = findViewById(R.id.btnBookNowCta); // CTA banner button
 
-        btnLogin.setOnClickListener(v ->
-            startActivity(new Intent(this, LoginActivity.class)));
+        // Both Book Now buttons go to Login so the user can authenticate first
+        android.view.View.OnClickListener bookNowClick = v ->
+            startActivity(new Intent(this, LoginActivity.class));
 
-        btnRegister.setOnClickListener(v ->
-            startActivity(new Intent(this, RegisterActivity.class)));
-
-        if (btnServices != null) {
-            btnServices.setOnClickListener(v ->
-                startActivity(new Intent(this, ServicesActivity.class)));
-        }
-
-        // ── Visit Website ─────────────────────────────────────────────────
-
-    }
-
-    /** Called by the Sign Up FREE button in the CTA banner (onClick="onClickRegister"). */
-    public void onClickRegister(android.view.View v) {
-        startActivity(new Intent(this, RegisterActivity.class));
+        if (btnBookNow    != null) btnBookNow.setOnClickListener(bookNowClick);
+        if (btnBookNowCta != null) btnBookNowCta.setOnClickListener(bookNowClick);
     }
 }

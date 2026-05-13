@@ -19,7 +19,178 @@
             android:textSize="22sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Step indicator -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VEHICLE DETAILS"
+            android:textColor="@color/yellow"
+            android:textSize="10sp"
+            android:letterSpacing="0.15"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- ── SPINNER: Car Model ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="CAR MODEL" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCarModel"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/black_card"
+            android:popupBackground="@color/black_card"
             android:layout_marginBottom="24dp"/>
+
+        <!-- ── SPINNER: Year Model ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="YEAR MODEL" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerYearModel"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/black_card"
+            android:popupBackground="@color/black_card"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── RADIO BUTTONS: Fuel Type ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="FUEL TYPE"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutFuelType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <RadioGroup android:id="@+id/rgFuelType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton android:id="@+id/rbGasoline"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="⛽  Gasoline"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+                <RadioButton android:id="@+id/rbDiesel"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="🛢️  Diesel"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- ── OR/CR SECTION ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="OR/CR VERIFICATION"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutOrCr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Do you have your OR/CR (Official Receipt / Certificate of Registration)?"
+                android:textColor="@color/white" android:textSize="13sp"
+                android:lineSpacingMultiplier="1.4" android:layout_marginBottom="12dp"/>
+
+            <RadioGroup android:id="@+id/rgOrCr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
+
+                <RadioButton android:id="@+id/rbOrCrYes"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="✅  Yes — I have my OR/CR"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+                <RadioButton android:id="@+id/rbOrCrNo"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="❌  No — I don't have it right now"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- OR/CR Camera Capture (shown only when rbOrCrYes is selected) -->
+        <LinearLayout
+            android:id="@+id/layoutOrCrCapture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Please take a clear photo of your OR/CR. Admin will verify that the car details match before confirming your booking."
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:lineSpacingMultiplier="1.5" android:layout_marginBottom="16dp"/>
+
+            <!-- Preview of captured image -->
+            <ImageView
+                android:id="@+id/imgOrCrPreview"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="#1A1A1A"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <!-- Placeholder shown before capture -->
+            <LinearLayout
+                android:id="@+id/layoutOrCrPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#1A1A1A"
+                android:layout_marginBottom="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="📄" android:textSize="36sp" android:layout_marginBottom="8dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="No photo yet" android:textColor="@color/muted" android:textSize="12sp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnCaptureOrCr"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="📷  CAPTURE OR/CR PHOTO"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <!-- Divider between vehicle details and service booking -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/black_card" android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SERVICE DETAILS"
+            android:textColor="@color/yellow"
+            android:textSize="10sp"
+            android:letterSpacing="0.15"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
 
         <!-- ── SPINNER: Choose Service ── -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

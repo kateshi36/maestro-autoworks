@@ -9,6 +9,15 @@
         android:targetSdkVersion="34" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- WRITE_EXTERNAL_STORAGE only needed on Android 9 and below -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <permission
         android:name="com.maestro.autoworks.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
@@ -108,6 +117,16 @@
             android:name="com.maestro.autoworks.activities.AdminServicesActivity"
             android:exported="false" />
 
+        <!-- FileProvider for OR/CR camera capture on Android 9 and below -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.maestro.autoworks.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="com.maestro.autoworks.androidx-startup"

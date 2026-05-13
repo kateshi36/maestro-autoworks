@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         layoutAdminNotice = findViewById(R.id.layoutAdminNotice);
         tvGoRegister      = findViewById(R.id.tvGoRegister);
         TextView tvBack         = findViewById(R.id.tvBack);
+        Button   btnVisitWebsite = findViewById(R.id.btnVisitWebsite);
 
         // ── Role tab click listeners ───────────────────────────────────────
         tabCustomer.setOnClickListener(v -> setRole(false));

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RegisterActivity: EditText, TextView, Button, Toast, Simple Computation & Validation -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,6 +10,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- ── Header ── -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,157 +19,647 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"/>
-
-        <!-- First Name -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="First Name *" android:textColor="@color/muted" android:textSize="12sp"
             android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etFirstName"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="Juan"
-            android:inputType="textPersonName"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Last Name -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Last Name *" android:textColor="@color/muted" android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etLastName"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="Dela Cruz"
-            android:inputType="textPersonName"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Username -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Username *" android:textColor="@color/muted" android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etUsername"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="juandelacruz"
-            android:inputType="text"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Email -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Email *" android:textColor="@color/muted" android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="juan@email.com"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Phone -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Phone Number *" android:textColor="@color/muted" android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etPhone"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="09XX-XXX-XXXX"
-            android:inputType="phone"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Password -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Password *" android:textColor="@color/muted" android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="At least 6 characters"
-            android:inputType="textPassword"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Confirm Password -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Confirm Password *" android:textColor="@color/muted" android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etConfirmPassword"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="Repeat password"
-            android:inputType="textPassword"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Validation result TextView -->
-        <TextView
-            android:id="@+id/tvValidation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="12sp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Computation: character count -->
-        <TextView
-            android:id="@+id/tvCharCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Password strength: —"
-            android:textColor="@color/muted"
-            android:textSize="12sp"
-            android:layout_marginBottom="24dp"/>
-
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="CREATE ACCOUNT"
-            android:backgroundTint="@color/yellow"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
 
         <TextView
-            android:id="@+id/tvGoLogin"
+            android:id="@+id/tvStepIndicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Already have an account? Sign In"
+            android:text="Step 1 of 5"
             android:textColor="@color/yellow"
-            android:gravity="center"
-            android:padding="12dp"/>
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ════════════════════════════════════════════
+             STEP 1 — Terms & CAPTCHA
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!-- Terms card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/black_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Terms of Service"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="By creating an account with Maestro Autoworks, you agree to provide accurate vehicle and identity information, present valid documents upon request, and abide by our appointment and cancellation policies. Falsified details may result in account suspension."
+                    android:textColor="@color/muted"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <CheckBox
+                    android:id="@+id/cbTerms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="I have read and agree to the Terms of Service"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:buttonTint="@color/yellow"/>
+            </LinearLayout>
+
+            <!-- CAPTCHA card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/black_card"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Human Verification"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvCaptchaQuestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="What is 4 + 3?"
+                    android:textColor="@color/yellow"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <EditText
+                    android:id="@+id/etCaptchaAnswer"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Your answer"
+                    android:inputType="number"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvCaptchaError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/danger"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnStep1Next"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="CONTINUE →"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- ════════════════════════════════════════════
+             STEP 2 — License Gate
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/black_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🪪  License Verification"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Maestro Autoworks requires a valid driver's license to book services. This helps us verify your identity and ensure the safety of all our customers."
+                    android:textColor="@color/muted"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Do you have a valid driver's license?"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <RadioGroup
+                    android:id="@+id/rgHasLicense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rbLicenseYes"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="✔  Yes, I have a valid driver's license"
+                        android:textColor="@color/white"
+                        android:buttonTint="@color/yellow"
+                        android:layout_marginBottom="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbLicenseNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="✘  No, I don't have one"
+                        android:textColor="@color/muted"
+                        android:buttonTint="@color/danger"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <!-- Blocked message — shown only when "No" is selected -->
+            <LinearLayout
+                android:id="@+id/layoutLicenseBlocked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#3A0000"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🚫  Registration Not Available"
+                    android:textColor="@color/danger"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="A valid driver's license is required to register with Maestro Autoworks.\n\nPlease obtain your driver's license from the Land Transportation Office (LTO) first, then return to complete your registration."
+                    android:textColor="@color/danger"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnStep2Back"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="← BACK"
+                    android:backgroundTint="@color/black_card"
+                    android:textColor="@color/muted"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnStep2Next"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="2"
+                    android:text="CONTINUE →"
+                    android:backgroundTint="@color/yellow"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ════════════════════════════════════════════
+             STEP 3 — License Details
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Driver's License Details"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Driver's license number -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Driver's License Number *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etDriversLicNo"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="e.g. N01-23-456789"
+                android:inputType="textCapCharacters"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Driver's license expiry -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Expiry Date *  (YYYY-MM-DD)"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etDriversExpiry"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="2027-06-30"
+                android:inputType="text"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Conductor's license toggle -->
+            <CheckBox
+                android:id="@+id/cbHasConductors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I also have a Conductor's License"
+                android:textColor="@color/white"
+                android:buttonTint="@color/yellow"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Conductor fields (hidden by default) -->
+            <LinearLayout
+                android:id="@+id/layoutConductors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/black_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Conductor's License Number *"
+                    android:textColor="@color/muted" android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etConductorsLicNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="e.g. C01-23-456789"
+                    android:inputType="textCapCharacters"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black"
+                    android:paddingStart="16dp" android:paddingEnd="16dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Conductor's License Expiry *  (YYYY-MM-DD)"
+                    android:textColor="@color/muted" android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etConductorsExpiry"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="2027-06-30"
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black"
+                    android:paddingStart="16dp" android:paddingEnd="16dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/btnStep3Back"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="← BACK"
+                    android:backgroundTint="@color/black_card"
+                    android:textColor="@color/muted"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnStep3Next"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="2"
+                    android:text="CONTINUE →"
+                    android:backgroundTint="@color/yellow"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ════════════════════════════════════════════
+             STEP 4 — License Photo + OCR
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="License Photo Verification"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take a clear photo of your driver's license front. Our system will read the license number and cross-check it with what you entered."
+                android:textColor="@color/muted"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Photo preview area -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/black_card"
+                android:layout_marginBottom="12dp">
+
+                <!-- Placeholder shown before photo is taken -->
+                <LinearLayout
+                    android:id="@+id/layoutLicensePlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🪪"
+                        android:textSize="48sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No photo yet"
+                        android:textColor="@color/muted"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <!-- Preview shown after photo is captured -->
+                <ImageView
+                    android:id="@+id/imgLicensePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btnCaptureLicense"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="📷  CAPTURE LICENSE PHOTO"
+                android:backgroundTint="@color/black_card"
+                android:textColor="@color/yellow"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- OCR result display -->
+            <TextView
+                android:id="@+id/tvOcrResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"
+                android:padding="12dp"
+                android:background="@color/black_card"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone"/>
+
+            <!-- Hidden tag holder for OCR state ("ok" / "mismatch" / "pending") -->
+            <TextView
+                android:id="@+id/tvOcrStatus"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btnStep4Back"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="← BACK"
+                    android:backgroundTint="@color/black_card"
+                    android:textColor="@color/muted"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnStep4Next"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="2"
+                    android:text="CONTINUE →"
+                    android:backgroundTint="@color/yellow"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ════════════════════════════════════════════
+             STEP 5 — Account Info
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account Details"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="First Name *" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etFirstName"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="Juan" android:inputType="textPersonName"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Last Name *" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etLastName"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="Dela Cruz" android:inputType="textPersonName"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Username *" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etUsername"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="juandelacruz" android:inputType="text"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Email *" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etEmail"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="juan@email.com" android:inputType="textEmailAddress"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Phone Number" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etPhone"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="09XX-XXX-XXXX" android:inputType="phone"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Password *" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etPassword"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="At least 6 characters" android:inputType="textPassword"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView android:id="@+id/tvCharCount"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Strength: —"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Confirm Password *" android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent" android:layout_height="56dp"
+                android:hint="Repeat password" android:inputType="textPassword"
+                android:textColor="@color/white" android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView android:id="@+id/tvValidation"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="" android:textSize="12sp"
+                android:layout_marginBottom="24dp"/>
+
+            <Button
+                android:id="@+id/btnStep5Back"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="← BACK"
+                android:backgroundTint="@color/black_card"
+                android:textColor="@color/muted"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="CREATE ACCOUNT"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvGoLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? Sign In"
+                android:textColor="@color/yellow"
+                android:gravity="center"
+                android:padding="12dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

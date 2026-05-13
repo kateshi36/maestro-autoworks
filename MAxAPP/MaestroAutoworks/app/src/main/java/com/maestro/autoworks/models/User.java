@@ -10,11 +10,13 @@ public class User {
     public String password;
     public String role; // "customer" | "admin"
 
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
+    // ── License fields (added in registration Step 3) ──
+    public String driversLicenseNo;     // e.g. "N01-23-456789"
+    public String driversLicenseExpiry; // "YYYY-MM-DD"
+    public String conductorsLicenseNo;  // null if not a conductor
+    public String conductorsLicenseExpiry;
+    public String licenseImagePath;     // content URI of captured license photo
 
-    public boolean isAdmin() {
-        return "admin".equals(role);
-    }
+    public String getFullName() { return firstName + " " + lastName; }
+    public boolean isAdmin()    { return "admin".equals(role); }
 }

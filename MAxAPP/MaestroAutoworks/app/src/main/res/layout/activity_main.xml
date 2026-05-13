@@ -39,38 +39,17 @@
 
             <!-- CTA Buttons -->
             <Button
-                android:id="@+id/btnRegister"
+                android:id="@+id/btnBookNow"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="CREATE FREE ACCOUNT"
+                android:text="BOOK NOW"
                 android:backgroundTint="@color/yellow"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="10dp"/>
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:layout_marginBottom="32dp">
-                <Button
-                    android:id="@+id/btnLogin"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:text="SIGN IN"
-                    android:backgroundTint="@color/black_card"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_marginEnd="8dp"/>
-                <Button
-                    android:id="@+id/btnExploreServices"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:text="VIEW SERVICES"
-                    android:backgroundTint="@color/black_card"
-                    android:textColor="@color/muted"
-                    android:textStyle="bold"/>
-            </LinearLayout>
+
 
             <!-- Visit Website Button -->
 
@@ -238,14 +217,14 @@
                 android:textStyle="bold" android:lineSpacingMultiplier="1.1"
                 android:layout_marginBottom="8dp"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Create a free account and manage all your service bookings in one place."
+                android:text="Skip the queue — book your service slot online in under 2 minutes."
                 android:textColor="#99000000" android:textSize="13sp"
                 android:lineSpacingMultiplier="1.5" android:layout_marginBottom="20dp"/>
             <Button android:layout_width="match_parent" android:layout_height="48dp"
-                android:text="SIGN UP FREE"
+                android:id="@+id/btnBookNowCta"
+                android:text="BOOK NOW"
                 android:backgroundTint="@color/black" android:textColor="@color/yellow"
-                android:textStyle="bold"
-                android:onClick="onClickRegister"/>
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <!-- ═══ CONTACT SECTION ═══ -->

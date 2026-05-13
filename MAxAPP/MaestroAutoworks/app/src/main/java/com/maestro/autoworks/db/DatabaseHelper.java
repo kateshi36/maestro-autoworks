@@ -19,7 +19,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "maestro_autoworks.db";
-    private static final int    DB_VERSION = 3;
+    private static final int    DB_VERSION = 6;
 
     // Tables
     public static final String TABLE_USERS        = "users";
@@ -34,6 +34,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_PHONE      = "phone";
     public static final String COL_PASSWORD   = "password";
     public static final String COL_ROLE       = "role";   // "customer" | "admin"
+    // License fields (added in DB_VERSION 6)
+    public static final String COL_DL_NO      = "drivers_license_no";
+    public static final String COL_DL_EXPIRY  = "drivers_license_expiry";
+    public static final String COL_CL_NO      = "conductors_license_no";
+    public static final String COL_CL_EXPIRY  = "conductors_license_expiry";
+    public static final String COL_LIC_IMAGE  = "license_image_path";
 
     // Appointments columns
     public static final String COL_APPT_ID         = "id";
@@ -45,7 +51,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_APPT_TOTAL      = "total_price";
     public static final String COL_APPT_STATUS     = "status";
     public static final String COL_APPT_RATING     = "rating";
-    public static final String COL_APPT_ADMIN_NOTE = "admin_notes";
+    public static final String COL_APPT_ADMIN_NOTE  = "admin_notes";
+    // 25002500 New columns added in DB_VERSION 4 25002500
+    public static final String COL_APPT_CAR_MODEL   = "car_model";
+    public static final String COL_APPT_YEAR_MODEL  = "year_model";
+    public static final String COL_APPT_FUEL_TYPE   = "fuel_type";
+    public static final String COL_APPT_ORCR_STATUS = "orcr_status";
+    public static final String COL_APPT_ORCR_IMAGE  = "orcr_image_path";
 
     private static final String CREATE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
@@ -56,7 +68,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_EMAIL      + " TEXT UNIQUE NOT NULL, " +
             COL_PHONE      + " TEXT, " +
             COL_PASSWORD   + " TEXT NOT NULL, " +
-            COL_ROLE       + " TEXT NOT NULL DEFAULT 'customer')";
+            COL_ROLE       + " TEXT NOT NULL DEFAULT 'customer', " +
+            COL_DL_NO     + " TEXT, " +
+            COL_DL_EXPIRY + " TEXT, " +
+            COL_CL_NO     + " TEXT, " +
+            COL_CL_EXPIRY + " TEXT, " +
+            COL_LIC_IMAGE + " TEXT)";
 
     private static final String CREATE_APPOINTMENTS =
             "CREATE TABLE " + TABLE_APPOINTMENTS + " (" +
@@ -69,7 +86,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_APPT_TOTAL      + " REAL, " +
             COL_APPT_STATUS     + " TEXT DEFAULT 'pending', " +
             COL_APPT_ADMIN_NOTE + " TEXT, " +
-            COL_APPT_RATING     + " INTEGER DEFAULT 0)";
+            COL_APPT_RATING     + " INTEGER DEFAULT 0, " +
+            COL_APPT_CAR_MODEL   + " TEXT, " +
+            COL_APPT_YEAR_MODEL  + " TEXT, " +
+            COL_APPT_FUEL_TYPE   + " TEXT, " +
+            COL_APPT_ORCR_STATUS + " TEXT, " +
+            COL_APPT_ORCR_IMAGE  + " TEXT)";
 
     // Repair tasks (PMS)
     public static final String TABLE_REPAIR_TASKS  = "repair_tasks";
@@ -104,21 +126,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " (first_name,last_name,username,email,password,role) VALUES " +
                 "('Maestro','Admin','admin','admin@maestroautoworks.ph','Admin@1234','admin')");
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
-            // Add role column if upgrading from v1
+            // v1 → v2: add role column and admin_notes
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_ROLE + " TEXT NOT NULL DEFAULT 'customer'"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ADMIN_NOTE + " TEXT"); } catch (Exception ignored) {}
-            // Ensure admin account exists
             db.execSQL("INSERT OR IGNORE INTO " + TABLE_USERS +
                     " (first_name,last_name,username,email,password,role) VALUES " +
                     "('Maestro','Admin','admin','admin@maestroautoworks.ph','Admin@1234','admin')");
         }
         if (oldVersion < 3) {
+            // v2 → v3: add repair_tasks table
             db.execSQL(CREATE_REPAIR_TASKS);
             db.execSQL("UPDATE " + TABLE_USERS + " SET password='Admin@1234' WHERE username='admin' AND role='admin'");
+        }
+        if (oldVersion < 4) {
+            // v3 → v4: add car detail + OR/CR columns to appointments
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_CAR_MODEL   + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_YEAR_MODEL  + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_FUEL_TYPE   + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ORCR_STATUS + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ORCR_IMAGE  + " TEXT"); } catch (Exception ignored) {}
+        }
+        if (oldVersion < 5) {
+            // v4 → v5: no new schema changes — columns were added in v4.
+            // This block exists so any device still on v4 triggers a clean
+            // onUpgrade pass without recreating the DB.
+            // Safe no-op: re-run the ALTER TABLEs with try/catch so that
+            // devices which somehow missed v4 still get the columns.
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_CAR_MODEL   + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_YEAR_MODEL  + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_FUEL_TYPE   + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ORCR_STATUS + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ORCR_IMAGE  + " TEXT"); } catch (Exception ignored) {}
+        }
+        if (oldVersion < 6) {
+            // v5 → v6: add license columns to users table
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_DL_NO     + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_DL_EXPIRY + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_CL_NO     + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_CL_EXPIRY + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_LIC_IMAGE + " TEXT"); } catch (Exception ignored) {}
         }
     }
 
@@ -134,6 +183,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_PHONE,      user.phone);
         cv.put(COL_PASSWORD,   user.password);
         cv.put(COL_ROLE,       "customer");
+        cv.put(COL_DL_NO,     user.driversLicenseNo);
+        cv.put(COL_DL_EXPIRY, user.driversLicenseExpiry);
+        cv.put(COL_CL_NO,     user.conductorsLicenseNo);
+        cv.put(COL_CL_EXPIRY, user.conductorsLicenseExpiry);
+        cv.put(COL_LIC_IMAGE, user.licenseImagePath);
         long id = db.insert(TABLE_USERS, null, cv);
         db.close();
         return id;
@@ -163,6 +217,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         user.phone     = c.getString(c.getColumnIndexOrThrow(COL_PHONE));
         int roleIdx = c.getColumnIndex(COL_ROLE);
         user.role = (roleIdx >= 0) ? c.getString(roleIdx) : "customer";
+        // License fields (DB_VERSION 6)
+        int dlNoIdx = c.getColumnIndex(COL_DL_NO);
+        if (dlNoIdx >= 0) user.driversLicenseNo = c.getString(dlNoIdx);
+        int dlExIdx = c.getColumnIndex(COL_DL_EXPIRY);
+        if (dlExIdx >= 0) user.driversLicenseExpiry = c.getString(dlExIdx);
+        int clNoIdx = c.getColumnIndex(COL_CL_NO);
+        if (clNoIdx >= 0) user.conductorsLicenseNo = c.getString(clNoIdx);
+        int clExIdx = c.getColumnIndex(COL_CL_EXPIRY);
+        if (clExIdx >= 0) user.conductorsLicenseExpiry = c.getString(clExIdx);
+        int licImgIdx = c.getColumnIndex(COL_LIC_IMAGE);
+        if (licImgIdx >= 0) user.licenseImagePath = c.getString(licImgIdx);
         return user;
     }
 
@@ -197,6 +262,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_APPT_TOTAL,   appt.totalPrice);
         cv.put(COL_APPT_STATUS,  appt.status);
         cv.put(COL_APPT_RATING,  appt.rating);
+        cv.put(COL_APPT_CAR_MODEL,   appt.carModel);
+        cv.put(COL_APPT_YEAR_MODEL,  appt.yearModel);
+        cv.put(COL_APPT_FUEL_TYPE,   appt.fuelType);
+        cv.put(COL_APPT_ORCR_STATUS, appt.orcrStatus);
+        cv.put(COL_APPT_ORCR_IMAGE,  appt.orcrImagePath);
         long id = db.insert(TABLE_APPOINTMENTS, null, cv);
         db.close();
         return id;
@@ -302,6 +372,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         a.rating      = c.getInt(c.getColumnIndexOrThrow(COL_APPT_RATING));
         int anIdx = c.getColumnIndex(COL_APPT_ADMIN_NOTE);
         if (anIdx >= 0) a.adminNote = c.getString(anIdx);
+        // ── New columns (DB_VERSION 5) — guarded so old cursors don't crash ──
+        int cmIdx = c.getColumnIndex(COL_APPT_CAR_MODEL);
+        if (cmIdx >= 0) a.carModel = c.getString(cmIdx);
+        int ymIdx = c.getColumnIndex(COL_APPT_YEAR_MODEL);
+        if (ymIdx >= 0) a.yearModel = c.getString(ymIdx);
+        int ftIdx = c.getColumnIndex(COL_APPT_FUEL_TYPE);
+        if (ftIdx >= 0) a.fuelType = c.getString(ftIdx);
+        int osIdx = c.getColumnIndex(COL_APPT_ORCR_STATUS);
+        if (osIdx >= 0) a.orcrStatus = c.getString(osIdx);
+        int oiIdx = c.getColumnIndex(COL_APPT_ORCR_IMAGE);
+        if (oiIdx >= 0) a.orcrImagePath = c.getString(oiIdx);
         return a;
     }
 
