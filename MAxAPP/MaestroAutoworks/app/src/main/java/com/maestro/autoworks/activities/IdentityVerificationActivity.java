@@ -108,38 +108,59 @@ public class IdentityVerificationActivity extends AppCompatActivity {
 
     private final PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks =
             new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-            onVerificationSuccess();
-        }
-        @Override
-        public void onVerificationFailed(@NonNull FirebaseException e) {
-            runOnUiThread(() -> {
-                String msg = e.getMessage() != null ? e.getMessage() : "Verification failed.";
-                Toast.makeText(IdentityVerificationActivity.this,
-                        "SMS error: " + msg, Toast.LENGTH_LONG).show();
-                tvTimer.setText("Tap Resend to try again.");
-                btnResend.setEnabled(true);
-                timerRunning = false;
-            });
-        }
-        @Override
-        public void onCodeSent(@NonNull String verificationId,
-                               @NonNull PhoneAuthProvider.ForceResendingToken token) {
-            mVerificationId = verificationId;
-            mResendToken    = token;
-            smsCodeSent     = true;
-            runOnUiThread(() -> {
-                tvSubtitle.setText("Enter the 6-digit code sent to:");
-                tvOtpHint.setVisibility(View.GONE);
-                startCountdown();
-                clearOtpBoxes();
-                showOtpLayout();
-                Toast.makeText(IdentityVerificationActivity.this,
-                        "OTP sent via SMS.", Toast.LENGTH_SHORT).show();
-            });
-        }
-    };
+                @Override
+                public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+                    onVerificationSuccess();
+                }
+                @Override
+                public void onVerificationFailed(@NonNull FirebaseException e) {
+                    runOnUiThread(() -> {
+                        String raw = e.getMessage() != null ? e.getMessage() : "Verification failed.";
+                        // Surface a user-friendly message for the most common Firebase error
+                        String friendly;
+                        if (raw.contains("format") || raw.contains("invalid") || raw.contains("INVALID_PHONE_NUMBER")) {
+                            friendly = "The phone number on your account is not in a supported format. Please use Email OTP instead.";
+                        } else if (raw.contains("TOO_LONG") || raw.contains("TOO_SHORT")) {
+                            friendly = "Phone number appears to be incomplete. Please use Email OTP instead.";
+                        } else if (raw.contains("QUOTA_EXCEEDED") || raw.contains("quota")) {
+                            friendly = "SMS quota exceeded. Please use Email OTP instead.";
+                        } else if (raw.contains("BLOCKED") || raw.contains("blocked")) {
+                            friendly = "SMS requests are temporarily blocked. Please use Email OTP instead.";
+                        } else {
+                            friendly = "SMS verification failed. Please use Email OTP instead.\n\nDetail: " + raw;
+                        }
+                        Toast.makeText(IdentityVerificationActivity.this,
+                                friendly, Toast.LENGTH_LONG).show();
+                        tvTimer.setText("Tap Resend to try again, or switch to Email OTP.");
+                        btnResend.setEnabled(true);
+                        timerRunning = false;
+                        // Auto-highlight the email tab as a hint if email is available
+                        if (email != null && !email.isEmpty() && tabEmail != null) {
+                            tabEmail.setAlpha(1f);
+                            tabEmail.animate().scaleX(1.05f).scaleY(1.05f)
+                                    .setDuration(200).withEndAction(() ->
+                                            tabEmail.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+                                    ).start();
+                        }
+                    });
+                }
+                @Override
+                public void onCodeSent(@NonNull String verificationId,
+                                       @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                    mVerificationId = verificationId;
+                    mResendToken    = token;
+                    smsCodeSent     = true;
+                    runOnUiThread(() -> {
+                        tvSubtitle.setText("Enter the 6-digit code sent to:");
+                        tvOtpHint.setVisibility(View.GONE);
+                        startCountdown();
+                        clearOtpBoxes();
+                        showOtpLayout();
+                        Toast.makeText(IdentityVerificationActivity.this,
+                                "OTP sent via SMS.", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            };
 
     // ─────────────────────────────────────────────────────────────────────────
     // onCreate
@@ -276,11 +297,27 @@ public class IdentityVerificationActivity extends AppCompatActivity {
             Toast.makeText(this, "No phone number on file. Please use Email OTP.", Toast.LENGTH_LONG).show();
             return;
         }
+
+        String e164 = toE164Philippines(phoneNumber);
+
+        // Validate: E.164 Philippine numbers must be +63 followed by exactly 10 digits
+        if (!e164.matches("\\+63[0-9]{10}")) {
+            Toast.makeText(this,
+                    "Your registered phone number (" + phoneNumber + ") is not a valid Philippine mobile number. " +
+                            "Please use Email OTP instead, or update your number in your profile.",
+                    Toast.LENGTH_LONG).show();
+            // Auto-switch to email if available
+            if (email != null && !email.isEmpty()) {
+                switchChannel(OtpChannel.EMAIL);
+            }
+            return;
+        }
+
         tvSubtitle.setText("Sending SMS code to:");
         btnResend.setEnabled(false);
 
         PhoneAuthOptions.Builder builder = PhoneAuthOptions.newBuilder(mAuth)
-                .setPhoneNumber(toE164Philippines(phoneNumber))
+                .setPhoneNumber(e164)
                 .setTimeout(60L, TimeUnit.SECONDS)
                 .setActivity(this)
                 .setCallbacks(mCallbacks);
@@ -289,13 +326,47 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         PhoneAuthProvider.verifyPhoneNumber(builder.build());
     }
 
+    /**
+     * Converts any Philippine phone number format to strict E.164 (+639XXXXXXXXX).
+     *
+     * Handles:
+     *   09171234567   → +639171234567
+     *   9171234567    → +639171234567   (10 digits, no leading 0)
+     *   639171234567  → +639171234567   (already has country code, no +)
+     *   +639171234567 → +639171234567   (already E.164)
+     *   +63 917 123 4567 → +639171234567  (spaces/dashes stripped)
+     *
+     * Returns empty string (not null) if the number cannot be normalised,
+     * so Firebase gives a clean "invalid format" error rather than a crash.
+     */
     private String toE164Philippines(String raw) {
-        if (raw == null) return "";
-        String d = raw.replaceAll("[^0-9+]", "");
-        if (d.startsWith("+"))  return d;
-        if (d.startsWith("63")) return "+" + d;
-        if (d.startsWith("0"))  return "+63" + d.substring(1);
-        return "+" + d;
+        if (raw == null || raw.isEmpty()) return "";
+
+        // Strip everything except digits and a leading +
+        String stripped = raw.trim().replaceAll("[^0-9+]", "");
+
+        // Already full E.164 — validate length (+63 + 10 digits = 13 chars)
+        if (stripped.startsWith("+")) {
+            return stripped.length() == 13 ? stripped : stripped; // pass through; Firebase will reject if wrong
+        }
+
+        // Has country code without +  (639XXXXXXXXX — 12 digits)
+        if (stripped.startsWith("63") && stripped.length() == 12) {
+            return "+" + stripped;
+        }
+
+        // Local format with leading 0  (09XXXXXXXXX — 11 digits)
+        if (stripped.startsWith("0") && stripped.length() == 11) {
+            return "+63" + stripped.substring(1);
+        }
+
+        // 10-digit format without leading 0  (9XXXXXXXXX)
+        if (!stripped.startsWith("0") && !stripped.startsWith("6") && stripped.length() == 10) {
+            return "+63" + stripped;
+        }
+
+        // Unrecognised — return as-is and let Firebase report the error
+        return stripped.isEmpty() ? "" : "+" + stripped;
     }
 
     // ─────────────────────────────────────────────────────────────────────────

@@ -16,9 +16,11 @@ import com.maestro.autoworks.db.SessionManager;
 import com.maestro.autoworks.models.User;
 
 /**
- * LoginActivity — Sign in screen.
+ * LoginActivity — Step 9: Initial login screen.
  * ─────────────────────────────────────────────────────────────────────────────
- * Features:
+ * The user enters their registered email address and password to sign in.
+ *
+ * Additional features:
  *   • Role selector tabs: CUSTOMER (default) | ADMIN
  *   • Admin notice strip shown when Admin tab is active
  *   • Register link hidden for Admin mode
@@ -76,12 +78,12 @@ public class LoginActivity extends AppCompatActivity {
 
         // ── Register link ─────────────────────────────────────────────────
         tvGoRegister.setOnClickListener(v ->
-            startActivity(new Intent(this, RegisterActivity.class)));
+                startActivity(new Intent(this, RegisterActivity.class)));
 
         // ── Forgot Password link ──────────────────────────────────────────
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvForgotPassword.setOnClickListener(v ->
-            startActivity(new Intent(this, ForgotPasswordActivity.class)));
+                startActivity(new Intent(this, ForgotPasswordActivity.class)));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -141,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill in your email/username and password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter your email address and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -155,14 +157,14 @@ public class LoginActivity extends AppCompatActivity {
         // Role mismatch guard
         if (isAdminMode && !user.isAdmin()) {
             Toast.makeText(this,
-                "This account does not have admin privileges.\nPlease use the Customer login.",
-                Toast.LENGTH_LONG).show();
+                    "This account does not have admin privileges.\nPlease use the Customer login.",
+                    Toast.LENGTH_LONG).show();
             return;
         }
         if (!isAdminMode && user.isAdmin()) {
             Toast.makeText(this,
-                "Admin accounts must use the Admin login tab.",
-                Toast.LENGTH_LONG).show();
+                    "Admin accounts must use the Admin login tab.",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 

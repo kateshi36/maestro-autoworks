@@ -1,28 +1,17 @@
 package com.maestro.autoworks.activities;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.*;
-import com.maestro.autoworks.utils.DatePickerHelper;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
+import com.maestro.autoworks.utils.DatePickerHelper;
+import com.maestro.autoworks.utils.MediaPickerHelper;
 
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.db.DatabaseHelper;
@@ -76,6 +65,26 @@ public class BookActivity extends AppCompatActivity {
     /** Absolute path of the same file, stored in the appointment record. */
     private String orcrImagePath = null;
 
+    /**
+     * Centralised media picker (Task 1-3).
+     * Handles FileProvider URI creation, runtime permission requests, and the
+     * camera-vs-gallery chooser dialog.  Must be instantiated before onCreate
+     * returns (field initialiser or early onCreate) so its ActivityResultLaunchers
+     * are registered in time.
+     */
+    private final MediaPickerHelper orcrPicker = new MediaPickerHelper(
+            this,
+            "ORCR",           // filename prefix → e.g. ORCR_20250515_143022.jpg
+            (uri, path) -> {  // ImagePickedCallback — runs on the main thread
+                orcrImageUri  = uri;
+                orcrImagePath = path;
+                showOrCrPreview(uri);
+                Toast.makeText(this,
+                        "OR/CR photo saved. Admin will verify before confirming.",
+                        Toast.LENGTH_LONG).show();
+            }
+    );
+
     // ── Existing fields ──
     private Spinner      spinnerService;
     private EditText     etCarPlate, etDate;
@@ -94,9 +103,6 @@ public class BookActivity extends AppCompatActivity {
     private static final double PRICE_OIL_CHECK  = 0;
     private static final double PRICE_CAR_WASH   = 150;
     private static final double PRICE_INSPECTION = 250;
-
-    // Permission request code (used only on Android <= 9 where WRITE is required)
-    private static final int REQUEST_CAMERA_PERMISSION = 101;
 
     // ── Car model options ──
     private static final String[] CAR_MODELS = {
@@ -120,52 +126,10 @@ public class BookActivity extends AppCompatActivity {
     }
 
     // ─────────────────────────────────────────────
-    //  Activity Result Launchers
+    //  NOTE: Camera / gallery / permission launchers are now encapsulated in
+    //        the `orcrPicker` MediaPickerHelper field declared above.
+    //        See MediaPickerHelper.java for the full implementation.
     // ─────────────────────────────────────────────
-
-    /**
-     * Launcher for ACTION_IMAGE_CAPTURE.
-     * The camera writes the full-resolution image to {@link #orcrImageUri}.
-     * We display a compressed thumbnail in imgOrCrPreview.
-     */
-    private final ActivityResultLauncher<Intent> cameraLauncher =
-        registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && orcrImageUri != null) {
-                    showOrCrPreview(orcrImageUri);
-                    Toast.makeText(this,
-                        "OR/CR photo captured. Admin will verify before confirming.",
-                        Toast.LENGTH_LONG).show();
-                } else {
-                    // User cancelled — reset URI so we don't submit a blank path
-                    orcrImageUri  = null;
-                    orcrImagePath = null;
-                    Toast.makeText(this, "Camera cancelled.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        );
-
-    /**
-     * Fallback launcher for ACTION_PICK (gallery).
-     * Used automatically when the device has no camera app.
-     */
-    private final ActivityResultLauncher<Intent> galleryLauncher =
-        registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK
-                        && result.getData() != null
-                        && result.getData().getData() != null) {
-                    orcrImageUri  = result.getData().getData();
-                    orcrImagePath = orcrImageUri.toString();
-                    showOrCrPreview(orcrImageUri);
-                    Toast.makeText(this,
-                        "OR/CR photo selected. Admin will verify before confirming.",
-                        Toast.LENGTH_LONG).show();
-                }
-            }
-        );
 
     // ─────────────────────────────────────────────
     //  onCreate
@@ -392,89 +356,11 @@ public class BookActivity extends AppCompatActivity {
             }
         });
 
-        btnCaptureOrCr.setOnClickListener(v -> launchOrCrCamera());
+        // Task 2 & 3: single call to MediaPickerHelper — shows the
+        // camera-vs-gallery dialog and handles permissions internally.
+        btnCaptureOrCr.setOnClickListener(v -> orcrPicker.showPickerDialog());
     }
 
-    /**
-     * Launches the camera to capture the OR/CR document.
-     *
-     * On Android 10+ (API 29+) we use MediaStore to create the output URI —
-     * no WRITE_EXTERNAL_STORAGE permission required.
-     * On Android 9 and below, we create a File in getExternalFilesDir and
-     * wrap it with FileProvider (declared in AndroidManifest.xml as
-     * "${applicationId}.provider").
-     *
-     * Falls back to gallery picker if no camera app is found.
-     */
-    private void launchOrCrCamera() {
-        // Request CAMERA permission if not yet granted
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    REQUEST_CAMERA_PERMISSION);
-            return;
-        }
-
-        // Create the output URI
-        try {
-            orcrImageUri  = createOrCrImageUri();
-            orcrImagePath = (orcrImageUri != null) ? orcrImageUri.toString() : null;
-        } catch (IOException e) {
-            Toast.makeText(this, "Could not create image file: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, orcrImageUri);
-        cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            cameraLauncher.launch(cameraIntent);
-        } else {
-            // No camera app — open gallery as fallback
-            Toast.makeText(this,
-                    "No camera app found. Please select an existing photo from the gallery.",
-                    Toast.LENGTH_LONG).show();
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            galleryLauncher.launch(galleryIntent);
-        }
-    }
-
-    /**
-     * Creates a writable content URI for the OR/CR photo.
-     *
-     * Android 10+ : Uses MediaStore (no storage permission needed).
-     * Android 9-  : Uses FileProvider wrapping a file in getExternalFilesDir.
-     *
-     * @return  content URI for the camera to write the photo to
-     * @throws IOException  if the file cannot be created on legacy Android
-     */
-    private Uri createOrCrImageUri() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                .format(new Date());
-        String fileName  = "ORCR_" + timeStamp;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android 10+ — MediaStore, no permission needed
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName + ".jpg");
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.Images.Media.RELATIVE_PATH,
-                    Environment.DIRECTORY_PICTURES + "/MaestroAutoworks");
-            return getContentResolver().insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            // Android 9 and below — FileProvider
-            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            File imageFile  = File.createTempFile(fileName, ".jpg", storageDir);
-            orcrImagePath   = imageFile.getAbsolutePath();
-            return FileProvider.getUriForFile(this,
-                    getPackageName() + ".provider", imageFile);
-        }
-    }
 
     /**
      * Decodes the captured photo into a memory-safe thumbnail and
@@ -528,23 +414,9 @@ public class BookActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────
     //  Runtime Permission Result
     // ─────────────────────────────────────────────
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,
-                                           int[]    grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                launchOrCrCamera(); // retry now that permission is granted
-            } else {
-                Toast.makeText(this,
-                        "Camera permission is required to capture your OR/CR.",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
+    //  Delegated to MediaPickerHelper via ActivityResultLauncher.
+    //  No onRequestPermissionsResult override needed.
+    // ─────────────────────────────────────────────
 
     // ─────────────────────────────────────────────
     //  Booking logic
@@ -585,7 +457,7 @@ public class BookActivity extends AppCompatActivity {
                 .setMessage("You indicated you have your OR/CR. " +
                         "Please capture a photo so admin can verify your car details.\n\n" +
                         "Tap \"Take Photo\" to proceed, or tap \"Skip\" to continue without a photo.")
-                .setPositiveButton("Take Photo", (d, w) -> launchOrCrCamera())
+                .setPositiveButton("Take Photo", (d, w) -> orcrPicker.showPickerDialog())
                 .setNegativeButton("Skip", (d, w) -> proceedWithBookingValidation())
                 .show();
             return;

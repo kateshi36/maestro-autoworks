@@ -3005,6 +3005,7 @@ int drawable abc_textfield_search_material 0x7f070075
 int drawable abc_vector_test 0x7f070076
 int drawable avd_hide_password 0x7f070077
 int drawable avd_show_password 0x7f070078
+int drawable bg_help_circle 0x7f0700f3
 int drawable btn_checkbox_checked_mtrl 0x7f070079
 int drawable btn_checkbox_checked_to_unchecked_mtrl_animation 0x7f07007a
 int drawable btn_checkbox_unchecked_mtrl 0x7f07007b
@@ -3253,6 +3254,7 @@ int id btnFpStep1Next 0x7f08007a
 int id btnFpStep2Back 0x7f08007b
 int id btnFpStep3Back 0x7f08007c
 int id btnFpVerifyOtp 0x7f08007d
+int id btnGoToLogin 0x7f080313
 int id btnLetsStart 0x7f08007e
 int id btnLockoutToSecurityQ 0x7f08007f
 int id btnLogout 0x7f080080
@@ -3279,8 +3281,6 @@ int id btnStep5Back 0x7f080094
 int id btnStep5Next 0x7f080095
 int id btnStep6Back 0x7f080096
 int id btnStep6Next 0x7f080097
-int id btnStep7Back 0x7f080098
-int id btnStep7Next 0x7f080099
 int id btnStep8Back 0x7f08009a
 int id btnSubmitSecurityAnswer 0x7f08009b
 int id btnToggleConfirmPassword 0x7f08009c
@@ -3294,6 +3294,9 @@ int id buttonPanel 0x7f0800a3
 int id cache_measures 0x7f0800a4
 int id callMeasure 0x7f0800a5
 int id cancel_button 0x7f0800a6
+int id cardUploadCr 0x7f0802fd
+int id cardUploadDl 0x7f0802fe
+int id cardUploadOr 0x7f0802ff
 int id carryVelocity 0x7f0800a7
 int id cbBold 0x7f0800a8
 int id cbCarWash 0x7f0800a9
@@ -3382,6 +3385,7 @@ int id end 0x7f0800fb
 int id endToStart 0x7f0800fc
 int id enterAlways 0x7f0800fd
 int id enterAlwaysCollapsed 0x7f0800fe
+int id etAddress 0x7f0802fc
 int id etAdminNote 0x7f0800ff
 int id etBirthdate 0x7f080100
 int id etCaptchaAnswer 0x7f080101
@@ -3400,6 +3404,8 @@ int id etFpEmailOrPhone 0x7f08010d
 int id etFpNewPassword 0x7f08010e
 int id etFpOtp 0x7f08010f
 int id etLastName 0x7f080110
+int id etLicensePlate 0x7f080300
+int id etMvFileNumber 0x7f080301
 int id etOtp1 0x7f080111
 int id etOtp2 0x7f080112
 int id etOtp3 0x7f080113
@@ -3415,6 +3421,8 @@ int id etSvcDuration 0x7f08011c
 int id etSvcName 0x7f08011d
 int id etSvcPrice 0x7f08011e
 int id etUsername 0x7f08011f
+int id etVehicleMake 0x7f080302
+int id etVehicleModel 0x7f080303
 int id exitUntilCollapsed 0x7f080120
 int id expand_activities_button 0x7f080121
 int id expanded_menu 0x7f080122
@@ -3456,8 +3464,11 @@ int id ifRoom 0x7f080145
 int id ignore 0x7f080146
 int id ignoreRequest 0x7f080147
 int id image 0x7f080148
+int id imgCrPreview 0x7f080304
+int id imgDlPreview 0x7f080305
 int id imgLicensePreview 0x7f080149
 int id imgOrCrPreview 0x7f08014a
+int id imgOrPreview 0x7f080306
 int id immediateStop 0x7f08014b
 int id included 0x7f08014c
 int id indeterminate 0x7f08014d
@@ -3471,6 +3482,7 @@ int id jumpToStart 0x7f080154
 int id labeled 0x7f080155
 int id layout 0x7f080156
 int id layoutAdminNotice 0x7f080157
+int id layoutAllDocsUploaded 0x7f080307
 int id layoutConductors 0x7f080158
 int id layoutFpStep1 0x7f080159
 int id layoutFpStep2 0x7f08015a
@@ -3493,8 +3505,8 @@ int id layoutStep3 0x7f080169
 int id layoutStep4 0x7f08016a
 int id layoutStep5 0x7f08016b
 int id layoutStep6 0x7f08016c
-int id layoutStep7 0x7f08016d
 int id layoutStep8 0x7f08016e
+int id layoutStep9 0x7f080317
 int id layoutTimeSlot 0x7f08016f
 int id left 0x7f080170
 int id leftToRight 0x7f080171
@@ -3812,7 +3824,11 @@ int id tvCaptchaError 0x7f0802a8
 int id tvCaptchaQuestion 0x7f0802a9
 int id tvCharCount 0x7f0802aa
 int id tvCompletionRate 0x7f0802ab
+int id tvCrPlaceholder 0x7f080308
+int id tvCrUploadStatus 0x7f080309
 int id tvDialogMessage 0x7f0802ac
+int id tvDlPlaceholder 0x7f08030a
+int id tvDlUploadStatus 0x7f08030b
 int id tvEmailValidation 0x7f0802ad
 int id tvEmpty 0x7f0802ae
 int id tvForgotPassword 0x7f0802af
@@ -3825,11 +3841,16 @@ int id tvFpResend 0x7f0802b5
 int id tvFpStepIndicator 0x7f0802b6
 int id tvGoLogin 0x7f0802b7
 int id tvGoRegister 0x7f0802b8
+int id tvLicensePlateError 0x7f08030c
 int id tvMaskedContact 0x7f0802b9
+int id tvMvFileNumberError 0x7f08030d
+int id tvMvHelp 0x7f08030e
 int id tvNoPending 0x7f0802ba
 int id tvNoToday 0x7f0802bb
 int id tvOcrResult 0x7f0802bc
 int id tvOcrStatus 0x7f0802bd
+int id tvOrPlaceholder 0x7f08030f
+int id tvOrUploadStatus 0x7f080310
 int id tvOtpHint 0x7f0802be
 int id tvPreview 0x7f0802bf
 int id tvRatingLabel 0x7f0802c0
@@ -3843,6 +3864,9 @@ int id tvServiceName 0x7f0802c7
 int id tvServicePrice 0x7f0802c8
 int id tvServicesCount 0x7f0802c9
 int id tvStepIndicator 0x7f0802ca
+int id tvSuccessBody 0x7f080314
+int id tvSuccessHeadline 0x7f080315
+int id tvSuccessNote 0x7f080316
 int id tvSummaryBirthdate 0x7f0802cb
 int id tvSummaryEmail 0x7f0802cc
 int id tvSummaryGender 0x7f0802cd
@@ -3862,6 +3886,8 @@ int id tvTimer 0x7f0802da
 int id tvTodayCount 0x7f0802db
 int id tvTotal 0x7f0802dc
 int id tvValidation 0x7f0802dd
+int id tvVehicleMakeError 0x7f080311
+int id tvVehicleModelError 0x7f080312
 int id tvVerifyGreeting 0x7f0802de
 int id tvVerifySubtitle 0x7f0802df
 int id tvWelcome 0x7f0802e0

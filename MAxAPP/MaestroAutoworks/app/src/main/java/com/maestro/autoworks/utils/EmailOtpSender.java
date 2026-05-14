@@ -43,7 +43,7 @@ public class EmailOtpSender {
     /** The Gmail address that sends OTP emails. */
     private static final String SENDER_EMAIL        = "ilardeclyde@gmail.com";
     /** Gmail App Password (NOT your regular Gmail password). */
-    private static final String SENDER_APP_PASSWORD = "test";
+    private static final String SENDER_APP_PASSWORD = "yhhe vtmi ssmd fbdm";
     // ─────────────────────────────────────────────────────────────────────────
 
     /** Callback interface for send result. */

@@ -163,16 +163,16 @@
                 android:lineSpacingMultiplier="1.5"/>
         </LinearLayout>
 
-        <!-- USERNAME / EMAIL -->
+        <!-- EMAIL ADDRESS -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Email or Username" android:textColor="@color/muted" android:textSize="12sp"
+            android:text="Email Address" android:textColor="@color/muted" android:textSize="12sp"
             android:layout_marginBottom="4dp"/>
 
         <EditText
             android:id="@+id/etUsername"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:hint="Enter your email or username"
+            android:hint="Enter your registered email"
             android:inputType="textEmailAddress"
             android:textColor="@color/white"
             android:textColorHint="@color/muted"

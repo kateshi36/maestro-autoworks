@@ -21,6 +21,42 @@ public class User {
     public String conductorsLicenseExpiry;
     public String licenseImagePath;     // content URI of captured license photo
 
+    // ── Vehicle & verification fields (added in registration Step 4) ──
+    /** Philippine license plate, e.g. "ABC 1234" or "AB 1234" (pre-2014). */
+    public String licensePlate;
+
+    /**
+     * Motor Vehicle File Number — 15-digit numeric string assigned by the LTO,
+     * e.g. "123456789012345".
+     */
+    public String mvFileNumber;
+
+    /** Vehicle make (manufacturer), e.g. "Toyota". */
+    public String vehicleMake;
+
+    /** Vehicle model, e.g. "Vios 1.3 XLE MT". */
+    public String vehicleModel;
+
+    // ── Document image URIs / file paths (Step 4 uploads) ──
+    /**
+     * Local content URI or file path for the uploaded Driver's License photo.
+     * Distinct from {@link #licenseImagePath} which is captured live via camera in Step 3;
+     * this is the document upload in Step 4 and may be selected from the gallery.
+     */
+    public String dlUploadPath;
+
+    /**
+     * Local content URI or file path for the uploaded Official Receipt (OR).
+     * This is the payment receipt issued by the LTO when the vehicle was registered/renewed.
+     */
+    public String orImagePath;
+
+    /**
+     * Local content URI or file path for the uploaded Certificate of Registration (CR).
+     * This is the LTO document certifying ownership and vehicle details.
+     */
+    public String crImagePath;
+
     public String getFullName() { return firstName + " " + lastName; }
     public boolean isAdmin()    { return "admin".equals(role); }
 }

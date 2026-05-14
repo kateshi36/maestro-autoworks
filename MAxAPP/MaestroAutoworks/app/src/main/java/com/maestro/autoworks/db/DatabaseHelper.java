@@ -19,7 +19,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "maestro_autoworks.db";
-    private static final int    DB_VERSION = 7;
+    private static final int    DB_VERSION = 8;
 
     // Tables
     public static final String TABLE_USERS        = "users";
@@ -43,6 +43,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_CL_NO      = "conductors_license_no";
     public static final String COL_CL_EXPIRY  = "conductors_license_expiry";
     public static final String COL_LIC_IMAGE  = "license_image_path";
+    // Vehicle & verification fields (added in DB_VERSION 8)
+    public static final String COL_LICENSE_PLATE = "license_plate";   // e.g. "ABC 1234"
+    public static final String COL_MV_FILE_NO    = "mv_file_number";  // 15-digit LTO MV file no.
+    public static final String COL_VEHICLE_MAKE  = "vehicle_make";    // e.g. "Toyota"
+    public static final String COL_VEHICLE_MODEL = "vehicle_model";   // e.g. "Vios 1.3 XLE MT"
+    public static final String COL_DL_UPLOAD     = "dl_upload_path";  // gallery-picked DL image
+    public static final String COL_OR_IMAGE      = "or_image_path";   // Official Receipt upload
+    public static final String COL_CR_IMAGE      = "cr_image_path";   // Certificate of Registration upload
 
     // Appointments columns
     public static final String COL_APPT_ID         = "id";
@@ -64,39 +72,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
-            COL_ID         + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_FIRST_NAME + " TEXT NOT NULL, " +
-            COL_LAST_NAME  + " TEXT NOT NULL, " +
-            COL_USERNAME   + " TEXT UNIQUE NOT NULL, " +
-            COL_EMAIL      + " TEXT UNIQUE NOT NULL, " +
-            COL_PHONE      + " TEXT, " +
-            COL_PASSWORD   + " TEXT NOT NULL, " +
-            COL_ROLE       + " TEXT NOT NULL DEFAULT 'customer', " +
-            COL_BIRTHDATE + " TEXT, " +
-            COL_GENDER    + " TEXT, " +
-            COL_DL_NO     + " TEXT, " +
-            COL_DL_EXPIRY + " TEXT, " +
-            COL_CL_NO     + " TEXT, " +
-            COL_CL_EXPIRY + " TEXT, " +
-            COL_LIC_IMAGE + " TEXT)";
+                    COL_ID         + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_FIRST_NAME + " TEXT NOT NULL, " +
+                    COL_LAST_NAME  + " TEXT NOT NULL, " +
+                    COL_USERNAME   + " TEXT UNIQUE NOT NULL, " +
+                    COL_EMAIL      + " TEXT UNIQUE NOT NULL, " +
+                    COL_PHONE      + " TEXT, " +
+                    COL_PASSWORD   + " TEXT NOT NULL, " +
+                    COL_ROLE       + " TEXT NOT NULL DEFAULT 'customer', " +
+                    COL_BIRTHDATE + " TEXT, " +
+                    COL_GENDER    + " TEXT, " +
+                    COL_DL_NO     + " TEXT, " +
+                    COL_DL_EXPIRY + " TEXT, " +
+                    COL_CL_NO     + " TEXT, " +
+                    COL_CL_EXPIRY + " TEXT, " +
+                    COL_LIC_IMAGE + " TEXT, " +
+                    COL_LICENSE_PLATE + " TEXT, " +
+                    COL_MV_FILE_NO    + " TEXT, " +
+                    COL_VEHICLE_MAKE  + " TEXT, " +
+                    COL_VEHICLE_MODEL + " TEXT, " +
+                    COL_DL_UPLOAD     + " TEXT, " +
+                    COL_OR_IMAGE      + " TEXT, " +
+                    COL_CR_IMAGE      + " TEXT)";
 
     private static final String CREATE_APPOINTMENTS =
             "CREATE TABLE " + TABLE_APPOINTMENTS + " (" +
-            COL_APPT_ID         + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_APPT_USER_ID    + " INTEGER, " +
-            COL_APPT_SERVICE    + " TEXT NOT NULL, " +
-            COL_APPT_DATE       + " TEXT NOT NULL, " +
-            COL_APPT_TIME       + " TEXT NOT NULL, " +
-            COL_APPT_PLATE      + " TEXT, " +
-            COL_APPT_TOTAL      + " REAL, " +
-            COL_APPT_STATUS     + " TEXT DEFAULT 'pending', " +
-            COL_APPT_ADMIN_NOTE + " TEXT, " +
-            COL_APPT_RATING     + " INTEGER DEFAULT 0, " +
-            COL_APPT_CAR_MODEL   + " TEXT, " +
-            COL_APPT_YEAR_MODEL  + " TEXT, " +
-            COL_APPT_FUEL_TYPE   + " TEXT, " +
-            COL_APPT_ORCR_STATUS + " TEXT, " +
-            COL_APPT_ORCR_IMAGE  + " TEXT)";
+                    COL_APPT_ID         + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_APPT_USER_ID    + " INTEGER, " +
+                    COL_APPT_SERVICE    + " TEXT NOT NULL, " +
+                    COL_APPT_DATE       + " TEXT NOT NULL, " +
+                    COL_APPT_TIME       + " TEXT NOT NULL, " +
+                    COL_APPT_PLATE      + " TEXT, " +
+                    COL_APPT_TOTAL      + " REAL, " +
+                    COL_APPT_STATUS     + " TEXT DEFAULT 'pending', " +
+                    COL_APPT_ADMIN_NOTE + " TEXT, " +
+                    COL_APPT_RATING     + " INTEGER DEFAULT 0, " +
+                    COL_APPT_CAR_MODEL   + " TEXT, " +
+                    COL_APPT_YEAR_MODEL  + " TEXT, " +
+                    COL_APPT_FUEL_TYPE   + " TEXT, " +
+                    COL_APPT_ORCR_STATUS + " TEXT, " +
+                    COL_APPT_ORCR_IMAGE  + " TEXT)";
 
     // Repair tasks (PMS)
     public static final String TABLE_REPAIR_TASKS  = "repair_tasks";
@@ -109,12 +124,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_REPAIR_TASKS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_REPAIR_TASKS + " (" +
-            COL_TASK_ID       + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_TASK_APPT_ID  + " INTEGER NOT NULL, " +
-            COL_TASK_NAME     + " TEXT NOT NULL, " +
-            COL_TASK_ASSIGNED + " TEXT, " +
-            COL_TASK_STATUS   + " TEXT NOT NULL DEFAULT 'pending', " +
-            COL_TASK_SORT     + " INTEGER DEFAULT 0)";
+                    COL_TASK_ID       + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_TASK_APPT_ID  + " INTEGER NOT NULL, " +
+                    COL_TASK_NAME     + " TEXT NOT NULL, " +
+                    COL_TASK_ASSIGNED + " TEXT, " +
+                    COL_TASK_STATUS   + " TEXT NOT NULL DEFAULT 'pending', " +
+                    COL_TASK_SORT     + " INTEGER DEFAULT 0)";
 
 
     public DatabaseHelper(Context context) {
@@ -170,6 +185,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_BIRTHDATE + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_GENDER    + " TEXT"); } catch (Exception ignored) {}
         }
+        if (oldVersion < 8) {
+            // Vehicle & verification fields for Step 4 of registration
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_LICENSE_PLATE + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_MV_FILE_NO    + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_VEHICLE_MAKE  + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_VEHICLE_MODEL + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_DL_UPLOAD     + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_OR_IMAGE      + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_CR_IMAGE      + " TEXT"); } catch (Exception ignored) {}
+        }
     }
 
     // ── USER OPERATIONS ──────────────────────────────────────────────────────
@@ -191,6 +216,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_CL_NO,     user.conductorsLicenseNo);
         cv.put(COL_CL_EXPIRY, user.conductorsLicenseExpiry);
         cv.put(COL_LIC_IMAGE, user.licenseImagePath);
+        // Vehicle & verification fields (Step 4)
+        cv.put(COL_LICENSE_PLATE, user.licensePlate);
+        cv.put(COL_MV_FILE_NO,    user.mvFileNumber);
+        cv.put(COL_VEHICLE_MAKE,  user.vehicleMake);
+        cv.put(COL_VEHICLE_MODEL, user.vehicleModel);
+        cv.put(COL_DL_UPLOAD,     user.dlUploadPath);
+        cv.put(COL_OR_IMAGE,      user.orImagePath);
+        cv.put(COL_CR_IMAGE,      user.crImagePath);
         long id = db.insert(TABLE_USERS, null, cv);
         db.close();
         return id;
@@ -270,6 +303,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (clExIdx >= 0) user.conductorsLicenseExpiry = c.getString(clExIdx);
         int licImgIdx = c.getColumnIndex(COL_LIC_IMAGE);
         if (licImgIdx >= 0) user.licenseImagePath = c.getString(licImgIdx);
+        // Vehicle & verification fields (DB_VERSION 8)
+        int plateIdx = c.getColumnIndex(COL_LICENSE_PLATE);
+        if (plateIdx >= 0) user.licensePlate = c.getString(plateIdx);
+        int mvIdx = c.getColumnIndex(COL_MV_FILE_NO);
+        if (mvIdx >= 0) user.mvFileNumber = c.getString(mvIdx);
+        int makeIdx = c.getColumnIndex(COL_VEHICLE_MAKE);
+        if (makeIdx >= 0) user.vehicleMake = c.getString(makeIdx);
+        int modelIdx = c.getColumnIndex(COL_VEHICLE_MODEL);
+        if (modelIdx >= 0) user.vehicleModel = c.getString(modelIdx);
+        int dlUpIdx = c.getColumnIndex(COL_DL_UPLOAD);
+        if (dlUpIdx >= 0) user.dlUploadPath = c.getString(dlUpIdx);
+        int orIdx = c.getColumnIndex(COL_OR_IMAGE);
+        if (orIdx >= 0) user.orImagePath = c.getString(orIdx);
+        int crIdx = c.getColumnIndex(COL_CR_IMAGE);
+        if (crIdx >= 0) user.crImagePath = c.getString(crIdx);
         // Personal info fields (DB_VERSION 7)
         int bdIdx = c.getColumnIndex(COL_BIRTHDATE);
         if (bdIdx >= 0) user.birthdate = c.getString(bdIdx);
@@ -337,11 +385,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String where = statusFilter == null || statusFilter.equals("all") ? "" :
                 " WHERE a.status='" + statusFilter.replace("'","''") + "'";
         String sql =
-            "SELECT a.*, u.first_name, u.last_name, u.username " +
-            "FROM " + TABLE_APPOINTMENTS + " a " +
-            "LEFT JOIN " + TABLE_USERS + " u ON u.id = a.user_id" +
-            where +
-            " ORDER BY a.id DESC";
+                "SELECT a.*, u.first_name, u.last_name, u.username " +
+                        "FROM " + TABLE_APPOINTMENTS + " a " +
+                        "LEFT JOIN " + TABLE_USERS + " u ON u.id = a.user_id" +
+                        where +
+                        " ORDER BY a.id DESC";
         Cursor c = db.rawQuery(sql, null);
         while (c.moveToNext()) {
             Appointment a = cursorToAppointment(c);
@@ -369,8 +417,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int countByStatus(String status) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(
-            "SELECT COUNT(*) FROM " + TABLE_APPOINTMENTS +
-            (status.equals("all") ? "" : " WHERE status='" + status + "'"), null);
+                "SELECT COUNT(*) FROM " + TABLE_APPOINTMENTS +
+                        (status.equals("all") ? "" : " WHERE status='" + status + "'"), null);
         int count = c.moveToFirst() ? c.getInt(0) : 0;
         c.close(); db.close();
         return count;
@@ -379,7 +427,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int countCustomers() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(
-            "SELECT COUNT(*) FROM " + TABLE_USERS + " WHERE role='customer'", null);
+                "SELECT COUNT(*) FROM " + TABLE_USERS + " WHERE role='customer'", null);
         int count = c.moveToFirst() ? c.getInt(0) : 0;
         c.close(); db.close();
         return count;
@@ -390,10 +438,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Appointment> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String sql =
-            "SELECT a.*, u.first_name, u.last_name " +
-            "FROM " + TABLE_APPOINTMENTS + " a " +
-            "LEFT JOIN " + TABLE_USERS + " u ON u.id = a.user_id " +
-            "WHERE a.appt_date=? ORDER BY a.appt_time ASC";
+                "SELECT a.*, u.first_name, u.last_name " +
+                        "FROM " + TABLE_APPOINTMENTS + " a " +
+                        "LEFT JOIN " + TABLE_USERS + " u ON u.id = a.user_id " +
+                        "WHERE a.appt_date=? ORDER BY a.appt_time ASC";
         Cursor c = db.rawQuery(sql, new String[]{todayDate});
         while (c.moveToNext()) {
             Appointment a = cursorToAppointment(c);
@@ -451,11 +499,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         java.util.List<String[]> list = new java.util.ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(
-            "SELECT service_name, COUNT(*) AS cnt, SUM(total_price) AS rev " +
-            "FROM " + TABLE_APPOINTMENTS +
-            " WHERE status IN ('confirmed','completed') " +
-            "GROUP BY service_name ORDER BY cnt DESC LIMIT ?",
-            new String[]{String.valueOf(limit)});
+                "SELECT service_name, COUNT(*) AS cnt, SUM(total_price) AS rev " +
+                        "FROM " + TABLE_APPOINTMENTS +
+                        " WHERE status IN ('confirmed','completed') " +
+                        "GROUP BY service_name ORDER BY cnt DESC LIMIT ?",
+                new String[]{String.valueOf(limit)});
         while (c.moveToNext()) {
             list.add(new String[]{c.getString(0), String.valueOf(c.getInt(1)), String.valueOf(c.getDouble(2))});
         }
@@ -467,8 +515,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         java.util.List<String[]> list = new java.util.ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(
-            "SELECT appt_date, COUNT(*) as cnt FROM " + TABLE_APPOINTMENTS +
-            " GROUP BY appt_date ORDER BY appt_date DESC LIMIT 14", null);
+                "SELECT appt_date, COUNT(*) as cnt FROM " + TABLE_APPOINTMENTS +
+                        " GROUP BY appt_date ORDER BY appt_date DESC LIMIT 14", null);
         while (c.moveToNext()) {
             list.add(new String[]{c.getString(0), String.valueOf(c.getInt(1))});
         }
@@ -482,8 +530,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         java.util.List<RepairTask> list = new java.util.ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.query(TABLE_REPAIR_TASKS, null,
-            COL_TASK_APPT_ID + "=?", new String[]{String.valueOf(apptId)},
-            null, null, COL_TASK_SORT + ", " + COL_TASK_ID);
+                COL_TASK_APPT_ID + "=?", new String[]{String.valueOf(apptId)},
+                null, null, COL_TASK_SORT + ", " + COL_TASK_ID);
         while (c.moveToNext()) {
             RepairTask t = new RepairTask();
             t.id         = c.getInt(c.getColumnIndexOrThrow(COL_TASK_ID));

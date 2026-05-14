@@ -17,6 +17,7 @@ color purple
 color success
 color white
 color yellow
+drawable bg_help_circle
 drawable ic_launcher_foreground
 drawable logo_maestro
 id autoComplete
@@ -41,6 +42,7 @@ id btnFpStep1Next
 id btnFpStep2Back
 id btnFpStep3Back
 id btnFpVerifyOtp
+id btnGoToLogin
 id btnLetsStart
 id btnLockoutToSecurityQ
 id btnLogout
@@ -67,8 +69,6 @@ id btnStep5Back
 id btnStep5Next
 id btnStep6Back
 id btnStep6Next
-id btnStep7Back
-id btnStep7Next
 id btnStep8Back
 id btnSubmitSecurityAnswer
 id btnToggleConfirmPassword
@@ -78,6 +78,9 @@ id btnToggleService
 id btnUseSecurityQuestion
 id btnVerifyOtp
 id btnViewReports
+id cardUploadCr
+id cardUploadDl
+id cardUploadOr
 id cbBold
 id cbCarWash
 id cbHasConductors
@@ -89,6 +92,7 @@ id cbYellow
 id completionBarBg
 id completionBarFill
 id dailyActivityContainer
+id etAddress
 id etAdminNote
 id etBirthdate
 id etCaptchaAnswer
@@ -107,6 +111,8 @@ id etFpEmailOrPhone
 id etFpNewPassword
 id etFpOtp
 id etLastName
+id etLicensePlate
+id etMvFileNumber
 id etOtp1
 id etOtp2
 id etOtp3
@@ -122,9 +128,15 @@ id etSvcDuration
 id etSvcName
 id etSvcPrice
 id etUsername
+id etVehicleMake
+id etVehicleModel
+id imgCrPreview
+id imgDlPreview
 id imgLicensePreview
 id imgOrCrPreview
+id imgOrPreview
 id layoutAdminNotice
+id layoutAllDocsUploaded
 id layoutConductors
 id layoutFpStep1
 id layoutFpStep2
@@ -147,8 +159,8 @@ id layoutStep3
 id layoutStep4
 id layoutStep5
 id layoutStep6
-id layoutStep7
 id layoutStep8
+id layoutStep9
 id layoutTimeSlot
 id listAppointments
 id listServices
@@ -224,7 +236,11 @@ id tvCaptchaError
 id tvCaptchaQuestion
 id tvCharCount
 id tvCompletionRate
+id tvCrPlaceholder
+id tvCrUploadStatus
 id tvDialogMessage
+id tvDlPlaceholder
+id tvDlUploadStatus
 id tvEmailValidation
 id tvEmpty
 id tvForgotPassword
@@ -237,11 +253,16 @@ id tvFpResend
 id tvFpStepIndicator
 id tvGoLogin
 id tvGoRegister
+id tvLicensePlateError
 id tvMaskedContact
+id tvMvFileNumberError
+id tvMvHelp
 id tvNoPending
 id tvNoToday
 id tvOcrResult
 id tvOcrStatus
+id tvOrPlaceholder
+id tvOrUploadStatus
 id tvOtpHint
 id tvPreview
 id tvRatingLabel
@@ -255,6 +276,9 @@ id tvServiceName
 id tvServicePrice
 id tvServicesCount
 id tvStepIndicator
+id tvSuccessBody
+id tvSuccessHeadline
+id tvSuccessNote
 id tvSummaryBirthdate
 id tvSummaryEmail
 id tvSummaryGender
@@ -274,6 +298,8 @@ id tvTimer
 id tvTodayCount
 id tvTotal
 id tvValidation
+id tvVehicleMakeError
+id tvVehicleModelError
 id tvVerifyGreeting
 id tvVerifySubtitle
 id tvWelcome

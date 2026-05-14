@@ -323,274 +323,10 @@
         </LinearLayout>
 
         <!-- ════════════════════════════════════════════
-             STEP 3 — License Details
+             STEP 3 — Personal Information
              ════════════════════════════════════════════ -->
         <LinearLayout
             android:id="@+id/layoutStep3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Driver's License Details"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Driver's License Number *"
-                android:textColor="@color/muted" android:textSize="12sp"
-                android:layout_marginBottom="4dp"/>
-            <EditText
-                android:id="@+id/etDriversLicNo"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="e.g. N01-23-456789"
-                android:inputType="textCapCharacters"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Expiry Date *"
-                android:textColor="@color/muted" android:textSize="12sp"
-                android:layout_marginBottom="4dp"/>
-            <!-- Tap to open DatePickerDialog; not directly editable -->
-            <EditText
-                android:id="@+id/etDriversExpiry"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="Tap to select expiry date"
-                android:inputType="none"
-                android:focusable="false"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp"
-                android:paddingEnd="48dp"
-                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
-                android:drawableTint="@color/muted"
-                android:layout_marginBottom="20dp"/>
-
-            <CheckBox
-                android:id="@+id/cbHasConductors"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="I also have a Conductor's License"
-                android:textColor="@color/white"
-                android:buttonTint="@color/yellow"
-                android:layout_marginBottom="12dp"/>
-
-            <LinearLayout
-                android:id="@+id/layoutConductors"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/black_card"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone">
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Conductor's License Number *"
-                    android:textColor="@color/muted" android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <EditText
-                    android:id="@+id/etConductorsLicNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:hint="e.g. C01-23-456789"
-                    android:inputType="textCapCharacters"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/muted"
-                    android:background="@color/black"
-                    android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Conductor's License Expiry *"
-                    android:textColor="@color/muted" android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <!-- Tap to open DatePickerDialog; not directly editable -->
-                <EditText
-                    android:id="@+id/etConductorsExpiry"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:hint="Tap to select expiry date"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/muted"
-                    android:background="@color/black"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="48dp"
-                    android:drawableEnd="@android:drawable/ic_menu_my_calendar"
-                    android:drawableTint="@color/muted"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
-
-                <Button
-                    android:id="@+id/btnStep3Back"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:text="← BACK"
-                    android:backgroundTint="@color/black_card"
-                    android:textColor="@color/muted"
-                    android:layout_marginEnd="8dp"/>
-
-                <Button
-                    android:id="@+id/btnStep3Next"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="2"
-                    android:text="CONTINUE →"
-                    android:backgroundTint="@color/yellow"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- ════════════════════════════════════════════
-             STEP 4 — License Photo + OCR
-             ════════════════════════════════════════════ -->
-        <LinearLayout
-            android:id="@+id/layoutStep4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="License Photo Verification"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Take a clear photo of your driver's license front. Our system will read the license number and cross-check it with what you entered."
-                android:textColor="@color/muted"
-                android:textSize="13sp"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginBottom="20dp"/>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/black_card"
-                android:layout_marginBottom="12dp">
-
-                <LinearLayout
-                    android:id="@+id/layoutLicensePlaceholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🪪"
-                        android:textSize="48sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="No photo yet"
-                        android:textColor="@color/muted"
-                        android:textSize="13sp"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/imgLicensePreview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone"/>
-            </FrameLayout>
-
-            <Button
-                android:id="@+id/btnCaptureLicense"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="📷  CAPTURE LICENSE PHOTO"
-                android:backgroundTint="@color/black_card"
-                android:textColor="@color/yellow"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView
-                android:id="@+id/tvOcrResult"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="13sp"
-                android:lineSpacingExtra="4dp"
-                android:padding="12dp"
-                android:background="@color/black_card"
-                android:layout_marginBottom="4dp"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/tvOcrStatus"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="gone"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
-
-                <Button
-                    android:id="@+id/btnStep4Back"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:text="← BACK"
-                    android:backgroundTint="@color/black_card"
-                    android:textColor="@color/muted"
-                    android:layout_marginEnd="8dp"/>
-
-                <Button
-                    android:id="@+id/btnStep4Next"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="2"
-                    android:text="CONTINUE →"
-                    android:backgroundTint="@color/yellow"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- ════════════════════════════════════════════
-             STEP 5 — Personal Information
-             ════════════════════════════════════════════ -->
-        <LinearLayout
-            android:id="@+id/layoutStep5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -740,11 +476,853 @@
                 </RadioGroup>
             </LinearLayout>
 
+            <!-- Address -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Address *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="123 Rizal St, Makati City"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Phone -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="09XXXXXXXXX"
+                android:inputType="phone"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Email -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Email Address *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="juan@example.com"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Confirm Email -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Confirm Email *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etEmailConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Re-enter email"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvEmailValidation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="12sp"
+                android:layout_marginBottom="16dp"/>
+
             <!-- Navigation -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnStep3Back"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="← BACK"
+                    android:backgroundTint="@color/black_card"
+                    android:textColor="@color/muted"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnStep3Next"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="2"
+                    android:text="CONTINUE →"
+                    android:backgroundTint="@color/yellow"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+        <!-- ════════════════════════════════════════════
+             STEP 4 — License Details + Vehicle Info + Document Uploads
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- ── Section: Driver's License ─────────────────────────── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Driver's License Details"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Driver's License Number *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etDriversLicNo"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="e.g. N01-23-456789"
+                android:inputType="textCapCharacters"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Expiry Date *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <!-- Tap to open DatePickerDialog; not directly editable -->
+            <EditText
+                android:id="@+id/etDriversExpiry"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Tap to select expiry date"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:drawableTint="@color/muted"
+                android:layout_marginBottom="20dp"/>
+
+            <CheckBox
+                android:id="@+id/cbHasConductors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I also have a Conductor's License"
+                android:textColor="@color/white"
+                android:buttonTint="@color/yellow"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:id="@+id/layoutConductors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/black_card"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Conductor's License Number *"
+                    android:textColor="@color/muted" android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etConductorsLicNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="e.g. C01-23-456789"
+                    android:inputType="textCapCharacters"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black"
+                    android:paddingStart="16dp" android:paddingEnd="16dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Conductor's License Expiry *"
+                    android:textColor="@color/muted" android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <!-- Tap to open DatePickerDialog; not directly editable -->
+                <EditText
+                    android:id="@+id/etConductorsExpiry"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Tap to select expiry date"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="48dp"
+                    android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                    android:drawableTint="@color/muted"/>
+            </LinearLayout>
+
+            <!-- ── Divider ──────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_card"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- ── Section: Vehicle Information ──────────────────────── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vehicle Information"
+                android:textColor="@color/yellow"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="14dp"/>
+
+            <!-- License Plate -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="License plate *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etLicensePlate"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="e.g. ABC 1234"
+                android:inputType="textCapCharacters"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="4dp"/>
+            <!-- Inline validation feedback for license plate -->
+            <TextView
+                android:id="@+id/tvLicensePlateError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/danger"
+                android:textSize="11sp"
+                android:paddingStart="4dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <!-- MV File Number with help tooltip trigger -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MV file number *"
+                    android:textColor="@color/muted"
+                    android:textSize="12sp"/>
+
+                <!-- Help icon — tapping shows a Toast with location guidance -->
+                <TextView
+                    android:id="@+id/tvMvHelp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:text="?"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="@drawable/bg_help_circle"
+                    android:layout_marginStart="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Where to find MV file number"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etMvFileNumber"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="15-digit number — e.g. 123456789012345"
+                android:inputType="number"
+                android:maxLength="15"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Format hint strip below MV field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@color/black_ele"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ℹ"
+                    android:textColor="@color/muted"
+                    android:textSize="13sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Exactly 15 digits — printed beside &quot;MV File No.&quot; at the top-right of your OR or CR."
+                    android:textColor="@color/muted"
+                    android:textSize="11sp"
+                    android:lineSpacingMultiplier="1.4"/>
+            </LinearLayout>
+
+            <!-- Inline validation feedback for MV File Number -->
+            <TextView
+                android:id="@+id/tvMvFileNumberError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/danger"
+                android:textSize="11sp"
+                android:paddingStart="4dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <!-- Vehicle Make -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Vehicle make *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etVehicleMake"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="e.g. Toyota"
+                android:inputType="textCapSentences"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:id="@+id/tvVehicleMakeError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/danger"
+                android:textSize="11sp"
+                android:paddingStart="4dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <!-- Vehicle Model -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Vehicle model *"
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etVehicleModel"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="e.g. Vios 1.3 XLE MT"
+                android:inputType="textCapSentences"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:id="@+id/tvVehicleModelError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/danger"
+                android:textSize="11sp"
+                android:paddingStart="4dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"/>
+
+            <!-- ── Divider ──────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_card"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- ── Section: Document Uploads ─────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Document uploads"
+                    android:textColor="@color/yellow"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All 3 required"
+                    android:textColor="@color/yellow"
+                    android:textSize="10sp"
+                    android:background="@color/black_card"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap a card to select a photo from your gallery. Ensure documents are clear and fully visible."
+                android:textColor="@color/muted"
+                android:textSize="11sp"
+                android:lineSpacingMultiplier="1.4"
+                android:layout_marginBottom="14dp"/>
+
+            <!-- ── Upload Card: Driver's License ─────────────────────── -->
+            <LinearLayout
+                android:id="@+id/cardUploadDl"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:background="@color/black_card"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Upload Driver's License photo">
+
+                <!-- Thumbnail preview / placeholder -->
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black_ele">
+
+                    <!-- Placeholder icon, hidden once photo is chosen -->
+                    <TextView
+                        android:id="@+id/tvDlPlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="🪪"
+                        android:textSize="28sp"
+                        android:gravity="center"/>
+
+                    <!-- Actual thumbnail, visible="gone" until a photo is picked -->
+                    <ImageView
+                        android:id="@+id/imgDlPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"/>
+                </FrameLayout>
+
+                <!-- Card body -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Driver's license"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DL · Front side"
+                        android:textColor="@color/yellow"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <!-- Status label: "Tap to upload" → "✔ Uploaded" -->
+                    <TextView
+                        android:id="@+id/tvDlUploadStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to upload"
+                        android:textColor="@color/muted"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <!-- Right trigger arrow -->
+                <TextView
+                    android:layout_width="44dp"
+                    android:layout_height="match_parent"
+                    android:text="›"
+                    android:textColor="@color/muted"
+                    android:textSize="24sp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <!-- ── Upload Card: Official Receipt ─────────────────────── -->
+            <LinearLayout
+                android:id="@+id/cardUploadOr"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:background="@color/black_card"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Upload Official Receipt photo">
+
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black_ele">
+
+                    <TextView
+                        android:id="@+id/tvOrPlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="🧾"
+                        android:textSize="28sp"
+                        android:gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/imgOrPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Official receipt"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OR · Current year"
+                        android:textColor="@color/yellow"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvOrUploadStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to upload"
+                        android:textColor="@color/muted"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="44dp"
+                    android:layout_height="match_parent"
+                    android:text="›"
+                    android:textColor="@color/muted"
+                    android:textSize="24sp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <!-- ── Upload Card: Certificate of Registration ───────────── -->
+            <LinearLayout
+                android:id="@+id/cardUploadCr"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:background="@color/black_card"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Upload Certificate of Registration photo">
+
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black_ele">
+
+                    <TextView
+                        android:id="@+id/tvCrPlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="📄"
+                        android:textSize="28sp"
+                        android:gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/imgCrPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Certificate of registration"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CR · Blue LTO card"
+                        android:textColor="@color/yellow"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCrUploadStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to upload"
+                        android:textColor="@color/muted"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="44dp"
+                    android:layout_height="match_parent"
+                    android:text="›"
+                    android:textColor="@color/muted"
+                    android:textSize="24sp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <!-- All-docs-uploaded confirmation strip (hidden until all 3 done) -->
+            <LinearLayout
+                android:id="@+id/layoutAllDocsUploaded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="#0A2A0A"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✔"
+                    android:textColor="@color/success"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="All 3 documents uploaded. You're ready to continue."
+                    android:textColor="@color/success"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.4"/>
+            </LinearLayout>
+
+            <!-- ── Navigation Buttons ─────────────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/btnStep4Back"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="← BACK"
+                    android:backgroundTint="@color/black_card"
+                    android:textColor="@color/muted"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnStep4Next"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="2"
+                    android:text="CONTINUE →"
+                    android:backgroundTint="@color/yellow"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:enabled="false"/>
+            </LinearLayout>
+        </LinearLayout>
+        <!-- ════════════════════════════════════════════
+             STEP 5 — License Photo + OCR
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="License Photo Verification"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take a clear photo of your driver's license front. Our system will read the license number and cross-check it with what you entered."
+                android:textColor="@color/muted"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="20dp"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/black_card"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutLicensePlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🪪"
+                        android:textSize="48sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No photo yet"
+                        android:textColor="@color/muted"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imgLicensePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btnCaptureLicense"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="📷  CAPTURE LICENSE PHOTO"
+                android:backgroundTint="@color/black_card"
+                android:textColor="@color/yellow"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvOcrResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"
+                android:padding="12dp"
+                android:background="@color/black_card"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvOcrStatus"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
 
                 <Button
                     android:id="@+id/btnStep5Back"
@@ -767,127 +1345,11 @@
                     android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
-
         <!-- ════════════════════════════════════════════
-             STEP 6 — Contact Information
+             STEP 6 — Review & Confirm
              ════════════════════════════════════════════ -->
         <LinearLayout
             android:id="@+id/layoutStep6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Contact Information"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="How can we reach you? Your email will also be used to sign in."
-                android:textColor="@color/muted"
-                android:textSize="13sp"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Email -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Email Address *"
-                android:textColor="@color/muted" android:textSize="12sp"
-                android:layout_marginBottom="4dp"/>
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="juan@email.com"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Confirm Email -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Confirm Email Address *"
-                android:textColor="@color/muted" android:textSize="12sp"
-                android:layout_marginBottom="4dp"/>
-            <EditText
-                android:id="@+id/etEmailConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="Repeat your email"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
-                android:layout_marginBottom="8dp"/>
-
-            <!-- Email match indicator -->
-            <TextView
-                android:id="@+id/tvEmailValidation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="12sp"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Phone -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Phone Number"
-                android:textColor="@color/muted" android:textSize="12sp"
-                android:layout_marginBottom="4dp"/>
-            <EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="09XX-XXX-XXXX"
-                android:inputType="phone"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
-                android:layout_marginBottom="24dp"/>
-
-            <!-- Navigation -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnStep6Back"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:text="← BACK"
-                    android:backgroundTint="@color/black_card"
-                    android:textColor="@color/muted"
-                    android:layout_marginEnd="8dp"/>
-
-                <Button
-                    android:id="@+id/btnStep6Next"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="2"
-                    android:text="CONTINUE →"
-                    android:backgroundTint="@color/yellow"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- ════════════════════════════════════════════
-             STEP 7 — Review & Confirm
-             ════════════════════════════════════════════ -->
-        <LinearLayout
-            android:id="@+id/layoutStep7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -1051,7 +1513,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btnStep7Back"
+                    android:id="@+id/btnStep6Back"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_weight="1"
@@ -1061,7 +1523,7 @@
                     android:layout_marginEnd="8dp"/>
 
                 <Button
-                    android:id="@+id/btnStep7Next"
+                    android:id="@+id/btnStep6Next"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_weight="2"
@@ -1210,6 +1672,74 @@
                 android:textColor="@color/yellow"
                 android:gravity="center"
                 android:padding="12dp"/>
+
+        </LinearLayout>
+
+        <!-- ════════════════════════════════════════════
+             STEP 9 — Registration Success Confirmation
+             ════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layoutStep9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp"
+            android:visibility="gone">
+
+            <!-- Success icon circle -->
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="✔"
+                android:textSize="36sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:background="@color/success"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:id="@+id/tvSuccessHeadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Registration Submitted!"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/tvSuccessBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your account has been created. You can now sign in with your credentials."
+                android:textColor="@color/muted"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvSuccessNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Note: An admin will manually verify your license before your first booking."
+                android:textColor="@color/muted"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:layout_marginBottom="32dp"/>
+
+            <Button
+                android:id="@+id/btnGoToLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="GO TO SIGN IN"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 

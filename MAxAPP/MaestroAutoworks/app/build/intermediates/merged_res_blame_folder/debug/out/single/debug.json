@@ -4,6 +4,10 @@
         "source": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-main-38:\\drawable\\ic_launcher_foreground.xml"
     },
     {
+        "merged": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-merged_res-36:\\drawable_bg_help_circle.xml.flat",
+        "source": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-main-38:\\drawable\\bg_help_circle.xml"
+    },
+    {
         "merged": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-merged_res-36:\\layout_activity_home.xml.flat",
         "source": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-main-38:\\layout\\activity_home.xml"
     },
@@ -140,6 +144,10 @@
         "source": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-main-38:\\mipmap-mdpi\\ic_launcher.xml"
     },
     {
+        "merged": "com.maestro.autoworks.app-merged_res-36:/layout_activity_login.xml.flat",
+        "source": "com.maestro.autoworks.app-main-38:/layout/activity_login.xml"
+    },
+    {
         "merged": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-merged_res-36:\\layout_activity_search.xml.flat",
         "source": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-main-38:\\layout\\activity_search.xml"
     },
@@ -150,10 +158,6 @@
     {
         "merged": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-merged_res-36:\\layout_activity_about.xml.flat",
         "source": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-main-38:\\layout\\activity_about.xml"
-    },
-    {
-        "merged": "com.maestro.autoworks.app-merged_res-36:/layout_activity_register.xml.flat",
-        "source": "com.maestro.autoworks.app-main-38:/layout/activity_register.xml"
     },
     {
         "merged": "C:\\Users\\ilard\\.gradle\\daemon\\8.2\\com.maestro.autoworks.app-merged_res-36:\\layout_dialog_add_service.xml.flat",

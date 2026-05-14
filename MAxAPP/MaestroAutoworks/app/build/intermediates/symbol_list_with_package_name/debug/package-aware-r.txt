@@ -3006,6 +3006,7 @@ drawable abc_textfield_search_material
 drawable abc_vector_test
 drawable avd_hide_password
 drawable avd_show_password
+drawable bg_help_circle
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -3254,6 +3255,7 @@ id btnFpStep1Next
 id btnFpStep2Back
 id btnFpStep3Back
 id btnFpVerifyOtp
+id btnGoToLogin
 id btnLetsStart
 id btnLockoutToSecurityQ
 id btnLogout
@@ -3280,8 +3282,6 @@ id btnStep5Back
 id btnStep5Next
 id btnStep6Back
 id btnStep6Next
-id btnStep7Back
-id btnStep7Next
 id btnStep8Back
 id btnSubmitSecurityAnswer
 id btnToggleConfirmPassword
@@ -3295,6 +3295,9 @@ id buttonPanel
 id cache_measures
 id callMeasure
 id cancel_button
+id cardUploadCr
+id cardUploadDl
+id cardUploadOr
 id carryVelocity
 id cbBold
 id cbCarWash
@@ -3383,6 +3386,7 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id etAddress
 id etAdminNote
 id etBirthdate
 id etCaptchaAnswer
@@ -3401,6 +3405,8 @@ id etFpEmailOrPhone
 id etFpNewPassword
 id etFpOtp
 id etLastName
+id etLicensePlate
+id etMvFileNumber
 id etOtp1
 id etOtp2
 id etOtp3
@@ -3416,6 +3422,8 @@ id etSvcDuration
 id etSvcName
 id etSvcPrice
 id etUsername
+id etVehicleMake
+id etVehicleModel
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3457,8 +3465,11 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
+id imgCrPreview
+id imgDlPreview
 id imgLicensePreview
 id imgOrCrPreview
+id imgOrPreview
 id immediateStop
 id included
 id indeterminate
@@ -3472,6 +3483,7 @@ id jumpToStart
 id labeled
 id layout
 id layoutAdminNotice
+id layoutAllDocsUploaded
 id layoutConductors
 id layoutFpStep1
 id layoutFpStep2
@@ -3494,8 +3506,8 @@ id layoutStep3
 id layoutStep4
 id layoutStep5
 id layoutStep6
-id layoutStep7
 id layoutStep8
+id layoutStep9
 id layoutTimeSlot
 id left
 id leftToRight
@@ -3813,7 +3825,11 @@ id tvCaptchaError
 id tvCaptchaQuestion
 id tvCharCount
 id tvCompletionRate
+id tvCrPlaceholder
+id tvCrUploadStatus
 id tvDialogMessage
+id tvDlPlaceholder
+id tvDlUploadStatus
 id tvEmailValidation
 id tvEmpty
 id tvForgotPassword
@@ -3826,11 +3842,16 @@ id tvFpResend
 id tvFpStepIndicator
 id tvGoLogin
 id tvGoRegister
+id tvLicensePlateError
 id tvMaskedContact
+id tvMvFileNumberError
+id tvMvHelp
 id tvNoPending
 id tvNoToday
 id tvOcrResult
 id tvOcrStatus
+id tvOrPlaceholder
+id tvOrUploadStatus
 id tvOtpHint
 id tvPreview
 id tvRatingLabel
@@ -3844,6 +3865,9 @@ id tvServiceName
 id tvServicePrice
 id tvServicesCount
 id tvStepIndicator
+id tvSuccessBody
+id tvSuccessHeadline
+id tvSuccessNote
 id tvSummaryBirthdate
 id tvSummaryEmail
 id tvSummaryGender
@@ -3863,6 +3887,8 @@ id tvTimer
 id tvTodayCount
 id tvTotal
 id tvValidation
+id tvVehicleMakeError
+id tvVehicleModelError
 id tvVerifyGreeting
 id tvVerifySubtitle
 id tvWelcome
