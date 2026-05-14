@@ -55,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // ── Step containers ───────────────────────────────────────────────────────
     private LinearLayout layoutStep1, layoutStep2, layoutStep3,
-                         layoutStep4, layoutStep5, layoutStep6, layoutStep7, layoutStep8;
+            layoutStep4, layoutStep5, layoutStep6, layoutStep7, layoutStep8;
 
     // ── Step 1: Terms & CAPTCHA ───────────────────────────────────────────────
     private CheckBox cbTerms;
@@ -94,11 +94,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     // ── Step 7: Review Card ──────────────────────────────────────────────────
     private TextView tvSummaryName, tvSummaryUsername, tvSummaryBirthdate,
-                     tvSummaryGender, tvSummaryEmail, tvSummaryPhone, tvSummaryLicense;
+            tvSummaryGender, tvSummaryEmail, tvSummaryPhone, tvSummaryLicense;
 
     // ── Step 8: Password ─────────────────────────────────────────────────────
     private EditText etPassword, etConfirmPassword;
     private TextView tvValidation, tvCharCount;
+    private TextView btnTogglePassword, btnToggleConfirmPassword;
+    private boolean  passwordVisible = false, confirmPasswordVisible = false;
     private Button   btnCreateAccount;
 
     // ── Misc ──────────────────────────────────────────────────────────────────
@@ -112,34 +114,34 @@ public class RegisterActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────────────
 
     private final ActivityResultLauncher<Intent> cameraLauncher =
-        registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && licenseImageUri != null) {
-                    showLicensePreview(licenseImageUri);
-                    runOcr(licenseImageUri);
-                } else {
-                    licenseImageUri  = null;
-                    licenseImagePath = null;
-                    Toast.makeText(this, "Camera cancelled.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        );
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK && licenseImageUri != null) {
+                            showLicensePreview(licenseImageUri);
+                            runOcr(licenseImageUri);
+                        } else {
+                            licenseImageUri  = null;
+                            licenseImagePath = null;
+                            Toast.makeText(this, "Camera cancelled.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
 
     private final ActivityResultLauncher<Intent> galleryLauncher =
-        registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK
-                        && result.getData() != null
-                        && result.getData().getData() != null) {
-                    licenseImageUri  = result.getData().getData();
-                    licenseImagePath = licenseImageUri.toString();
-                    showLicensePreview(licenseImageUri);
-                    runOcr(licenseImageUri);
-                }
-            }
-        );
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK
+                                && result.getData() != null
+                                && result.getData().getData() != null) {
+                            licenseImageUri  = result.getData().getData();
+                            licenseImagePath = licenseImageUri.toString();
+                            showLicensePreview(licenseImageUri);
+                            runOcr(licenseImageUri);
+                        }
+                    }
+            );
 
     // ─────────────────────────────────────────────────────────────────────────
     //  onCreate
@@ -179,7 +181,7 @@ public class RegisterActivity extends AppCompatActivity {
         TextView tvGoLogin = findViewById(R.id.tvGoLogin);
         if (tvGoLogin != null) {
             tvGoLogin.setOnClickListener(v ->
-                startActivity(new Intent(this, LoginActivity.class)));
+                    startActivity(new Intent(this, LoginActivity.class)));
         }
     }
 
@@ -303,7 +305,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnStep3Next      = findViewById(R.id.btnStep3Next);
 
         cbHasConductors.setOnCheckedChangeListener((btn, checked) ->
-            layoutConductors.setVisibility(checked ? View.VISIBLE : View.GONE));
+                layoutConductors.setVisibility(checked ? View.VISIBLE : View.GONE));
 
         // Attach universal DatePickerHelper to expiry fields (future dates, up to 20 years out)
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -361,11 +363,11 @@ public class RegisterActivity extends AppCompatActivity {
             Object tag = tvOcrStatus.getTag();
             if ("mismatch".equals(tag)) {
                 new AlertDialog.Builder(this)
-                    .setTitle("License Number Mismatch")
-                    .setMessage("The license number in your photo does not match what you entered in Step 3.\n\nPlease retake the photo or go back and correct the number.")
-                    .setPositiveButton("Retake Photo", (d, w) -> showPhotoPicker())
-                    .setNegativeButton("Fix Number",   (d, w) -> showStep(3))
-                    .show();
+                        .setTitle("License Number Mismatch")
+                        .setMessage("The license number in your photo does not match what you entered in Step 3.\n\nPlease retake the photo or go back and correct the number.")
+                        .setPositiveButton("Retake Photo", (d, w) -> showPhotoPicker())
+                        .setNegativeButton("Fix Number",   (d, w) -> showStep(3))
+                        .show();
                 return;
             }
             showStep(5);
@@ -377,12 +379,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void showPhotoPicker() {
         new AlertDialog.Builder(this)
-            .setTitle("Add License Photo")
-            .setItems(new String[]{"Take Photo", "Choose from Gallery"}, (d, which) -> {
-                if (which == 0) launchCamera();
-                else            launchGallery();
-            })
-            .show();
+                .setTitle("Add License Photo")
+                .setItems(new String[]{"Take Photo", "Choose from Gallery"}, (d, which) -> {
+                    if (which == 0) launchCamera();
+                    else            launchGallery();
+                })
+                .show();
     }
 
     private void launchCamera() {
@@ -535,7 +537,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Attach universal DatePickerHelper for Birthdate (min age 16)
         DatePickerHelper.attach(this, etBirthdate,
-            /* minYear */ 1920, /* maxYear */ Calendar.getInstance().get(Calendar.YEAR) - 16);
+                /* minYear */ 1920, /* maxYear */ Calendar.getInstance().get(Calendar.YEAR) - 16);
 
         Button btnStep5Next = findViewById(R.id.btnStep5Next);
         Button btnStep5Back = findViewById(R.id.btnStep5Back);
@@ -698,14 +700,38 @@ public class RegisterActivity extends AppCompatActivity {
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupStep8() {
-        etPassword        = findViewById(R.id.etPassword);
-        etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        tvValidation      = findViewById(R.id.tvValidation);
-        tvCharCount       = findViewById(R.id.tvCharCount);
-        btnCreateAccount  = findViewById(R.id.btnRegister);
+        etPassword            = findViewById(R.id.etPassword);
+        etConfirmPassword     = findViewById(R.id.etConfirmPassword);
+        tvValidation          = findViewById(R.id.tvValidation);
+        tvCharCount           = findViewById(R.id.tvCharCount);
+        btnCreateAccount      = findViewById(R.id.btnRegister);
+        btnTogglePassword        = findViewById(R.id.btnTogglePassword);
+        btnToggleConfirmPassword = findViewById(R.id.btnToggleConfirmPassword);
 
         Button btnStep8Back = findViewById(R.id.btnStep8Back);
         if (btnStep8Back != null) btnStep8Back.setOnClickListener(v -> showStep(7));
+
+        // Eye-toggle: Password
+        btnTogglePassword.setOnClickListener(v -> {
+            passwordVisible = !passwordVisible;
+            etPassword.setInputType(passwordVisible
+                    ? android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                    : android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnTogglePassword.setText(passwordVisible ? "\uD83D\uDE48" : "\uD83D\uDC41");
+            etPassword.setTextColor(getColor(R.color.white));
+            etPassword.setSelection(etPassword.getText().length());
+        });
+
+        // Eye-toggle: Confirm Password
+        btnToggleConfirmPassword.setOnClickListener(v -> {
+            confirmPasswordVisible = !confirmPasswordVisible;
+            etConfirmPassword.setInputType(confirmPasswordVisible
+                    ? android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                    : android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnToggleConfirmPassword.setText(confirmPasswordVisible ? "\uD83D\uDE48" : "\uD83D\uDC41");
+            etConfirmPassword.setTextColor(getColor(R.color.white));
+            etConfirmPassword.setSelection(etConfirmPassword.getText().length());
+        });
 
         // Password strength meter
         etPassword.addTextChangedListener(new TextWatcher() {

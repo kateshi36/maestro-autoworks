@@ -93,12 +93,7 @@
             android:name="com.maestro.autoworks.activities.AboutActivity"
             android:exported="false" />
 
-        <!-- 9. WebView -->
-        <activity
-            android:name="com.maestro.autoworks.activities.WebViewActivity"
-            android:exported="false" />
-
-        <!-- 10. Identity Verification (OTP / 2FA — Step 10) -->
+        <!-- 9. Identity Verification (OTP / 2FA) -->
         <activity
             android:name="com.maestro.autoworks.activities.IdentityVerificationActivity"
             android:exported="false" />

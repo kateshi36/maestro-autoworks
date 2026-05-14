@@ -1075,17 +1075,33 @@
                 android:text="Password *"
                 android:textColor="@color/muted" android:textSize="12sp"
                 android:layout_marginBottom="4dp"/>
-            <EditText
-                android:id="@+id/etPassword"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="At least 6 characters"
-                android:inputType="textPassword"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp">
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="At least 6 characters"
+                    android:inputType="textPassword"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black_card"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="56dp"/>
+                <TextView
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center"
+                    android:text="&#128065;"
+                    android:textSize="20sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tvCharCount"
@@ -1101,17 +1117,33 @@
                 android:text="Confirm Password *"
                 android:textColor="@color/muted" android:textSize="12sp"
                 android:layout_marginBottom="4dp"/>
-            <EditText
-                android:id="@+id/etConfirmPassword"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="Repeat password"
-                android:inputType="textPassword"
-                android:textColor="@color/white"
-                android:textColorHint="@color/muted"
-                android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp">
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Repeat password"
+                    android:inputType="textPassword"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/muted"
+                    android:background="@color/black_card"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="56dp"/>
+                <TextView
+                    android:id="@+id/btnToggleConfirmPassword"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center"
+                    android:text="&#128065;"
+                    android:textSize="20sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tvValidation"

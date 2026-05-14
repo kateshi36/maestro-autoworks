@@ -52,10 +52,7 @@
         <!-- 8. About -->
         <activity android:name=".activities.AboutActivity" android:exported="false"/>
 
-        <!-- 9. WebView -->
-        <activity android:name=".activities.WebViewActivity" android:exported="false"/>
-
-        <!-- 10. Identity Verification (OTP / 2FA — Step 10) -->
+        <!-- 9. Identity Verification (OTP / 2FA) -->
         <activity android:name=".activities.IdentityVerificationActivity" android:exported="false"/>
 
         <!-- 11. Search -->
