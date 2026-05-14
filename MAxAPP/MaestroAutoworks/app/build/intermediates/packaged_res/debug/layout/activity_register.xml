@@ -9,6 +9,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp">
+        <!-- ═══ LOGO HEADER ═══ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp"
+            android:background="@color/black">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/logo_maestro"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maestro Autoworks"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+
 
         <!-- ── Header ── -->
         <TextView
@@ -301,19 +329,26 @@
                 android:layout_marginBottom="16dp"/>
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Expiry Date *  (YYYY-MM-DD)"
+                android:text="Expiry Date *"
                 android:textColor="@color/muted" android:textSize="12sp"
                 android:layout_marginBottom="4dp"/>
+            <!-- Tap to open DatePickerDialog; not directly editable -->
             <EditText
                 android:id="@+id/etDriversExpiry"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="2027-06-30"
-                android:inputType="text"
+                android:hint="Tap to select expiry date"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
                 android:textColor="@color/white"
                 android:textColorHint="@color/muted"
                 android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:drawableTint="@color/muted"
                 android:layout_marginBottom="20dp"/>
 
             <CheckBox
@@ -352,19 +387,26 @@
                     android:layout_marginBottom="16dp"/>
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Conductor's License Expiry *  (YYYY-MM-DD)"
+                    android:text="Conductor's License Expiry *"
                     android:textColor="@color/muted" android:textSize="12sp"
                     android:layout_marginBottom="4dp"/>
+                <!-- Tap to open DatePickerDialog; not directly editable -->
                 <EditText
                     android:id="@+id/etConductorsExpiry"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:hint="2027-06-30"
-                    android:inputType="text"
+                    android:hint="Tap to select expiry date"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:cursorVisible="false"
                     android:textColor="@color/white"
                     android:textColorHint="@color/muted"
                     android:background="@color/black"
-                    android:paddingStart="16dp" android:paddingEnd="16dp"/>
+                    android:paddingStart="16dp"
+                    android:paddingEnd="48dp"
+                    android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                    android:drawableTint="@color/muted"/>
             </LinearLayout>
 
             <LinearLayout
@@ -595,19 +637,26 @@
 
             <!-- Birthdate -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Date of Birth *  (YYYY-MM-DD)"
+                android:text="Date of Birth *"
                 android:textColor="@color/muted" android:textSize="12sp"
                 android:layout_marginBottom="4dp"/>
+            <!-- Tap to open DatePickerDialog; not directly editable -->
             <EditText
                 android:id="@+id/etBirthdate"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="1995-08-24"
-                android:inputType="text"
+                android:hint="Tap to select date"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
                 android:textColor="@color/white"
                 android:textColorHint="@color/muted"
                 android:background="@color/black_card"
-                android:paddingStart="16dp" android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:drawableTint="@color/muted"
                 android:layout_marginBottom="20dp"/>
 
             <!-- Gender -->

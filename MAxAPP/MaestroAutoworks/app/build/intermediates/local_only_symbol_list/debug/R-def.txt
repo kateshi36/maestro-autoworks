@@ -1,5 +1,8 @@
 R_DEF: Internal format may change without notice
 local
+anim splash_button_in
+anim splash_logo_in
+anim splash_text_in
 color black
 color black_card
 color black_ele
@@ -15,6 +18,7 @@ color success
 color white
 color yellow
 drawable ic_launcher_foreground
+drawable logo_maestro
 id autoComplete
 id btnAbout
 id btnAddService
@@ -32,10 +36,17 @@ id btnCaptureLicense
 id btnCaptureOrCr
 id btnEditService
 id btnFilter
+id btnFpResetPassword
+id btnFpStep1Next
+id btnFpStep2Back
+id btnFpStep3Back
+id btnFpVerifyOtp
+id btnLetsStart
 id btnLockoutToSecurityQ
 id btnLogout
 id btnManageAppointments
 id btnManageServices
+id btnPickDate
 id btnPmsBack
 id btnRegister
 id btnRepairTracker
@@ -60,12 +71,13 @@ id btnStep7Back
 id btnStep7Next
 id btnStep8Back
 id btnSubmitSecurityAnswer
+id btnToggleConfirmPassword
+id btnToggleNewPassword
+id btnTogglePassword
 id btnToggleService
 id btnUseSecurityQuestion
 id btnVerifyOtp
 id btnViewReports
-id btnVisitWebsite
-id calendarView
 id cbBold
 id cbCarWash
 id cbHasConductors
@@ -90,6 +102,10 @@ id etDriversLicNo
 id etEmail
 id etEmailConfirm
 id etFirstName
+id etFpConfirmPassword
+id etFpEmailOrPhone
+id etFpNewPassword
+id etFpOtp
 id etLastName
 id etOtp1
 id etOtp2
@@ -110,6 +126,9 @@ id imgLicensePreview
 id imgOrCrPreview
 id layoutAdminNotice
 id layoutConductors
+id layoutFpStep1
+id layoutFpStep2
+id layoutFpStep3
 id layoutFuelType
 id layoutLicenseBlocked
 id layoutLicensePlaceholder
@@ -171,6 +190,9 @@ id spinnerCarModel
 id spinnerService
 id spinnerStatus
 id spinnerYearModel
+id splashBrandName
+id splashLogo
+id splashTagline
 id statCompleted
 id statConfirmed
 id statCustomers
@@ -197,7 +219,6 @@ id tvApptPlate
 id tvApptService
 id tvApptStatus
 id tvAttempts
-id tvBack
 id tvCaptchaError
 id tvCaptchaQuestion
 id tvCharCount
@@ -205,6 +226,14 @@ id tvCompletionRate
 id tvDialogMessage
 id tvEmailValidation
 id tvEmpty
+id tvForgotPassword
+id tvFpBackToLogin
+id tvFpCountdown
+id tvFpOtpSentTo
+id tvFpPasswordMatch
+id tvFpPasswordStrength
+id tvFpResend
+id tvFpStepIndicator
 id tvGoLogin
 id tvGoRegister
 id tvMaskedContact
@@ -213,7 +242,6 @@ id tvNoToday
 id tvOcrResult
 id tvOcrStatus
 id tvOtpHint
-id tvPasswordInfo
 id tvPreview
 id tvRatingLabel
 id tvSearchResult
@@ -256,6 +284,7 @@ layout activity_admin_reports
 layout activity_admin_services
 layout activity_appointments
 layout activity_book
+layout activity_forgot_password
 layout activity_home
 layout activity_identity_verification
 layout activity_login
@@ -263,6 +292,7 @@ layout activity_main
 layout activity_register
 layout activity_search
 layout activity_services
+layout activity_splash
 layout dialog_add_service
 layout dialog_admin_action
 layout list_item_admin_appointment
@@ -282,4 +312,5 @@ string shop_url
 string tagline
 style OtpBox
 style Theme.MaestroAutoworks
+style Theme.MaestroAutoworks.NoActionBar
 xml file_provider_paths

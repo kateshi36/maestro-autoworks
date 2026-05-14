@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_APPT_STATUS     = "status";
     public static final String COL_APPT_RATING     = "rating";
     public static final String COL_APPT_ADMIN_NOTE  = "admin_notes";
-    // 25002500 New columns added in DB_VERSION 4 25002500
+    // New columns added in DB_VERSION 4
     public static final String COL_APPT_CAR_MODEL   = "car_model";
     public static final String COL_APPT_YEAR_MODEL  = "year_model";
     public static final String COL_APPT_FUEL_TYPE   = "fuel_type";
@@ -131,10 +131,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " (first_name,last_name,username,email,password,role) VALUES " +
                 "('Maestro','Admin','admin','admin@maestroautoworks.ph','Admin@1234','admin')");
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
-            // v1 → v2: add role column and admin_notes
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_ROLE + " TEXT NOT NULL DEFAULT 'customer'"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ADMIN_NOTE + " TEXT"); } catch (Exception ignored) {}
             db.execSQL("INSERT OR IGNORE INTO " + TABLE_USERS +
@@ -142,12 +142,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "('Maestro','Admin','admin','admin@maestroautoworks.ph','Admin@1234','admin')");
         }
         if (oldVersion < 3) {
-            // v2 → v3: add repair_tasks table
             db.execSQL(CREATE_REPAIR_TASKS);
             db.execSQL("UPDATE " + TABLE_USERS + " SET password='Admin@1234' WHERE username='admin' AND role='admin'");
         }
         if (oldVersion < 4) {
-            // v3 → v4: add car detail + OR/CR columns to appointments
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_CAR_MODEL   + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_YEAR_MODEL  + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_FUEL_TYPE   + " TEXT"); } catch (Exception ignored) {}
@@ -155,11 +153,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ORCR_IMAGE  + " TEXT"); } catch (Exception ignored) {}
         }
         if (oldVersion < 5) {
-            // v4 → v5: no new schema changes — columns were added in v4.
-            // This block exists so any device still on v4 triggers a clean
-            // onUpgrade pass without recreating the DB.
-            // Safe no-op: re-run the ALTER TABLEs with try/catch so that
-            // devices which somehow missed v4 still get the columns.
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_CAR_MODEL   + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_YEAR_MODEL  + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_FUEL_TYPE   + " TEXT"); } catch (Exception ignored) {}
@@ -167,7 +160,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_ORCR_IMAGE  + " TEXT"); } catch (Exception ignored) {}
         }
         if (oldVersion < 6) {
-            // v5 → v6: add license columns to users table
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_DL_NO     + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_DL_EXPIRY + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_CL_NO     + " TEXT"); } catch (Exception ignored) {}
@@ -175,7 +167,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_LIC_IMAGE + " TEXT"); } catch (Exception ignored) {}
         }
         if (oldVersion < 7) {
-            // v6 → v7: add personal info columns (birthdate, gender) to users table
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_BIRTHDATE + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_GENDER    + " TEXT"); } catch (Exception ignored) {}
         }
@@ -207,7 +198,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public User loginUser(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        // Allow login by email OR username
         Cursor c = db.query(TABLE_USERS, null,
                 "(" + COL_USERNAME + "=? OR " + COL_EMAIL + "=?) AND " + COL_PASSWORD + "=?",
                 new String[]{usernameOrEmail, usernameOrEmail, password}, null, null, null);
@@ -218,6 +208,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
         db.close();
         return user;
+    }
+
+    /**
+     * Looks up a user by their email address OR phone number.
+     * Used by the Forgot Password flow to verify the account exists.
+     *
+     * @param input Email address or phone number entered by the user.
+     * @return Matching {@link User}, or {@code null} if not found.
+     */
+    public User getUserByEmailOrPhone(String input) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_USERS, null,
+                COL_EMAIL + "=? OR " + COL_PHONE + "=?",
+                new String[]{input, input}, null, null, null);
+        User user = null;
+        if (c.moveToFirst()) {
+            user = cursorToUser(c);
+        }
+        c.close();
+        db.close();
+        return user;
+    }
+
+    /**
+     * Updates the password for the given user ID.
+     * Used after OTP verification in the Forgot Password flow.
+     *
+     * @param userId      ID of the user whose password should be reset.
+     * @param newPassword Plain-text new password (store as-is to match existing convention).
+     * @return {@code true} if the row was updated, {@code false} otherwise.
+     */
+    public boolean updatePassword(int userId, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_PASSWORD, newPassword);
+        int rows = db.update(TABLE_USERS, cv,
+                COL_ID + "=?", new String[]{String.valueOf(userId)});
+        db.close();
+        return rows > 0;
     }
 
     private User cursorToUser(Cursor c) {
@@ -390,7 +419,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         a.rating      = c.getInt(c.getColumnIndexOrThrow(COL_APPT_RATING));
         int anIdx = c.getColumnIndex(COL_APPT_ADMIN_NOTE);
         if (anIdx >= 0) a.adminNote = c.getString(anIdx);
-        // ── New columns (DB_VERSION 5) — guarded so old cursors don't crash ──
         int cmIdx = c.getColumnIndex(COL_APPT_CAR_MODEL);
         if (cmIdx >= 0) a.carModel = c.getString(cmIdx);
         int ymIdx = c.getColumnIndex(COL_APPT_YEAR_MODEL);
@@ -406,7 +434,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // ── REPORTING METHODS ───────────────────────────────────────────────────
 
-    /** Count appointments grouped by status for reports summary. */
     public java.util.Map<String, Integer> getStatusCounts() {
         java.util.Map<String, Integer> map = new java.util.LinkedHashMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -420,7 +447,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return map;
     }
 
-    /** Top services by booking count. Returns list of String[] {name, count, revenue}. */
     public java.util.List<String[]> getTopServices(int limit) {
         java.util.List<String[]> list = new java.util.ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -437,7 +463,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    /** Bookings per date (last 14 days). Returns list of String[] {date, count}. */
     public java.util.List<String[]> getDailyBookings() {
         java.util.List<String[]> list = new java.util.ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -504,5 +529,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public int id, apptId, sortOrder;
         public String taskName, assignedTo, status;
     }
-
 }

@@ -11,6 +11,33 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- ═══ LOGO HEADER ═══ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp"
+            android:background="@color/black">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/logo_maestro"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maestro Autoworks"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
         <!-- HEADER -->
         <TextView
             android:layout_width="match_parent"
@@ -154,32 +181,53 @@
             android:paddingEnd="16dp"
             android:layout_marginBottom="16dp"/>
 
-        <!-- PASSWORD -->
+        <!-- PASSWORD with eye toggle -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="Password" android:textColor="@color/muted" android:textSize="12sp"
             android:layout_marginBottom="4dp"/>
 
-        <EditText
-            android:id="@+id/etPassword"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:hint="Enter your password"
-            android:inputType="textPassword"
-            android:textColor="@color/yellow"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="4dp">
 
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Enter your password"
+                android:inputType="textPassword"
+                android:textColor="@color/yellow"
+                android:textColorHint="@color/muted"
+                android:background="@color/black_card"
+                android:paddingStart="16dp"
+                android:paddingEnd="56dp"/>
+
+            <!-- Eye toggle button -->
+            <TextView
+                android:id="@+id/btnTogglePassword"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:text="&#128065;"
+                android:textSize="20sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+        </RelativeLayout>
+
+        <!-- Forgot Password link -->
         <TextView
-            android:id="@+id/tvPasswordInfo"
+            android:id="@+id/tvForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Password text color: YELLOW (secure mode)"
+            android:layout_gravity="end"
+            android:layout_marginBottom="24dp"
+            android:text="Forgot Password?"
             android:textColor="@color/yellow"
-            android:textSize="11sp"
-            android:layout_marginBottom="24dp"/>
+            android:textSize="12sp"
+            android:padding="4dp"/>
 
         <!-- SIGN IN BUTTON (label changes with role) -->
         <Button
@@ -199,36 +247,6 @@
             android:layout_height="wrap_content"
             android:text="Don&#8217;t have an account? Sign Up"
             android:textColor="@color/yellow"
-            android:gravity="center"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- DIVIDER -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/black_card"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- VISIT WEBSITE -->
-        <Button
-            android:id="@+id/btnVisitWebsite"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="VISIT OUR WEBSITE"
-            android:backgroundTint="@color/black_card"
-            android:textColor="@color/muted"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- BACK -->
-        <TextView
-            android:id="@+id/tvBack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="&#8592; Back to Home"
-            android:textColor="@color/muted"
             android:gravity="center"
             android:padding="12dp"
             android:layout_marginBottom="16dp"/>

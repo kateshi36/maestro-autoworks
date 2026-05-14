@@ -39,16 +39,22 @@
         android:testOnly="true"
         android:theme="@style/Theme.MaestroAutoworks" >
 
-        <!-- 1. Splash / Landing -->
+        <!-- 0. Animated Splash Screen (LAUNCHER) -->
         <activity
-            android:name="com.maestro.autoworks.activities.MainActivity"
-            android:exported="true" >
+            android:name="com.maestro.autoworks.activities.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MaestroAutoworks.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 1. Public Landing Page -->
+        <activity
+            android:name="com.maestro.autoworks.activities.MainActivity"
+            android:exported="false" />
 
         <!-- 2. Login -->
         <activity
@@ -59,7 +65,9 @@
         <activity
             android:name="com.maestro.autoworks.activities.RegisterActivity"
             android:exported="false" />
-
+        <activity
+            android:name="com.maestro.autoworks.activities.ForgotPasswordActivity"
+            android:exported="false" />
         <!-- 4. Customer Home -->
         <activity
             android:name="com.maestro.autoworks.activities.HomeActivity"

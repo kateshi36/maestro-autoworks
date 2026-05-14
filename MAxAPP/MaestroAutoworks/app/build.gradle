@@ -22,7 +22,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    // ── Fix: JavaMail JARs both contain META-INF/NOTICE.md / LICENSE.md ──────
     packagingOptions {
         resources {
             excludes += [
@@ -31,6 +30,19 @@ android {
                     'META-INF/NOTICE',
                     'META-INF/LICENSE'
             ]
+        }
+    }
+}
+
+// Force every transitive pull of coordinatorlayout to resolve to exactly
+// one version. This collapses the two separate R-class dex files into one
+// without stripping coordinatorlayout's resources from material's layouts.
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'androidx.coordinatorlayout'
+                && details.requested.name == 'coordinatorlayout') {
+            details.useVersion '1.2.0'
+            details.because 'Pin single version to avoid duplicate R$attr dex classes'
         }
     }
 }

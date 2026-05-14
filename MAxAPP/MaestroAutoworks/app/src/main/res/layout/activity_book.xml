@@ -10,6 +10,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp">
+        <!-- ═══ LOGO HEADER ═══ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp"
+            android:background="@color/black">
+
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/logo_maestro"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maestro Autoworks"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+
 
         <TextView
             android:layout_width="match_parent"
@@ -227,19 +255,17 @@
             android:text="PREFERRED DATE" android:textColor="@color/yellow"
             android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
 
-        <!-- Selected date chip -->
+        <!-- Date picker row: shows chosen date + calendar button -->
         <LinearLayout
             android:id="@+id/layoutSelectedDate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@color/black_card"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:layout_marginBottom="4dp">
+            android:paddingEnd="8dp"
+            android:layout_marginBottom="24dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -253,18 +279,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="No date selected — tap the calendar below"
+                android:text="Tap to choose a date"
                 android:textColor="@color/muted"
                 android:textSize="14sp"/>
-        </LinearLayout>
 
-        <!-- Inline CalendarView -->
-        <CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/black_card"
-            android:layout_marginBottom="24dp"/>
+            <Button
+                android:id="@+id/btnPickDate"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="SELECT"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/yellow"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>\n
+        </LinearLayout>
 
         <!-- Hidden EditText keeps the date string for the existing save logic -->
         <EditText

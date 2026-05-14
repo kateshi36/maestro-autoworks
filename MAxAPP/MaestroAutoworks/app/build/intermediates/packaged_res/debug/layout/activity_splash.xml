@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SplashActivity: Animated intro screen with logo, brand name and Let's Start button -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/black"
+    android:padding="40dp">
+
+    <!-- ── Logo ── -->
+    <ImageView
+        android:id="@+id/splashLogo"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/logo_maestro"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- ── Brand Name ── -->
+    <TextView
+        android:id="@+id/splashBrandName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maestro Autoworks"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- ── Tagline ── -->
+    <TextView
+        android:id="@+id/splashTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your car deserves expert hands."
+        android:textColor="@color/yellow"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_marginBottom="56dp"/>
+
+    <!-- ── Let's Start Button ── -->
+    <Button
+        android:id="@+id/btnLetsStart"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:text="Let's Start!"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/yellow"
+        android:visibility="invisible"/>
+
+</LinearLayout>

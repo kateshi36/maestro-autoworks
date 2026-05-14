@@ -47,7 +47,8 @@ public class IdentityVerificationActivity extends AppCompatActivity {
     public static final String EXTRA_USERNAME       = "username";
     public static final String EXTRA_FULL_NAME      = "full_name";
     public static final String EXTRA_ROLE           = "role";
-    public static final String EXTRA_IS_ADMIN       = "is_admin";
+    // NOTE: EXTRA_IS_ADMIN intentionally removed — admin accounts bypass verification
+    //       and are routed directly from LoginActivity → AdminDashboardActivity.
     public static final String EXTRA_FIRST_NAME     = "first_name";
     public static final String EXTRA_MASKED_CONTACT = "masked_contact";
     public static final String EXTRA_PHONE_NUMBER   = "phone_number";
@@ -96,7 +97,6 @@ public class IdentityVerificationActivity extends AppCompatActivity {
     // ── User data ─────────────────────────────────────────────────────────────
     private int     userId;
     private String  username, fullName, role, firstName, maskedContact, phoneNumber, email;
-    private boolean isAdmin;
 
     // ── Security question ─────────────────────────────────────────────────────
     private static final String SECURITY_QUESTION = "What is the name of your first car?";
@@ -158,7 +158,6 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         username      = in.getStringExtra(EXTRA_USERNAME);
         fullName      = in.getStringExtra(EXTRA_FULL_NAME);
         role          = in.getStringExtra(EXTRA_ROLE);
-        isAdmin       = in.getBooleanExtra(EXTRA_IS_ADMIN, false);
         firstName     = in.getStringExtra(EXTRA_FIRST_NAME);
         maskedContact = in.getStringExtra(EXTRA_MASKED_CONTACT);
         phoneNumber   = in.getStringExtra(EXTRA_PHONE_NUMBER);
@@ -512,17 +511,12 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         if (countDownTimer != null) countDownTimer.cancel();
         session.saveSession(userId, fullName, username, role);
         String greetName = (firstName != null && !firstName.isEmpty()) ? firstName : username;
-        if (isAdmin) {
-            Toast.makeText(this, "Identity verified! Welcome, Admin " + greetName + " \uD83D\uDD27", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(this, AdminDashboardActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        } else {
-            Toast.makeText(this, "Identity verified! Welcome back, " + greetName + " \uD83D\uDD27", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(this, HomeActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        }
+        Toast.makeText(this,
+                "Identity verified! Welcome back, " + greetName + " \uD83D\uDD27",
+                Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, HomeActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 
     @Override

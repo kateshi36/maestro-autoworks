@@ -28,10 +28,13 @@ import com.maestro.autoworks.R;
 import com.maestro.autoworks.db.DatabaseHelper;
 import com.maestro.autoworks.models.User;
 
+import com.maestro.autoworks.utils.DatePickerHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -302,6 +305,11 @@ public class RegisterActivity extends AppCompatActivity {
         cbHasConductors.setOnCheckedChangeListener((btn, checked) ->
             layoutConductors.setVisibility(checked ? View.VISIBLE : View.GONE));
 
+        // Attach universal DatePickerHelper to expiry fields (future dates, up to 20 years out)
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        DatePickerHelper.attach(this, etDriversExpiry,   currentYear, currentYear + 20);
+        DatePickerHelper.attach(this, etConductorsExpiry, currentYear, currentYear + 20);
+
         btnStep3Next.setOnClickListener(v -> {
             String dlNo     = etDriversLicNo.getText().toString().trim();
             String dlExpiry = etDriversExpiry.getText().toString().trim();
@@ -524,6 +532,10 @@ public class RegisterActivity extends AppCompatActivity {
         etUsername  = findViewById(R.id.etUsername);
         etBirthdate = findViewById(R.id.etBirthdate);
         rgGender    = findViewById(R.id.rgGender);
+
+        // Attach universal DatePickerHelper for Birthdate (min age 16)
+        DatePickerHelper.attach(this, etBirthdate,
+            /* minYear */ 1920, /* maxYear */ Calendar.getInstance().get(Calendar.YEAR) - 16);
 
         Button btnStep5Next = findViewById(R.id.btnStep5Next);
         Button btnStep5Back = findViewById(R.id.btnStep5Back);
@@ -811,4 +823,5 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Registration failed. Try again.", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

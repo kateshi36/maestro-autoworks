@@ -15,7 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.*;
-import android.widget.CalendarView;
+import com.maestro.autoworks.utils.DatePickerHelper;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -79,7 +79,7 @@ public class BookActivity extends AppCompatActivity {
     // ── Existing fields ──
     private Spinner      spinnerService;
     private EditText     etCarPlate, etDate;
-    private CalendarView calendarView;
+    private Button       btnPickDate;
     private TextView     tvSelectedDate;
     private RadioGroup   rgTimeSlot;
     private LinearLayout layoutTimeSlot;
@@ -194,7 +194,7 @@ public class BookActivity extends AppCompatActivity {
         spinnerService  = findViewById(R.id.spinnerService);
         etCarPlate      = findViewById(R.id.etCarPlate);
         etDate          = findViewById(R.id.etDate);
-        calendarView    = findViewById(R.id.calendarView);
+        btnPickDate     = findViewById(R.id.btnPickDate);
         tvSelectedDate  = findViewById(R.id.tvSelectedDate);
         rgTimeSlot      = findViewById(R.id.rgTimeSlot);
         layoutTimeSlot  = findViewById(R.id.layoutTimeSlot);
@@ -237,35 +237,57 @@ public class BookActivity extends AppCompatActivity {
     }
 
     /**
-     * Wires up the inline CalendarView.
-     *
-     * • Prevents selecting past dates — the minimum date is set to today.
-     * • On date change: formats the chosen date as "EEE, MMM dd yyyy"
-     *   (e.g. "Thu, May 15 2025") and shows it in tvSelectedDate.
-     * • Also writes a YYYY-MM-DD string into the hidden etDate so the
-     *   existing validation / save logic continues to work unchanged.
+     * Wires up the date picker button.
+     * Opens a DatePickerDialog pre-set to today; past dates are disabled.
+     * On confirm: formats the date for display and stores YYYY-MM-DD in etDate.
      */
     private void setupCalendarPicker() {
-        // Block past dates
-        calendarView.setMinDate(System.currentTimeMillis());
+        // Both the row and the button open the picker
+        findViewById(R.id.layoutSelectedDate).setOnClickListener(v -> openDatePicker());
+        btnPickDate.setOnClickListener(v -> openDatePicker());
+    }
 
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            // month is 0-based from CalendarView
-            Calendar cal = Calendar.getInstance();
-            cal.set(year, month, dayOfMonth);
+    private void openDatePicker() {
+        // Dismiss keyboard and open the universal date picker.
+        // On selection DatePickerHelper writes YYYY-MM-DD to etDate;
+        // we then update the human-readable tvSelectedDate label.
+        int todayYear = Calendar.getInstance().get(Calendar.YEAR);
 
-            // Friendly display: "Thursday, May 15 2025"
-            SimpleDateFormat displayFmt = new SimpleDateFormat("EEEE, MMMM d yyyy", Locale.getDefault());
-            String display = displayFmt.format(cal.getTime());
-
-            // Storage format for DB / validation: "2025-05-15"
-            SimpleDateFormat storageFmt = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String storage = storageFmt.format(cal.getTime());
-
-            tvSelectedDate.setText(display);
+        android.app.DatePickerDialog.OnDateSetListener onDateSet = (view, y, m, d) -> {
+            Calendar selected = Calendar.getInstance();
+            selected.set(y, m, d);
+            java.text.SimpleDateFormat displayFmt =
+                new java.text.SimpleDateFormat("EEEE, MMMM d yyyy", java.util.Locale.getDefault());
+            java.text.SimpleDateFormat storageFmt =
+                new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+            tvSelectedDate.setText(displayFmt.format(selected.getTime()));
             tvSelectedDate.setTextColor(getColor(R.color.yellow));
-            etDate.setText(storage);
-        });
+            etDate.setText(storageFmt.format(selected.getTime()));
+        };
+
+        // Build dialog via DatePickerHelper then override the listener so we can
+        // also populate tvSelectedDate with the friendly display format.
+        Calendar today = Calendar.getInstance();
+        int year  = today.get(Calendar.YEAR);
+        int month = today.get(Calendar.MONTH);
+        int day   = today.get(Calendar.DAY_OF_MONTH);
+
+        android.app.DatePickerDialog dialog = new android.app.DatePickerDialog(
+            this, onDateSet, year, month, day);
+
+        // Allow today up to one year in the future — no past bookings
+        dialog.getDatePicker().setMinDate(today.getTimeInMillis());
+        Calendar maxCal = Calendar.getInstance();
+        maxCal.set(todayYear + 1, Calendar.DECEMBER, 31);
+        dialog.getDatePicker().setMaxDate(maxCal.getTimeInMillis());
+
+        // Hide soft keyboard before showing dialog
+        android.view.inputmethod.InputMethodManager imm =
+            (android.view.inputmethod.InputMethodManager)
+            getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(etDate.getWindowToken(), 0);
+
+        dialog.show();
     }
 
     private void setupServiceSpinner() {
