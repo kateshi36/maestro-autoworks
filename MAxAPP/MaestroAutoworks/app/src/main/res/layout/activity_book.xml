@@ -222,22 +222,56 @@
             android:paddingStart="16dp" android:paddingEnd="16dp"
             android:layout_marginBottom="24dp"/>
 
-        <!-- ── EDITTEXT: Appointment Date -->
+        <!-- ── CALENDAR: Preferred Date ── -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="PREFERRED DATE" android:textColor="@color/yellow"
             android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
 
+        <!-- Selected date chip -->
+        <LinearLayout
+            android:id="@+id/layoutSelectedDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/black_card"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&#128197;"
+                android:textSize="20sp"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:id="@+id/tvSelectedDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="No date selected — tap the calendar below"
+                android:textColor="@color/muted"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Inline CalendarView -->
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_card"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Hidden EditText keeps the date string for the existing save logic -->
         <EditText
             android:id="@+id/etDate"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="YYYY-MM-DD"
-            android:inputType="date"
-            android:textColor="@color/white"
-            android:textColorHint="@color/muted"
-            android:background="@color/black_card"
-            android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_height="0dp"
+            android:visibility="gone"/>
 
         <!-- ── RADIO BUTTONS: Time Slot & Background Color changes -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

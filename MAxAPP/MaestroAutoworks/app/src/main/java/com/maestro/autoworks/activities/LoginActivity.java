@@ -189,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra(IdentityVerificationActivity.EXTRA_FIRST_NAME,     user.firstName);
         intent.putExtra(IdentityVerificationActivity.EXTRA_MASKED_CONTACT, maskedContact);
         intent.putExtra(IdentityVerificationActivity.EXTRA_PHONE_NUMBER,   user.phone);
+        intent.putExtra(IdentityVerificationActivity.EXTRA_EMAIL,          user.email);  // ← NEW
         startActivity(intent);
         finish(); // clear LoginActivity from back stack
     }

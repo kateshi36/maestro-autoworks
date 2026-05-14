@@ -23,29 +23,22 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.db.SessionManager;
+import com.maestro.autoworks.utils.EmailOtpSender;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * IdentityVerificationActivity — Step 10: Post-Login Identity Verification
  * ────────────────────────────────────────────────────────────────────────────
- * Flow:
- *   1. Firebase sends a real SMS OTP to the user's registered phone number.
- *   2. The user enters the 6-digit code in the split 6-box input.
- *   3. A 60-second resend cooldown runs; the user may resend once it expires.
- *   4. On correct OTP → Firebase credential verified → routes to home/dashboard.
- *   5. On 3 failed attempts → locks out and shows a security-question fallback.
+ * Channels:
+ *   • SMS OTP   — Firebase Phone Auth sends a real SMS to the registered phone.
+ *   • Email OTP — A 6-digit code is generated locally and emailed to the
+ *                 user's registered email via JavaMail / Gmail SMTP.
  *
  * Extras passed in via Intent:
- *   EXTRA_USER_ID        (int)     — authenticated user's DB id
- *   EXTRA_USERNAME       (String)  — display name / username
- *   EXTRA_FULL_NAME      (String)  — e.g. "Juan dela Cruz"
- *   EXTRA_ROLE           (String)  — "customer" | "admin"
- *   EXTRA_IS_ADMIN       (boolean) — convenience flag
- *   EXTRA_FIRST_NAME     (String)  — first name for greeting
- *   EXTRA_MASKED_CONTACT (String)  — masked phone shown to user
- *   EXTRA_PHONE_NUMBER   (String)  — full E.164 phone, e.g. "+639171234567"
- * ────────────────────────────────────────────────────────────────────────────
+ *   EXTRA_USER_ID, EXTRA_USERNAME, EXTRA_FULL_NAME, EXTRA_ROLE,
+ *   EXTRA_IS_ADMIN, EXTRA_FIRST_NAME, EXTRA_MASKED_CONTACT,
+ *   EXTRA_PHONE_NUMBER, EXTRA_EMAIL  (NEW)
  */
 public class IdentityVerificationActivity extends AppCompatActivity {
 
@@ -58,46 +51,56 @@ public class IdentityVerificationActivity extends AppCompatActivity {
     public static final String EXTRA_FIRST_NAME     = "first_name";
     public static final String EXTRA_MASKED_CONTACT = "masked_contact";
     public static final String EXTRA_PHONE_NUMBER   = "phone_number";
+    public static final String EXTRA_EMAIL          = "email";  // ← NEW
 
     // ── OTP config ────────────────────────────────────────────────────────────
     private static final int  OTP_LENGTH    = 6;
     private static final int  MAX_ATTEMPTS  = 3;
-    private static final long RESEND_MILLIS = 60_000L; // 60 seconds
+    private static final long RESEND_MILLIS = 60_000L;
+
+    // ── OTP channel ───────────────────────────────────────────────────────────
+    private enum OtpChannel { SMS, EMAIL }
+    private OtpChannel activeChannel = OtpChannel.SMS;
 
     // ── UI refs ───────────────────────────────────────────────────────────────
-    private TextView   tvGreeting, tvSubtitle, tvMaskedContact;
-    private TextView   tvOtpHint;   // kept for layout compatibility — hidden in production
-    private EditText[] otpBoxes = new EditText[OTP_LENGTH];
-    private Button     btnVerify, btnResend;
-    private TextView   btnUseSecurityQuestion;
-    private TextView   tvTimer, tvAttempts;
+    private TextView     tvGreeting, tvSubtitle, tvMaskedContact, tvOtpHint;
+    private TextView     tvTimer, tvAttempts;
+    private EditText[]   otpBoxes = new EditText[OTP_LENGTH];
+    private Button       btnVerify, btnResend;
+    private TextView     btnUseSecurityQuestion;
     private LinearLayout layoutOtp, layoutSecurityQuestion, layoutLockout;
-    private EditText   etSecurityAnswer;
-    private TextView   tvSecurityQuestion;
+    private EditText     etSecurityAnswer;
+    private TextView     tvSecurityQuestion;
+    private LinearLayout tabSms, tabEmail;
 
     // ── State ─────────────────────────────────────────────────────────────────
-    private int     attemptsLeft = MAX_ATTEMPTS;
+    private int            attemptsLeft = MAX_ATTEMPTS;
     private CountDownTimer countDownTimer;
-    private boolean timerRunning = false;
+    private boolean        timerRunning = false;
 
-    // ── Firebase Phone Auth ───────────────────────────────────────────────────
-    private FirebaseAuth         mAuth;
-    private String               mVerificationId;
+    // ── Firebase SMS ──────────────────────────────────────────────────────────
+    private FirebaseAuth                          mAuth;
+    private String                                mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private boolean              codeSent = false;
+    private boolean                               smsCodeSent = false;
 
-    // ── Session / DB ──────────────────────────────────────────────────────────
+    // ── Email OTP ─────────────────────────────────────────────────────────────
+    private String  emailOtpCode   = null;
+    private boolean emailOtpSent   = false;
+    private long    emailOtpSentAt = 0L;
+    private static final long EMAIL_OTP_EXPIRY_MS = 5 * 60 * 1000L;
+
+    // ── Session ───────────────────────────────────────────────────────────────
     private SessionManager session;
 
-    // ── User data from intent ─────────────────────────────────────────────────
+    // ── User data ─────────────────────────────────────────────────────────────
     private int     userId;
-    private String  username, fullName, role, firstName, maskedContact, phoneNumber;
+    private String  username, fullName, role, firstName, maskedContact, phoneNumber, email;
     private boolean isAdmin;
 
-    // ── Security question fallback ────────────────────────────────────────────
-    // In a real app these would be stored per-user in the DB.
+    // ── Security question ─────────────────────────────────────────────────────
     private static final String SECURITY_QUESTION = "What is the name of your first car?";
-    private static final String SECURITY_ANSWER   = "maestro"; // lowercase comparison
+    private static final String SECURITY_ANSWER   = "maestro";
 
     // ─────────────────────────────────────────────────────────────────────────
     // Firebase callbacks
@@ -105,48 +108,30 @@ public class IdentityVerificationActivity extends AppCompatActivity {
 
     private final PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks =
             new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-        /**
-         * Instant verification (same device) — sign in automatically without
-         * asking the user to type anything.
-         */
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-            // Auto-retrieved or instant verification succeeded
             onVerificationSuccess();
         }
-
-        /**
-         * Firebase failed to verify the phone number (invalid number, quota
-         * exceeded, network error, etc.).
-         */
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
             runOnUiThread(() -> {
                 String msg = e.getMessage() != null ? e.getMessage() : "Verification failed.";
                 Toast.makeText(IdentityVerificationActivity.this,
                         "SMS error: " + msg, Toast.LENGTH_LONG).show();
-                // Allow resend immediately on failure
                 tvTimer.setText("Tap Resend to try again.");
                 btnResend.setEnabled(true);
                 timerRunning = false;
             });
         }
-
-        /**
-         * SMS code has been sent — store the verification ID so we can
-         * construct a credential when the user submits their code.
-         */
         @Override
         public void onCodeSent(@NonNull String verificationId,
                                @NonNull PhoneAuthProvider.ForceResendingToken token) {
             mVerificationId = verificationId;
             mResendToken    = token;
-            codeSent        = true;
-
+            smsCodeSent     = true;
             runOnUiThread(() -> {
                 tvSubtitle.setText("Enter the 6-digit code sent to:");
-                tvOtpHint.setVisibility(View.GONE); // production — no hint shown
+                tvOtpHint.setVisibility(View.GONE);
                 startCountdown();
                 clearOtpBoxes();
                 showOtpLayout();
@@ -168,7 +153,6 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         mAuth   = FirebaseAuth.getInstance();
         session = new SessionManager(this);
 
-        // ── Read intent extras ─────────────────────────────────────────────
         Intent in = getIntent();
         userId        = in.getIntExtra(EXTRA_USER_ID, -1);
         username      = in.getStringExtra(EXTRA_USERNAME);
@@ -178,12 +162,10 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         firstName     = in.getStringExtra(EXTRA_FIRST_NAME);
         maskedContact = in.getStringExtra(EXTRA_MASKED_CONTACT);
         phoneNumber   = in.getStringExtra(EXTRA_PHONE_NUMBER);
+        email         = in.getStringExtra(EXTRA_EMAIL);
 
-        if (maskedContact == null || maskedContact.isEmpty()) {
-            maskedContact = "your registered contact";
-        }
+        if (maskedContact == null || maskedContact.isEmpty()) maskedContact = "your registered contact";
 
-        // ── Bind views ─────────────────────────────────────────────────────
         tvGreeting             = findViewById(R.id.tvVerifyGreeting);
         tvSubtitle             = findViewById(R.id.tvVerifySubtitle);
         tvMaskedContact        = findViewById(R.id.tvMaskedContact);
@@ -198,106 +180,180 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         layoutLockout          = findViewById(R.id.layoutLockout);
         etSecurityAnswer       = findViewById(R.id.etSecurityAnswer);
         tvSecurityQuestion     = findViewById(R.id.tvSecurityQuestion);
+        tabSms                 = findViewById(R.id.tabOtpSms);
+        tabEmail               = findViewById(R.id.tabOtpEmail);
 
-        // ── OTP input boxes ────────────────────────────────────────────────
         otpBoxes[0] = findViewById(R.id.etOtp1);
         otpBoxes[1] = findViewById(R.id.etOtp2);
         otpBoxes[2] = findViewById(R.id.etOtp3);
         otpBoxes[3] = findViewById(R.id.etOtp4);
         otpBoxes[4] = findViewById(R.id.etOtp5);
         otpBoxes[5] = findViewById(R.id.etOtp6);
-
         setupOtpBoxes();
 
-        // ── Populate greeting ──────────────────────────────────────────────
         String greetName = (firstName != null && !firstName.isEmpty()) ? firstName : username;
         tvGreeting.setText("Hey " + greetName + ", verify it's you \uD83D\uDD10");
         tvMaskedContact.setText(maskedContact);
         tvSecurityQuestion.setText(SECURITY_QUESTION);
-
-        // ── Hide demo hint (production mode) ───────────────────────────────
         tvOtpHint.setVisibility(View.GONE);
 
-        // ── Send OTP via Firebase ──────────────────────────────────────────
-        sendOtp(false);
+        // Hide Email tab if no email registered
+        if ((email == null || email.isEmpty()) && tabEmail != null) {
+            tabEmail.setVisibility(View.GONE);
+        }
 
-        // ── Button listeners ───────────────────────────────────────────────
+        if (tabSms   != null) tabSms.setOnClickListener(v   -> switchChannel(OtpChannel.SMS));
+        if (tabEmail != null) tabEmail.setOnClickListener(v -> switchChannel(OtpChannel.EMAIL));
+
+        switchChannel(OtpChannel.SMS);
+
         btnVerify.setOnClickListener(v -> verifyOtp());
 
         btnResend.setOnClickListener(v -> {
             if (!timerRunning) {
                 attemptsLeft = MAX_ATTEMPTS;
-                sendOtp(true); // use resend token
                 updateAttemptsLabel();
+                if (activeChannel == OtpChannel.SMS) sendSmsOtp(true);
+                else sendEmailOtp();
             }
         });
 
         btnUseSecurityQuestion.setOnClickListener(v -> showSecurityQuestion());
 
         View btnLockoutToSecurityQ = findViewById(R.id.btnLockoutToSecurityQ);
-        if (btnLockoutToSecurityQ != null) {
-            btnLockoutToSecurityQ.setOnClickListener(v -> showSecurityQuestion());
-        }
+        if (btnLockoutToSecurityQ != null) btnLockoutToSecurityQ.setOnClickListener(v -> showSecurityQuestion());
 
         findViewById(R.id.btnSubmitSecurityAnswer).setOnClickListener(v -> verifySecurityAnswer());
-
         updateAttemptsLabel();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Firebase: send / resend OTP
+    // Channel switching
     // ─────────────────────────────────────────────────────────────────────────
 
-    /**
-     * Triggers Firebase to send (or resend) an SMS OTP.
-     *
-     * @param isResend  true → use mResendToken for a forced resend;
-     *                  false → fresh send on first call.
-     */
-    private void sendOtp(boolean isResend) {
-        if (phoneNumber == null || phoneNumber.isEmpty()) {
-            Toast.makeText(this,
-                    "No phone number on file. Please contact support.",
-                    Toast.LENGTH_LONG).show();
-            return;
+    private void switchChannel(OtpChannel channel) {
+        activeChannel = channel;
+
+        if (countDownTimer != null) { countDownTimer.cancel(); timerRunning = false; }
+        attemptsLeft = MAX_ATTEMPTS;
+        clearOtpBoxes();
+        updateAttemptsLabel();
+        btnResend.setEnabled(false);
+
+        int activeColor   = getColor(R.color.yellow);
+        int inactiveColor = getColor(R.color.black_card);
+        int activeText    = getColor(R.color.black);
+        int inactiveText  = getColor(R.color.muted);
+
+        if (tabSms != null && tabEmail != null) {
+            if (channel == OtpChannel.SMS) {
+                tabSms.setBackgroundColor(activeColor);
+                tabEmail.setBackgroundColor(inactiveColor);
+                ((TextView) tabSms.getChildAt(0)).setTextColor(activeText);
+                ((TextView) tabEmail.getChildAt(0)).setTextColor(inactiveText);
+            } else {
+                tabEmail.setBackgroundColor(activeColor);
+                tabSms.setBackgroundColor(inactiveColor);
+                ((TextView) tabEmail.getChildAt(0)).setTextColor(activeText);
+                ((TextView) tabSms.getChildAt(0)).setTextColor(inactiveText);
+            }
         }
 
-        // Normalise Philippine local format → E.164
-        // e.g. "09171234567" → "+639171234567"
-        String e164 = toE164Philippines(phoneNumber);
+        if (channel == OtpChannel.SMS) {
+            tvMaskedContact.setText(maskedContact);
+            sendSmsOtp(false);
+        } else {
+            tvMaskedContact.setText(buildMaskedEmail(email));
+            sendEmailOtp();
+        }
+    }
 
-        tvSubtitle.setText("Sending OTP to:");
+    // ─────────────────────────────────────────────────────────────────────────
+    // SMS OTP
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void sendSmsOtp(boolean isResend) {
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            Toast.makeText(this, "No phone number on file. Please use Email OTP.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        tvSubtitle.setText("Sending SMS code to:");
         btnResend.setEnabled(false);
 
         PhoneAuthOptions.Builder builder = PhoneAuthOptions.newBuilder(mAuth)
-                .setPhoneNumber(e164)
+                .setPhoneNumber(toE164Philippines(phoneNumber))
                 .setTimeout(60L, TimeUnit.SECONDS)
                 .setActivity(this)
                 .setCallbacks(mCallbacks);
 
-        if (isResend && mResendToken != null) {
-            builder.setForceResendingToken(mResendToken);
-        }
-
+        if (isResend && mResendToken != null) builder.setForceResendingToken(mResendToken);
         PhoneAuthProvider.verifyPhoneNumber(builder.build());
     }
 
-    /**
-     * Converts a Philippine mobile number to E.164.
-     * Handles: "09171234567", "+639171234567", "639171234567".
-     * Leaves non-PH E.164 numbers unchanged.
-     */
     private String toE164Philippines(String raw) {
         if (raw == null) return "";
-        String digits = raw.replaceAll("[^0-9+]", "");
-        if (digits.startsWith("+")) return digits;          // already E.164
-        if (digits.startsWith("63")) return "+" + digits;   // 63 prefix
-        if (digits.startsWith("0"))  return "+63" + digits.substring(1); // 09xx
-        return "+" + digits; // fallback
+        String d = raw.replaceAll("[^0-9+]", "");
+        if (d.startsWith("+"))  return d;
+        if (d.startsWith("63")) return "+" + d;
+        if (d.startsWith("0"))  return "+63" + d.substring(1);
+        return "+" + d;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Countdown timer
+    // Email OTP
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void sendEmailOtp() {
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "No email address on file. Please use SMS OTP.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        tvSubtitle.setText("Sending code to your email:");
+        tvMaskedContact.setText(buildMaskedEmail(email));
+        btnResend.setEnabled(false);
+        btnVerify.setEnabled(false);
+
+        String greetName = (firstName != null && !firstName.isEmpty()) ? firstName : username;
+
+        EmailOtpSender.sendOtp(email, greetName, new EmailOtpSender.SendCallback() {
+            @Override
+            public void onSuccess(String otp) {
+                emailOtpCode   = otp;
+                emailOtpSent   = true;
+                emailOtpSentAt = System.currentTimeMillis();
+
+                tvSubtitle.setText("Enter the 6-digit code sent to:");
+                tvOtpHint.setVisibility(View.GONE);
+                btnVerify.setEnabled(true);
+                startCountdown();
+                clearOtpBoxes();
+                showOtpLayout();
+                Toast.makeText(IdentityVerificationActivity.this,
+                        "OTP sent to your email.", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                btnVerify.setEnabled(true);
+                tvTimer.setText("Failed to send. Tap Resend.");
+                btnResend.setEnabled(true);
+                timerRunning = false;
+                Toast.makeText(IdentityVerificationActivity.this,
+                        "Could not send email OTP: " + errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private String buildMaskedEmail(String rawEmail) {
+        if (rawEmail == null || !rawEmail.contains("@")) return "your email";
+        int atIdx = rawEmail.indexOf('@');
+        String local  = rawEmail.substring(0, atIdx);
+        String domain = rawEmail.substring(atIdx);
+        String masked = local.length() <= 1 ? local : local.charAt(0) + "***";
+        return masked + domain;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Timer
     // ─────────────────────────────────────────────────────────────────────────
 
     private void startCountdown() {
@@ -306,111 +362,114 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         timerRunning = true;
 
         countDownTimer = new CountDownTimer(RESEND_MILLIS, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                long mins = millisUntilFinished / 60000;
-                long secs = (millisUntilFinished % 60000) / 1000;
-                tvTimer.setText(String.format("Code expires in %d:%02d", mins, secs));
+            @Override public void onTick(long ms) {
+                tvTimer.setText(String.format("Code expires in %d:%02d", ms / 60000, (ms % 60000) / 1000));
             }
-
-            @Override
-            public void onFinish() {
+            @Override public void onFinish() {
                 timerRunning = false;
                 tvTimer.setText("Code expired. Tap Resend.");
                 btnResend.setEnabled(true);
+                if (activeChannel == OtpChannel.EMAIL) { emailOtpSent = false; emailOtpCode = null; }
             }
         }.start();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // OTP box wiring — auto-advance focus
+    // OTP boxes
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupOtpBoxes() {
         for (int i = 0; i < OTP_LENGTH; i++) {
-            final int index = i;
+            final int idx = i;
             otpBoxes[i].addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (s.length() == 1 && index < OTP_LENGTH - 1) {
-                        otpBoxes[index + 1].requestFocus();
-                    }
-                    if (s.length() == 0 && index > 0) {
-                        otpBoxes[index - 1].requestFocus();
-                    }
+                @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+                @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+                @Override public void afterTextChanged(Editable s) {
+                    if (s.length() == 1 && idx < OTP_LENGTH - 1) otpBoxes[idx + 1].requestFocus();
+                    if (s.length() == 0 && idx > 0)              otpBoxes[idx - 1].requestFocus();
                 }
             });
         }
     }
 
     private void clearOtpBoxes() {
-        for (EditText box : otpBoxes) {
-            box.setText("");
-        }
+        for (EditText b : otpBoxes) b.setText("");
         if (otpBoxes[0] != null) otpBoxes[0].requestFocus();
     }
 
     private String getEnteredOtp() {
         StringBuilder sb = new StringBuilder();
-        for (EditText box : otpBoxes) {
-            sb.append(box.getText().toString().trim());
-        }
+        for (EditText b : otpBoxes) sb.append(b.getText().toString().trim());
         return sb.toString();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Verify OTP via Firebase credential
+    // Verify
     // ─────────────────────────────────────────────────────────────────────────
 
     private void verifyOtp() {
         String entered = getEnteredOtp();
-
         if (entered.length() < OTP_LENGTH) {
             Toast.makeText(this, "Please enter all 6 digits.", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (activeChannel == OtpChannel.SMS) verifySmsOtp(entered);
+        else                                 verifyEmailOtp(entered);
+    }
 
-        if (!codeSent || mVerificationId == null) {
+    private void verifySmsOtp(String entered) {
+        if (!smsCodeSent || mVerificationId == null) {
             Toast.makeText(this, "OTP not received yet. Please wait or tap Resend.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Build credential from the code the user typed
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, entered);
-
-        // Sign in with Firebase using this credential
-        mAuth.signInWithCredential(credential)
-                .addOnSuccessListener(this, authResult -> onVerificationSuccess())
+        PhoneAuthCredential cred = PhoneAuthProvider.getCredential(mVerificationId, entered);
+        mAuth.signInWithCredential(cred)
+                .addOnSuccessListener(this, r -> onVerificationSuccess())
                 .addOnFailureListener(this, e -> {
                     attemptsLeft--;
                     updateAttemptsLabel();
-
-                    if (attemptsLeft <= 0) {
-                        showLockout();
-                    } else {
-                        String msg = (e.getMessage() != null) ? e.getMessage() : "Incorrect code.";
+                    if (attemptsLeft <= 0) showLockout();
+                    else {
                         Toast.makeText(this,
-                                "Invalid code: " + msg + "\n"
-                                        + attemptsLeft + " attempt(s) remaining.",
+                                "Invalid code. " + attemptsLeft + " attempt(s) remaining.",
                                 Toast.LENGTH_SHORT).show();
                         clearOtpBoxes();
                     }
                 });
     }
 
-    private void updateAttemptsLabel() {
-        tvAttempts.setText("Attempts remaining: " + attemptsLeft + " / " + MAX_ATTEMPTS);
-        if (attemptsLeft <= 1) {
-            tvAttempts.setTextColor(getColor(R.color.danger));
+    private void verifyEmailOtp(String entered) {
+        if (!emailOtpSent || emailOtpCode == null) {
+            Toast.makeText(this, "Email code not sent yet. Please tap Resend.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (System.currentTimeMillis() - emailOtpSentAt > EMAIL_OTP_EXPIRY_MS) {
+            emailOtpSent = false; emailOtpCode = null;
+            Toast.makeText(this, "Code has expired. Please tap Resend.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (entered.equals(emailOtpCode)) {
+            onVerificationSuccess();
         } else {
-            tvAttempts.setTextColor(getColor(R.color.muted));
+            attemptsLeft--;
+            updateAttemptsLabel();
+            if (attemptsLeft <= 0) showLockout();
+            else {
+                Toast.makeText(this,
+                        "Incorrect code. " + attemptsLeft + " attempt(s) remaining.",
+                        Toast.LENGTH_SHORT).show();
+                clearOtpBoxes();
+            }
         }
     }
 
+    private void updateAttemptsLabel() {
+        tvAttempts.setText("Attempts remaining: " + attemptsLeft + " / " + MAX_ATTEMPTS);
+        tvAttempts.setTextColor(attemptsLeft <= 1 ? getColor(R.color.danger) : getColor(R.color.muted));
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
-    // Security question fallback
+    // Security question
     // ─────────────────────────────────────────────────────────────────────────
 
     private void showSecurityQuestion() {
@@ -422,19 +481,13 @@ public class IdentityVerificationActivity extends AppCompatActivity {
 
     private void verifySecurityAnswer() {
         String answer = etSecurityAnswer.getText().toString().trim().toLowerCase();
-        if (answer.isEmpty()) {
-            Toast.makeText(this, "Please enter your answer.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (answer.equals(SECURITY_ANSWER)) {
-            onVerificationSuccess();
-        } else {
-            Toast.makeText(this, "Incorrect answer. Please try again.", Toast.LENGTH_LONG).show();
-        }
+        if (answer.isEmpty()) { Toast.makeText(this, "Please enter your answer.", Toast.LENGTH_SHORT).show(); return; }
+        if (answer.equals(SECURITY_ANSWER)) onVerificationSuccess();
+        else Toast.makeText(this, "Incorrect answer. Please try again.", Toast.LENGTH_LONG).show();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Layout visibility helpers
+    // Layout helpers
     // ─────────────────────────────────────────────────────────────────────────
 
     private void showOtpLayout() {
@@ -452,37 +505,25 @@ public class IdentityVerificationActivity extends AppCompatActivity {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Success — save session and route
+    // Success
     // ─────────────────────────────────────────────────────────────────────────
 
     private void onVerificationSuccess() {
         if (countDownTimer != null) countDownTimer.cancel();
-
-        // Save local session (SQLite-based)
         session.saveSession(userId, fullName, username, role);
-
         String greetName = (firstName != null && !firstName.isEmpty()) ? firstName : username;
-
         if (isAdmin) {
-            Toast.makeText(this,
-                    "Identity verified! Welcome, Admin " + greetName + " \uD83D\uDD27",
-                    Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, AdminDashboardActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            Toast.makeText(this, "Identity verified! Welcome, Admin " + greetName + " \uD83D\uDD27", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, AdminDashboardActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
         } else {
-            Toast.makeText(this,
-                    "Identity verified! Welcome back, " + greetName + " \uD83D\uDD27",
-                    Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            Toast.makeText(this, "Identity verified! Welcome back, " + greetName + " \uD83D\uDD27", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, HomeActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
         }
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Lifecycle
-    // ─────────────────────────────────────────────────────────────────────────
 
     @Override
     protected void onDestroy() {

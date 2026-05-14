@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     activity_identity_verification.xml
-    Step 10 — Post-Login Identity Verification (OTP / Security Question)
+    Step 10 — Post-Login Identity Verification (SMS OTP / Email OTP / Security Question)
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:gravity="center"
             android:layout_marginBottom="4dp"/>
 
-        <!-- Masked contact (e.g. +63 9** ***1234) -->
+        <!-- Masked contact (phone or email) -->
         <TextView
             android:id="@+id/tvMaskedContact"
             android:layout_width="match_parent"
@@ -71,7 +71,7 @@
             android:gravity="center"
             android:layout_marginBottom="20dp"/>
 
-        <!-- ── DEMO OTP HINT (remove in production) ───────────────────── -->
+        <!-- OTP hint (hidden in production) -->
         <TextView
             android:id="@+id/tvOtpHint"
             android:layout_width="match_parent"
@@ -95,6 +95,57 @@
             android:orientation="vertical"
             android:visibility="visible">
 
+            <!-- ── CHANNEL SELECTOR TABS ─────────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <!-- SMS tab -->
+                <LinearLayout
+                    android:id="@+id/tabOtpSms"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@color/yellow"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="&#128241; SMS OTP"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <!-- Email tab -->
+                <LinearLayout
+                    android:id="@+id/tabOtpEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@color/black_card"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="&#9993; Email OTP"
+                        android:textColor="@color/muted"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
             <!-- 6 OTP input boxes -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,29 +154,12 @@
                 android:gravity="center"
                 android:layout_marginBottom="16dp">
 
-                <EditText
-                    android:id="@+id/etOtp1"
-                    style="@style/OtpBox"/>
-
-                <EditText
-                    android:id="@+id/etOtp2"
-                    style="@style/OtpBox"/>
-
-                <EditText
-                    android:id="@+id/etOtp3"
-                    style="@style/OtpBox"/>
-
-                <EditText
-                    android:id="@+id/etOtp4"
-                    style="@style/OtpBox"/>
-
-                <EditText
-                    android:id="@+id/etOtp5"
-                    style="@style/OtpBox"/>
-
-                <EditText
-                    android:id="@+id/etOtp6"
-                    style="@style/OtpBox"/>
+                <EditText android:id="@+id/etOtp1" style="@style/OtpBox"/>
+                <EditText android:id="@+id/etOtp2" style="@style/OtpBox"/>
+                <EditText android:id="@+id/etOtp3" style="@style/OtpBox"/>
+                <EditText android:id="@+id/etOtp4" style="@style/OtpBox"/>
+                <EditText android:id="@+id/etOtp5" style="@style/OtpBox"/>
+                <EditText android:id="@+id/etOtp6" style="@style/OtpBox"/>
 
             </LinearLayout>
 
@@ -134,7 +168,7 @@
                 android:id="@+id/tvTimer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Code expires in 2:00"
+                android:text="Code expires in 1:00"
                 android:textColor="@color/muted"
                 android:textSize="12sp"
                 android:gravity="center"
@@ -162,7 +196,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- Resend button (disabled until timer expires) -->
+            <!-- Resend button -->
             <Button
                 android:id="@+id/btnResendOtp"
                 android:layout_width="match_parent"
@@ -174,12 +208,12 @@
                 android:enabled="false"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- Security question fallback -->
+            <!-- Security question fallback link -->
             <TextView
                 android:id="@+id/btnUseSecurityQuestion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Can't receive code? Answer a security question"
+                android:text="Can&#8217;t receive code? Answer a security question"
                 android:textColor="@color/yellow"
                 android:textSize="13sp"
                 android:gravity="center"
@@ -197,7 +231,6 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <!-- Panel card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -310,7 +343,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Security badge notice -->
+        <!-- Security notice -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

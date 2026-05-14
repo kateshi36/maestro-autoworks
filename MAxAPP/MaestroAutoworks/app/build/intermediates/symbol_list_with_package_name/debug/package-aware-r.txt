@@ -3280,6 +3280,7 @@ id btnViewReports
 id btnVisitWebsite
 id buttonPanel
 id cache_measures
+id calendarView
 id callMeasure
 id cancel_button
 id carryVelocity
@@ -3466,6 +3467,7 @@ id layoutOrCrPlaceholder
 id layoutOtpSection
 id layoutRoot
 id layoutSecurityQuestion
+id layoutSelectedDate
 id layoutStep1
 id layoutStep2
 id layoutStep3
@@ -3721,6 +3723,8 @@ id supportScrollUp
 id tabAdmin
 id tabCustomer
 id tabMode
+id tabOtpEmail
+id tabOtpSms
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
 id tag_accessibility_heading
@@ -3803,6 +3807,7 @@ id tvPreview
 id tvRatingLabel
 id tvSearchResult
 id tvSecurityQuestion
+id tvSelectedDate
 id tvServiceCategory
 id tvServiceDesc
 id tvServiceDuration

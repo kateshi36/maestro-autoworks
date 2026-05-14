@@ -65,6 +65,7 @@ id btnUseSecurityQuestion
 id btnVerifyOtp
 id btnViewReports
 id btnVisitWebsite
+id calendarView
 id cbBold
 id cbCarWash
 id cbHasConductors
@@ -119,6 +120,7 @@ id layoutOrCrPlaceholder
 id layoutOtpSection
 id layoutRoot
 id layoutSecurityQuestion
+id layoutSelectedDate
 id layoutStep1
 id layoutStep2
 id layoutStep3
@@ -177,6 +179,8 @@ id statToday
 id statTotal
 id tabAdmin
 id tabCustomer
+id tabOtpEmail
+id tabOtpSms
 id topServicesContainer
 id tvAdminApptCustomer
 id tvAdminApptDate
@@ -214,6 +218,7 @@ id tvPreview
 id tvRatingLabel
 id tvSearchResult
 id tvSecurityQuestion
+id tvSelectedDate
 id tvServiceCategory
 id tvServiceDesc
 id tvServiceDuration

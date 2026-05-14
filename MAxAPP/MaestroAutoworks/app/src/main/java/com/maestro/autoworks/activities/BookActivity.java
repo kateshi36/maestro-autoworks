@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.*;
+import android.widget.CalendarView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +79,8 @@ public class BookActivity extends AppCompatActivity {
     // ── Existing fields ──
     private Spinner      spinnerService;
     private EditText     etCarPlate, etDate;
+    private CalendarView calendarView;
+    private TextView     tvSelectedDate;
     private RadioGroup   rgTimeSlot;
     private LinearLayout layoutTimeSlot;
     private CheckBox     cbOilCheck, cbCarWash, cbInspection;
@@ -190,6 +194,8 @@ public class BookActivity extends AppCompatActivity {
         spinnerService  = findViewById(R.id.spinnerService);
         etCarPlate      = findViewById(R.id.etCarPlate);
         etDate          = findViewById(R.id.etDate);
+        calendarView    = findViewById(R.id.calendarView);
+        tvSelectedDate  = findViewById(R.id.tvSelectedDate);
         rgTimeSlot      = findViewById(R.id.rgTimeSlot);
         layoutTimeSlot  = findViewById(R.id.layoutTimeSlot);
         cbOilCheck      = findViewById(R.id.cbOilCheck);
@@ -203,6 +209,7 @@ public class BookActivity extends AppCompatActivity {
         setupCarModelSpinner();
         setupYearModelSpinner();
         setupServiceSpinner();
+        setupCalendarPicker();
         setupTimeSlotRadio();
         setupCheckBoxes();
         setupRatingBar();
@@ -227,6 +234,38 @@ public class BookActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_item, YEAR_MODELS);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYearModel.setAdapter(adapter);
+    }
+
+    /**
+     * Wires up the inline CalendarView.
+     *
+     * • Prevents selecting past dates — the minimum date is set to today.
+     * • On date change: formats the chosen date as "EEE, MMM dd yyyy"
+     *   (e.g. "Thu, May 15 2025") and shows it in tvSelectedDate.
+     * • Also writes a YYYY-MM-DD string into the hidden etDate so the
+     *   existing validation / save logic continues to work unchanged.
+     */
+    private void setupCalendarPicker() {
+        // Block past dates
+        calendarView.setMinDate(System.currentTimeMillis());
+
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            // month is 0-based from CalendarView
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month, dayOfMonth);
+
+            // Friendly display: "Thursday, May 15 2025"
+            SimpleDateFormat displayFmt = new SimpleDateFormat("EEEE, MMMM d yyyy", Locale.getDefault());
+            String display = displayFmt.format(cal.getTime());
+
+            // Storage format for DB / validation: "2025-05-15"
+            SimpleDateFormat storageFmt = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String storage = storageFmt.format(cal.getTime());
+
+            tvSelectedDate.setText(display);
+            tvSelectedDate.setTextColor(getColor(R.color.yellow));
+            etDate.setText(storage);
+        });
     }
 
     private void setupServiceSpinner() {
