@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MainActivity: Public Landing Page — mirrors index.php -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ═══ HERO ═══ -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="24dp"
+            android:paddingTop="48dp" android:paddingBottom="32dp">
+
+            <!-- Eyebrow -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Est. 2010 · Quezon City, Philippines"
+                android:textColor="@color/yellow" android:textSize="11sp"
+                android:letterSpacing="0.1" android:layout_marginBottom="16dp"/>
+
+            <!-- Brand -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="YOUR CAR DESERVES"
+                android:textColor="@color/white" android:textSize="30sp"
+                android:textStyle="bold" android:lineSpacingMultiplier="1.0"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="EXPERT HANDS"
+                android:textColor="@color/yellow" android:textSize="30sp"
+                android:textStyle="bold" android:layout_marginBottom="16dp"/>
+
+            <!-- Subtitle -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Maestro Autoworks delivers honest, high-quality auto repair and maintenance — trusted by thousands of Filipino motorists."
+                android:textColor="@color/muted" android:textSize="14sp"
+                android:lineSpacingMultiplier="1.5" android:layout_marginBottom="28dp"/>
+
+            <!-- CTA Buttons -->
+            <Button
+                android:id="@+id/btnBookNow"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="BOOK NOW"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="10dp"/>
+
+
+
+            <!-- Visit Website Button -->
+
+            <!-- Hero Stats Strip -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:background="@color/black_card">
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:gravity="center" android:padding="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="15+" android:textColor="@color/yellow"
+                        android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Years" android:textColor="@color/muted" android:textSize="11sp"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:gravity="center" android:padding="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="12" android:textColor="@color/yellow"
+                        android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Mechanics" android:textColor="@color/muted" android:textSize="11sp"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:gravity="center" android:padding="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="50+" android:textColor="@color/yellow"
+                        android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Cars/Day" android:textColor="@color/muted" android:textSize="11sp"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:gravity="center" android:padding="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="98%" android:textColor="@color/yellow"
+                        android:textSize="22sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Satisfied" android:textColor="@color/muted" android:textSize="11sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ═══ FEATURES STRIP ═══ -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@color/black_card"
+            android:paddingStart="0dp" android:paddingEnd="0dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🛡" android:textSize="22sp" android:layout_marginBottom="6dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Certified Mechanics"
+                        android:textColor="@color/white" android:textSize="13sp" android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Factory-trained &amp; ASE-certified technicians."
+                        android:textColor="@color/muted" android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.4"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="⏱" android:textSize="22sp" android:layout_marginBottom="6dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Fast Turnaround"
+                        android:textColor="@color/white" android:textSize="13sp" android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Most jobs completed same-day."
+                        android:textColor="@color/muted" android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.4"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="📅" android:textSize="22sp" android:layout_marginBottom="6dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Online Booking"
+                        android:textColor="@color/white" android:textSize="13sp" android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Schedule 24/7 from your phone."
+                        android:textColor="@color/muted" android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.4"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="💳" android:textSize="22sp" android:layout_marginBottom="6dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Transparent Pricing"
+                        android:textColor="@color/white" android:textSize="13sp" android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="No hidden fees. Clear quote before work begins."
+                        android:textColor="@color/muted" android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.4"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ═══ ABOUT SECTION ═══ -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="24dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="ABOUT THE SHOP"
+                android:textColor="@color/yellow" android:textSize="10sp"
+                android:letterSpacing="0.15" android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Trusted by Thousands of Filipino Motorists"
+                android:textColor="@color/white" android:textSize="22sp"
+                android:textStyle="bold" android:lineSpacingMultiplier="1.1"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Founded in 2010, Maestro Autoworks has grown from a small garage in Quezon City into one of the most trusted auto repair shops in Metro Manila. We combine modern diagnostics with old-school craftsmanship — no upsells, no guesswork."
+                android:textColor="@color/muted" android:textSize="14sp"
+                android:lineSpacingMultiplier="1.6" android:layout_marginBottom="20dp"/>
+
+            <!-- Services count badge -->
+            <TextView android:id="@+id/tvServicesCount"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="20+ Services Available"
+                android:textColor="@color/black"
+                android:background="@color/yellow"
+                android:textSize="12sp" android:textStyle="bold"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:paddingTop="6dp" android:paddingBottom="6dp"
+                android:layout_marginBottom="24dp"/>
+        </LinearLayout>
+
+        <!-- ═══ CTA BANNER ═══ -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@color/yellow"
+            android:padding="28dp" android:layout_margin="16dp">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Ready to Book Your Next Appointment?"
+                android:textColor="@color/black" android:textSize="20sp"
+                android:textStyle="bold" android:lineSpacingMultiplier="1.1"
+                android:layout_marginBottom="8dp"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Skip the queue — book your service slot online in under 2 minutes."
+                android:textColor="#99000000" android:textSize="13sp"
+                android:lineSpacingMultiplier="1.5" android:layout_marginBottom="20dp"/>
+            <Button android:layout_width="match_parent" android:layout_height="48dp"
+                android:id="@+id/btnBookNowCta"
+                android:text="BOOK NOW"
+                android:backgroundTint="@color/black" android:textColor="@color/yellow"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- ═══ CONTACT SECTION ═══ -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="24dp"
+            android:paddingBottom="40dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="CONTACT US"
+                android:textColor="@color/yellow" android:textSize="10sp"
+                android:letterSpacing="0.15" android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="📍" android:textSize="16sp" android:layout_marginEnd="10dp"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Location" android:textColor="@color/yellow"
+                        android:textSize="11sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="123 Kalayaan Ave, Diliman, Quezon City"
+                        android:textColor="@color/muted" android:textSize="13sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🕐" android:textSize="16sp" android:layout_marginEnd="10dp"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Hours" android:textColor="@color/yellow"
+                        android:textSize="11sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Mon – Sat · 8:00 AM – 6:00 PM"
+                        android:textColor="@color/muted" android:textSize="13sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="📞" android:textSize="16sp" android:layout_marginEnd="10dp"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Contact" android:textColor="@color/yellow"
+                        android:textSize="11sp" android:textStyle="bold"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="(02) 8-123-4567  ·  0917-123-4567"
+                        android:textColor="@color/muted" android:textSize="13sp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="info@maestroautoworks.ph"
+                        android:textColor="@color/muted" android:textSize="13sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

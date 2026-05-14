@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Service Name *" android:textSize="12sp" android:textColor="#666666" android:layout_marginBottom="2dp"/>
+    <EditText android:id="@+id/etSvcName"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="e.g. Engine Diagnostic" android:layout_marginBottom="10dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Category *" android:textSize="12sp" android:textColor="#666666" android:layout_marginBottom="2dp"/>
+    <EditText android:id="@+id/etSvcCategory"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="e.g. Maintenance" android:layout_marginBottom="10dp"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:layout_marginBottom="10dp">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="8dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Price (₱) *" android:textSize="12sp" android:textColor="#666666" android:layout_marginBottom="2dp"/>
+            <EditText android:id="@+id/etSvcPrice"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="0.00" android:inputType="numberDecimal"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Duration (hrs)" android:textSize="12sp" android:textColor="#666666" android:layout_marginBottom="2dp"/>
+            <EditText android:id="@+id/etSvcDuration"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="1.0" android:inputType="numberDecimal"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Description" android:textSize="12sp" android:textColor="#666666" android:layout_marginBottom="2dp"/>
+    <EditText android:id="@+id/etSvcDesc"
+        android:layout_width="match_parent" android:layout_height="80dp"
+        android:hint="Brief description…" android:gravity="top|start"
+        android:inputType="textMultiLine"/>
+</LinearLayout>

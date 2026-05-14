@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.maestro.autoworks.app-mergeDebugResources-29:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
+            "outputFile": "com.maestro.autoworks.app-mergeDebugResources-34:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\ilard\\.gradle\\caches\\transforms-3\\99dc24b8086e9e02f60cbc0643cdc897\\transformed\\material-1.11.0\\res\\values-h550dp-port-v13\\values-h550dp-port-v13.xml",
+                    "source": "C:\\Users\\ilard\\.gradle\\caches\\transforms-3\\9b6367683814fdc1ae8afa0cc991fc2d\\transformed\\material-1.11.0\\res\\values-h550dp-port-v13\\values-h550dp-port-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

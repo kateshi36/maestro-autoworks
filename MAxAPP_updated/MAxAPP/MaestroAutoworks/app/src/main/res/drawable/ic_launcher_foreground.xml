@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Yellow background circle -->
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M0,0 L108,0 L108,108 L0,108 Z"/>
+    <!-- Gear / wrench icon (white) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,30 C40.7,30 30,40.7 30,54 C30,67.3 40.7,78 54,78 C67.3,78 78,67.3 78,54 C78,40.7 67.3,30 54,30Z M54,68 C46.3,68 40,61.7 40,54 C40,46.3 46.3,40 54,40 C61.7,40 68,46.3 68,54 C68,61.7 61.7,68 54,68Z"/>
+    <!-- Inner circle -->
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M54,46 C49.6,46 46,49.6 46,54 C46,58.4 49.6,62 54,62 C58.4,62 62,58.4 62,54 C62,49.6 58.4,46 54,46Z"/>
+</vector>

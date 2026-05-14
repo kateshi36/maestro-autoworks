@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BookActivity: Spinner & ArrayAdapter, RadioButton & BG Color, CheckBox & Text Color, RatingBar & AlertDialog -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Book an Appointment"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Step indicator -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VEHICLE DETAILS"
+            android:textColor="@color/yellow"
+            android:textSize="10sp"
+            android:letterSpacing="0.15"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- ── SPINNER: Car Model ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="CAR MODEL" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCarModel"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/black_card"
+            android:popupBackground="@color/black_card"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── SPINNER: Year Model ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="YEAR MODEL" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerYearModel"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/black_card"
+            android:popupBackground="@color/black_card"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── RADIO BUTTONS: Fuel Type ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="FUEL TYPE"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutFuelType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <RadioGroup android:id="@+id/rgFuelType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton android:id="@+id/rbGasoline"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="⛽  Gasoline"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+                <RadioButton android:id="@+id/rbDiesel"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="🛢️  Diesel"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- ── OR/CR SECTION ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="OR/CR VERIFICATION"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutOrCr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Do you have your OR/CR (Official Receipt / Certificate of Registration)?"
+                android:textColor="@color/white" android:textSize="13sp"
+                android:lineSpacingMultiplier="1.4" android:layout_marginBottom="12dp"/>
+
+            <RadioGroup android:id="@+id/rgOrCr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
+
+                <RadioButton android:id="@+id/rbOrCrYes"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="✅  Yes — I have my OR/CR"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+                <RadioButton android:id="@+id/rbOrCrNo"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="❌  No — I don't have it right now"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- OR/CR Camera Capture (shown only when rbOrCrYes is selected) -->
+        <LinearLayout
+            android:id="@+id/layoutOrCrCapture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Please take a clear photo of your OR/CR. Admin will verify that the car details match before confirming your booking."
+                android:textColor="@color/muted" android:textSize="12sp"
+                android:lineSpacingMultiplier="1.5" android:layout_marginBottom="16dp"/>
+
+            <!-- Preview of captured image -->
+            <ImageView
+                android:id="@+id/imgOrCrPreview"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="#1A1A1A"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <!-- Placeholder shown before capture -->
+            <LinearLayout
+                android:id="@+id/layoutOrCrPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#1A1A1A"
+                android:layout_marginBottom="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="📄" android:textSize="36sp" android:layout_marginBottom="8dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="No photo yet" android:textColor="@color/muted" android:textSize="12sp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnCaptureOrCr"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="📷  CAPTURE OR/CR PHOTO"
+                android:backgroundTint="@color/yellow"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <!-- Divider between vehicle details and service booking -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/black_card" android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SERVICE DETAILS"
+            android:textColor="@color/yellow"
+            android:textSize="10sp"
+            android:letterSpacing="0.15"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- ── SPINNER: Choose Service ── -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="SELECT SERVICE" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerService"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/black_card"
+            android:popupBackground="@color/black_card"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── EDITTEXT: Car Plate -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="CAR PLATE NUMBER" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etCarPlate"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="e.g. ABC 1234"
+            android:inputType="textCapCharacters"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── EDITTEXT: Appointment Date -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="PREFERRED DATE" android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="YYYY-MM-DD"
+            android:inputType="date"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── RADIO BUTTONS: Time Slot & Background Color changes -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="PREFERRED TIME (changes background color)"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutTimeSlot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/black_card"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <RadioGroup android:id="@+id/rgTimeSlot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton android:id="@+id/rbMorning"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="🌅  Morning  (8:00 AM – 12:00 PM)"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+                <RadioButton android:id="@+id/rbAfternoon"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="☀️  Afternoon  (1:00 PM – 5:00 PM)"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+
+                <RadioButton android:id="@+id/rbEarlyBird"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="🌄  Early Bird  (8:00 AM – 9:00 AM)"
+                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- ── CHECKBOX: Add-ons & Text Color changes -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ADD-ONS (checking changes text color)"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@color/black_card"
+            android:padding="16dp" android:layout_marginBottom="24dp">
+
+            <CheckBox android:id="@+id/cbOilCheck"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="Free Oil Level Check (+₱0)"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+
+            <CheckBox android:id="@+id/cbCarWash"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="Exterior Car Wash (+₱150)"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+
+            <CheckBox android:id="@+id/cbInspection"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="27-Point Safety Inspection (+₱250)"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+        </LinearLayout>
+
+        <!-- Total computation display -->
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estimated Total:  ₱0.00"
+            android:textColor="@color/yellow"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="end"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- ── RATINGBAR: Rate your last experience -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="RATE YOUR LAST VISIT"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="1"
+            android:progressTint="@color/yellow"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvRatingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tap a star to rate"
+            android:textColor="@color/muted"
+            android:textSize="12sp"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Submit — triggers AlertDialog -->
+        <Button
+            android:id="@+id/btnBookNow"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="CONFIRM BOOKING"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+    </LinearLayout>
+</ScrollView>

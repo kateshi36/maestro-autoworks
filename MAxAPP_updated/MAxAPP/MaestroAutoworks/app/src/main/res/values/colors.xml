@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="yellow">#F5A623</color>
+    <color name="black">#0A0A0A</color>
+    <color name="black_card">#1A1A1A</color>
+    <color name="black_ele">#222222</color>
+    <color name="black_input">#2A2A2A</color>
+    <color name="white">#FFFFFF</color>
+    <color name="muted">#888888</color>
+    <color name="danger">#E05252</color>
+    <color name="success">#4CAF7D</color>
+    <color name="purple">#7B61FF</color>
+    <color name="blue">#2196F3</color>
+    <color name="colorPrimary">#F5A623</color>
+    <color name="colorPrimaryDark">#D4891A</color>
+    <color name="colorAccent">#F5A623</color>
+</resources>

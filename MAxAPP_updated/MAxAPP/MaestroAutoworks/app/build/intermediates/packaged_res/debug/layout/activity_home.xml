@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HomeActivity: Intent navigation to all screens -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Welcome -->
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome back!"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What would you like to do today?"
+            android:textColor="@color/muted"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Book Appointment -->
+        <Button
+            android:id="@+id/btnBook"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="📅  Book an Appointment"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- My Appointments -->
+        <Button
+            android:id="@+id/btnAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🗂  My Appointments"
+            android:backgroundTint="@color/black_card"
+            android:textColor="@color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Services -->
+        <Button
+            android:id="@+id/btnServices"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🔧  Browse Services"
+            android:backgroundTint="@color/black_card"
+            android:textColor="@color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Search -->
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🔍  Search Services"
+            android:backgroundTint="@color/black_card"
+            android:textColor="@color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- About / Appearance -->
+        <Button
+            android:id="@+id/btnAbout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🎨  App Appearance"
+            android:backgroundTint="@color/black_card"
+            android:textColor="@color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- WebView -->
+
+        <!-- Logout -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="LOG OUT"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:textColor="@color/danger"/>
+
+    </LinearLayout>
+</ScrollView>
