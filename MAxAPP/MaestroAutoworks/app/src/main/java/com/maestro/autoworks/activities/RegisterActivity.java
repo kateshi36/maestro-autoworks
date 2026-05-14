@@ -269,13 +269,21 @@ public class RegisterActivity extends AppCompatActivity {
         layoutBlocked = findViewById(R.id.layoutLicenseBlocked);
         btnStep2Next  = findViewById(R.id.btnStep2Next);
 
+        LinearLayout layoutLicenseReady = findViewById(R.id.layoutLicenseReady);
+
         rgHasLicense.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbLicenseNo) {
                 layoutBlocked.setVisibility(View.VISIBLE);
+                layoutLicenseReady.setVisibility(View.GONE);
                 btnStep2Next.setVisibility(View.GONE);
+            } else if (checkedId == R.id.rbLicenseYes) {
+                layoutBlocked.setVisibility(View.GONE);
+                layoutLicenseReady.setVisibility(View.VISIBLE);
+                btnStep2Next.setVisibility(View.VISIBLE);
             } else {
                 layoutBlocked.setVisibility(View.GONE);
-                btnStep2Next.setVisibility(View.VISIBLE);
+                layoutLicenseReady.setVisibility(View.GONE);
+                btnStep2Next.setVisibility(View.GONE);
             }
         });
 

@@ -3478,6 +3478,7 @@ int id layoutFpStep3 0x7f08015b
 int id layoutFuelType 0x7f08015c
 int id layoutLicenseBlocked 0x7f08015d
 int id layoutLicensePlaceholder 0x7f08015e
+int id layoutLicenseReady 0x7f0802f9
 int id layoutLockout 0x7f08015f
 int id layoutOrCr 0x7f080160
 int id layoutOrCrCapture 0x7f080161

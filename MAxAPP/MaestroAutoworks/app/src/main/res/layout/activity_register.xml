@@ -236,6 +236,35 @@
                 </RadioGroup>
             </LinearLayout>
 
+            <!-- Ready message — shown only when "Yes" is selected -->
+            <LinearLayout
+                android:id="@+id/layoutLicenseReady"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#0A2A0A"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📋  Please Prepare Your Driver's License"
+                    android:textColor="@color/success"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your driver's license will be required in the next steps. Please have it ready — you will need to:\n\n  • Enter your license number and expiry date\n  • Take a clear photo of your license for verification\n\nMake sure your license is physically on hand before continuing."
+                    android:textColor="@color/success"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="4dp"/>
+            </LinearLayout>
+
             <!-- Blocked message — shown only when "No" is selected -->
             <LinearLayout
                 android:id="@+id/layoutLicenseBlocked"

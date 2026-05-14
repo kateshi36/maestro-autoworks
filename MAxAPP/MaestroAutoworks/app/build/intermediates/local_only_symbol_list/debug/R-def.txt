@@ -132,6 +132,7 @@ id layoutFpStep3
 id layoutFuelType
 id layoutLicenseBlocked
 id layoutLicensePlaceholder
+id layoutLicenseReady
 id layoutLockout
 id layoutOrCr
 id layoutOrCrCapture
