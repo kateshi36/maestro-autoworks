@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.db.DatabaseHelper;
 import com.maestro.autoworks.models.Appointment;
+import com.maestro.autoworks.models.User;
+import com.maestro.autoworks.utils.NotificationHelper;
+import com.maestro.autoworks.utils.ReceiptEmailSender;
 
 import java.util.List;
 
@@ -99,11 +102,69 @@ public class AdminAppointmentAdapter extends ArrayAdapter<Appointment> {
             .setPositiveButton(newStatus.equals("confirmed") ? "✓ Confirm" : "✗ Decline", (dlg, w) -> {
                 String note = etNote.getText().toString().trim();
                 db.updateAppointmentStatus(a.id, newStatus, note.isEmpty() ? null : note);
+
+                // ── Step 5: Receipt & Notification (confirmation only) ────────
+                if ("confirmed".equals(newStatus)) {
+                    // Attach the admin note to the appointment object for the receipt
+                    a.status    = "confirmed";
+                    a.adminNote = note.isEmpty() ? null : note;
+
+                    // Look up the customer's email from the users table
+                    User customer = db.getUserById(a.userId);
+                    if (customer != null) {
+                        // 1. Send receipt email
+                        ReceiptEmailSender.sendReceipt(
+                            customer.email,
+                            customer.firstName,
+                            a,
+                            new ReceiptEmailSender.SendCallback() {
+                                @Override public void onSuccess() {
+                                    Toast.makeText(getContext(),
+                                        "Receipt emailed to " + customer.email,
+                                        Toast.LENGTH_SHORT).show();
+                                }
+                                @Override public void onFailure(String err) {
+                                    Toast.makeText(getContext(),
+                                        "Email failed: " + err,
+                                        Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        );
+
+                        // 2. In-app notification (stored in SQLite, shown in AppointmentsActivity)
+                        String notifTitle   = "Booking Confirmed — Receipt #" + a.id;
+                        String notifMessage = buildInAppReceiptMessage(a);
+                        db.insertNotification(a.userId, a.id, notifTitle, notifMessage);
+
+                        // 3. Android push notification (visible in status bar)
+                        NotificationHelper.postBookingConfirmed(getContext(), a);
+                    }
+                }
+                // ─────────────────────────────────────────────────────────────
+
                 Toast.makeText(getContext(),
                     "Appointment " + newStatus + ".", Toast.LENGTH_SHORT).show();
                 onRefresh.run();
             })
             .setNegativeButton("Cancel", null)
             .show();
+    }
+
+    /** Builds the in-app notification message shown in AppointmentsActivity. */
+    private String buildInAppReceiptMessage(Appointment a) {
+        return  "Your booking has been confirmed!\n\n"
+              + "Receipt No. : #" + a.id + "\n"
+              + "Service     : " + nullSafe(a.serviceName) + "\n"
+              + "Date        : " + nullSafe(a.date) + "\n"
+              + "Time        : " + nullSafe(a.time) + "\n"
+              + "Plate No.   : " + nullSafe(a.carPlate) + "\n"
+              + String.format("Total       : \u20b1%.2f", a.totalPrice)
+              + (a.adminNote != null && !a.adminNote.isEmpty()
+                    ? "\n\nAdmin Note  : " + a.adminNote : "")
+              + "\n\nA receipt has also been sent to your registered email.";
+    }
+
+    private String nullSafe(String s) {
+        return (s != null && !s.isEmpty()) ? s : "N/A";
     }
 }

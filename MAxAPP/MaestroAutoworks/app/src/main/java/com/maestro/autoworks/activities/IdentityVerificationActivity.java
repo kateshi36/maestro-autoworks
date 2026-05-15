@@ -585,7 +585,7 @@ public class IdentityVerificationActivity extends AppCompatActivity {
         Toast.makeText(this,
                 "Identity verified! Welcome back, " + greetName + " \uD83D\uDD27",
                 Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(this, HomeActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
     }

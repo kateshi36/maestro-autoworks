@@ -18,7 +18,7 @@ import com.maestro.autoworks.models.User;
 /**
  * LoginActivity — Step 9: Initial login screen.
  * ─────────────────────────────────────────────────────────────────────────────
- * The user enters their registered email address and password to sign in.
+ * The user enters their registered email address or username and password to sign in.
  *
  * Additional features:
  *   • Role selector tabs: CUSTOMER (default) | ADMIN
@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter your email address and password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter your email or username and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -153,6 +153,9 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Save plate immediately — available everywhere after this point
+        session.saveLicensePlate(user.licensePlate);
 
         // Role mismatch guard
         if (isAdminMode && !user.isAdmin()) {

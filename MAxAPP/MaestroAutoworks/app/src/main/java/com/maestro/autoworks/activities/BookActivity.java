@@ -1,17 +1,12 @@
 package com.maestro.autoworks.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.maestro.autoworks.utils.DatePickerHelper;
-import com.maestro.autoworks.utils.MediaPickerHelper;
 
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.db.DatabaseHelper;
@@ -20,31 +15,13 @@ import com.maestro.autoworks.db.SessionManager;
 import com.maestro.autoworks.models.Appointment;
 import com.maestro.autoworks.models.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * BookActivity — Book an appointment.
  * Demonstrates: Spinner & ArrayAdapter, RadioButton & BG Color,
  *               CheckBox & Text Color, RatingBar, AlertDialog, Toast.
- *
- * New fields added (Step 2 flow):
- *   • spinnerCarModel  — car brand/model selection
- *   • spinnerYearModel — year model selection
- *   • rgFuelType       — Gasoline / Diesel radio group
- *
- * OR/CR Camera Flow:
- *   • rgOrCr           — Yes / No radio group
- *   • layoutOrCrCapture— revealed when "Yes" is selected
- *   • btnCaptureOrCr   — launches camera (or gallery fallback)
- *   • imgOrCrPreview   — shows the captured photo thumbnail
- *   • orcrImageUri     — URI of captured image sent to admin
  */
 public class BookActivity extends AppCompatActivity {
 
@@ -52,38 +29,6 @@ public class BookActivity extends AppCompatActivity {
     private Spinner    spinnerCarModel;
     private Spinner    spinnerYearModel;
     private RadioGroup rgFuelType;
-
-    // ── OR/CR Verification ──
-    private RadioGroup   rgOrCr;
-    private LinearLayout layoutOrCrCapture;
-    private LinearLayout layoutOrCrPlaceholder;
-    private ImageView    imgOrCrPreview;
-    private Button       btnCaptureOrCr;
-
-    /** URI of the photo file created for the camera intent (ACTION_IMAGE_CAPTURE). */
-    private Uri    orcrImageUri  = null;
-    /** Absolute path of the same file, stored in the appointment record. */
-    private String orcrImagePath = null;
-
-    /**
-     * Centralised media picker (Task 1-3).
-     * Handles FileProvider URI creation, runtime permission requests, and the
-     * camera-vs-gallery chooser dialog.  Must be instantiated before onCreate
-     * returns (field initialiser or early onCreate) so its ActivityResultLaunchers
-     * are registered in time.
-     */
-    private final MediaPickerHelper orcrPicker = new MediaPickerHelper(
-            this,
-            "ORCR",           // filename prefix → e.g. ORCR_20250515_143022.jpg
-            (uri, path) -> {  // ImagePickedCallback — runs on the main thread
-                orcrImageUri  = uri;
-                orcrImagePath = path;
-                showOrCrPreview(uri);
-                Toast.makeText(this,
-                        "OR/CR photo saved. Admin will verify before confirming.",
-                        Toast.LENGTH_LONG).show();
-            }
-    );
 
     // ── Existing fields ──
     private Spinner      spinnerService;
@@ -96,6 +41,14 @@ public class BookActivity extends AppCompatActivity {
     private RatingBar    ratingBar;
     private TextView     tvTotal, tvRatingLabel;
 
+    // ── Step 2: Vehicle Inspection Checklist ──
+    private CheckBox     cbConcernEngine, cbConcernBrakes, cbConcernAircon,
+                         cbConcernElectrical, cbConcernTires, cbConcernOil,
+                         cbConcernSteering, cbConcernExhaust;
+    private EditText     etAdditionalNotes;
+    private LinearLayout layoutConcernSummary;
+    private TextView     tvConcernSummaryText;
+
     private List<Service> services;
     private double basePrice = 0;
 
@@ -103,6 +56,18 @@ public class BookActivity extends AppCompatActivity {
     private static final double PRICE_OIL_CHECK  = 0;
     private static final double PRICE_CAR_WASH   = 150;
     private static final double PRICE_INSPECTION = 250;
+
+    /**
+     * Matches current (2014+) Philippine license plates: 3 letters, space, 4 digits.
+     * e.g. "ABC 1234"
+     * Also accepts pre-2014 format: 2 letters, space, 4 digits. e.g. "AB 1234"
+     * Same pattern used in RegisterActivity.
+     */
+    private static final java.util.regex.Pattern PLATE_PATTERN =
+            java.util.regex.Pattern.compile("^[A-Z]{2,3}\\s[0-9]{4}$");
+
+    private TextView tvCarPlateError;
+    private boolean  isCarPlateValid = false;
 
     // ── Car model options ──
     private static final String[] CAR_MODELS = {
@@ -126,12 +91,6 @@ public class BookActivity extends AppCompatActivity {
     }
 
     // ─────────────────────────────────────────────
-    //  NOTE: Camera / gallery / permission launchers are now encapsulated in
-    //        the `orcrPicker` MediaPickerHelper field declared above.
-    //        See MediaPickerHelper.java for the full implementation.
-    // ─────────────────────────────────────────────
-
-    // ─────────────────────────────────────────────
     //  onCreate
     // ─────────────────────────────────────────────
 
@@ -146,13 +105,6 @@ public class BookActivity extends AppCompatActivity {
         spinnerCarModel  = findViewById(R.id.spinnerCarModel);
         spinnerYearModel = findViewById(R.id.spinnerYearModel);
         rgFuelType       = findViewById(R.id.rgFuelType);
-
-        // ── Bind OR/CR views ──
-        rgOrCr                = findViewById(R.id.rgOrCr);
-        layoutOrCrCapture     = findViewById(R.id.layoutOrCrCapture);
-        layoutOrCrPlaceholder = findViewById(R.id.layoutOrCrPlaceholder);
-        imgOrCrPreview        = findViewById(R.id.imgOrCrPreview);
-        btnCaptureOrCr        = findViewById(R.id.btnCaptureOrCr);
 
         // ── Bind existing views ──
         spinnerService  = findViewById(R.id.spinnerService);
@@ -170,16 +122,99 @@ public class BookActivity extends AppCompatActivity {
         tvRatingLabel   = findViewById(R.id.tvRatingLabel);
         Button btnBookNow = findViewById(R.id.btnBookNow);
 
+        // ── Bind Step 2 inspection checklist views ──
+        cbConcernEngine     = findViewById(R.id.cbConcernEngine);
+        cbConcernBrakes     = findViewById(R.id.cbConcernBrakes);
+        cbConcernAircon     = findViewById(R.id.cbConcernAircon);
+        cbConcernElectrical = findViewById(R.id.cbConcernElectrical);
+        cbConcernTires      = findViewById(R.id.cbConcernTires);
+        cbConcernOil        = findViewById(R.id.cbConcernOil);
+        cbConcernSteering   = findViewById(R.id.cbConcernSteering);
+        cbConcernExhaust    = findViewById(R.id.cbConcernExhaust);
+        etAdditionalNotes   = findViewById(R.id.etAdditionalNotes);
+        layoutConcernSummary = findViewById(R.id.layoutConcernSummary);
+        tvConcernSummaryText = findViewById(R.id.tvConcernSummaryText);
+        tvCarPlateError      = findViewById(R.id.tvCarPlateError);
+
         setupCarModelSpinner();
         setupYearModelSpinner();
         setupServiceSpinner();
         setupCalendarPicker();
         setupTimeSlotRadio();
         setupCheckBoxes();
+        setupInspectionChecklist();
         setupRatingBar();
-        setupOrCrSection();
+        setupCarPlateValidation();
+
+        // ── Pre-fill car plate from the user's registration data ──
+        preFillCarPlate();
 
         btnBookNow.setOnClickListener(v -> attemptBooking());
+    }
+
+    // ─────────────────────────────────────────────
+    //  Pre-fill helpers
+    // ─────────────────────────────────────────────
+
+    /**
+     * Pre-fills Car Plate Number from the session.
+     * The plate is saved to the session at login time (from the user's DB profile),
+     * so no extra DB query is needed here.
+     */
+    private void preFillCarPlate() {
+        SessionManager session = new SessionManager(this);
+        String plate = session.getLicensePlate();
+        if (plate != null && !plate.isEmpty()) {
+            etCarPlate.setText(plate);
+            etCarPlate.setSelection(plate.length());
+        }
+    }
+
+    /** Updates the saved plate whenever the user completes a booking. */
+    private void savePlateToPrefs(int userId, String plate) {
+        new SessionManager(this).saveLicensePlate(plate);
+    }
+
+    /**
+     * Attaches a real-time TextWatcher to etCarPlate that mirrors the same
+     * Philippine plate validation used in RegisterActivity.
+     *
+     * Valid formats:
+     *   - 3 letters + space + 4 digits  (2014+ plates)  e.g. "ABC 1234"
+     *   - 2 letters + space + 4 digits  (pre-2014)      e.g. "AB 1234"
+     *
+     * Input is auto-uppercased so the user doesn't have to worry about case.
+     */
+    private void setupCarPlateValidation() {
+        etCarPlate.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                // Auto-uppercase as the user types
+                String current = s.toString();
+                String upper   = current.toUpperCase();
+                if (!current.equals(upper)) {
+                    etCarPlate.removeTextChangedListener(this);
+                    etCarPlate.setText(upper);
+                    etCarPlate.setSelection(upper.length());
+                    etCarPlate.addTextChangedListener(this);
+                    return;
+                }
+
+                String val = upper.trim();
+                if (val.isEmpty()) {
+                    isCarPlateValid = false;
+                    tvCarPlateError.setVisibility(View.GONE);
+                } else if (PLATE_PATTERN.matcher(val).matches()) {
+                    isCarPlateValid = true;
+                    tvCarPlateError.setVisibility(View.GONE);
+                } else {
+                    isCarPlateValid = false;
+                    tvCarPlateError.setText("Format: 3 letters, space, 4 digits — e.g. ABC 1234");
+                    tvCarPlateError.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     // ─────────────────────────────────────────────
@@ -200,21 +235,12 @@ public class BookActivity extends AppCompatActivity {
         spinnerYearModel.setAdapter(adapter);
     }
 
-    /**
-     * Wires up the date picker button.
-     * Opens a DatePickerDialog pre-set to today; past dates are disabled.
-     * On confirm: formats the date for display and stores YYYY-MM-DD in etDate.
-     */
     private void setupCalendarPicker() {
-        // Both the row and the button open the picker
         findViewById(R.id.layoutSelectedDate).setOnClickListener(v -> openDatePicker());
         btnPickDate.setOnClickListener(v -> openDatePicker());
     }
 
     private void openDatePicker() {
-        // Dismiss keyboard and open the universal date picker.
-        // On selection DatePickerHelper writes YYYY-MM-DD to etDate;
-        // we then update the human-readable tvSelectedDate label.
         int todayYear = Calendar.getInstance().get(Calendar.YEAR);
 
         android.app.DatePickerDialog.OnDateSetListener onDateSet = (view, y, m, d) -> {
@@ -229,8 +255,6 @@ public class BookActivity extends AppCompatActivity {
             etDate.setText(storageFmt.format(selected.getTime()));
         };
 
-        // Build dialog via DatePickerHelper then override the listener so we can
-        // also populate tvSelectedDate with the friendly display format.
         Calendar today = Calendar.getInstance();
         int year  = today.get(Calendar.YEAR);
         int month = today.get(Calendar.MONTH);
@@ -239,13 +263,11 @@ public class BookActivity extends AppCompatActivity {
         android.app.DatePickerDialog dialog = new android.app.DatePickerDialog(
             this, onDateSet, year, month, day);
 
-        // Allow today up to one year in the future — no past bookings
         dialog.getDatePicker().setMinDate(today.getTimeInMillis());
         Calendar maxCal = Calendar.getInstance();
         maxCal.set(todayYear + 1, Calendar.DECEMBER, 31);
         dialog.getDatePicker().setMaxDate(maxCal.getTimeInMillis());
 
-        // Hide soft keyboard before showing dialog
         android.view.inputmethod.InputMethodManager imm =
             (android.view.inputmethod.InputMethodManager)
             getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
@@ -320,6 +342,64 @@ public class BookActivity extends AppCompatActivity {
         });
     }
 
+    // ─────────────────────────────────────────────
+    //  Step 2: Vehicle Inspection Checklist
+    // ─────────────────────────────────────────────
+
+    private void setupInspectionChecklist() {
+        CheckBox[] concerns = {
+            cbConcernEngine, cbConcernBrakes, cbConcernAircon, cbConcernElectrical,
+            cbConcernTires, cbConcernOil, cbConcernSteering, cbConcernExhaust
+        };
+        android.widget.CompoundButton.OnCheckedChangeListener listener = (btn, checked) -> {
+            btn.setTextColor(checked ? getColor(R.color.yellow) : getColor(R.color.muted));
+            updateConcernSummary(concerns);
+        };
+        for (CheckBox cb : concerns) cb.setOnCheckedChangeListener(listener);
+
+        etAdditionalNotes.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            @Override public void afterTextChanged(android.text.Editable s) {
+                updateConcernSummary(concerns);
+            }
+        });
+    }
+
+    private void updateConcernSummary(CheckBox[] concerns) {
+        java.util.List<String> selected = new java.util.ArrayList<>();
+        for (CheckBox cb : concerns) {
+            if (cb.isChecked()) selected.add(cb.getText().toString());
+        }
+        String notes = etAdditionalNotes.getText().toString().trim();
+        boolean hasContent = !selected.isEmpty() || !notes.isEmpty();
+        layoutConcernSummary.setVisibility(hasContent ? View.VISIBLE : View.GONE);
+        if (hasContent) {
+            StringBuilder sb = new StringBuilder();
+            if (!selected.isEmpty()) {
+                sb.append("Selected concerns:\n");
+                for (String s : selected) sb.append("  • ").append(s).append("\n");
+            }
+            if (!notes.isEmpty()) {
+                if (sb.length() > 0) sb.append("\n");
+                sb.append("Additional notes:\n  ").append(notes);
+            }
+            tvConcernSummaryText.setText(sb.toString().trim());
+        }
+    }
+
+    private String getSelectedConcerns() {
+        CheckBox[] concerns = {
+            cbConcernEngine, cbConcernBrakes, cbConcernAircon, cbConcernElectrical,
+            cbConcernTires, cbConcernOil, cbConcernSteering, cbConcernExhaust
+        };
+        java.util.List<String> selected = new java.util.ArrayList<>();
+        for (CheckBox cb : concerns) {
+            if (cb.isChecked()) selected.add(cb.getText().toString());
+        }
+        return android.text.TextUtils.join(", ", selected);
+    }
+
     private void setupRatingBar() {
         ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
             String[] labels = {"", "Poor 😞", "Fair 😐", "Good 🙂", "Great 😊", "Excellent 🌟"};
@@ -331,99 +411,10 @@ public class BookActivity extends AppCompatActivity {
     }
 
     // ─────────────────────────────────────────────
-    //  OR/CR Section
-    // ─────────────────────────────────────────────
-
-    /**
-     * Sets up the OR/CR radio group and the camera capture button.
-     *
-     * Flow:
-     *  1. User selects "Yes" → layoutOrCrCapture slides in (VISIBLE).
-     *  2. User taps btnCaptureOrCr → camera opens (or gallery if no camera).
-     *  3. Photo returned → thumbnail shown in imgOrCrPreview.
-     *  4. orcrImagePath stored on the Appointment for admin review.
-     *
-     * If the user selects "No" → capture area is hidden and any previously
-     * captured image is cleared. Admin is notified via the orcrStatus field.
-     */
-    private void setupOrCrSection() {
-        rgOrCr.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.rbOrCrYes) {
-                layoutOrCrCapture.setVisibility(View.VISIBLE);
-            } else {
-                layoutOrCrCapture.setVisibility(View.GONE);
-                clearOrCrPhoto();
-            }
-        });
-
-        // Task 2 & 3: single call to MediaPickerHelper — shows the
-        // camera-vs-gallery dialog and handles permissions internally.
-        btnCaptureOrCr.setOnClickListener(v -> orcrPicker.showPickerDialog());
-    }
-
-
-    /**
-     * Decodes the captured photo into a memory-safe thumbnail and
-     * displays it in imgOrCrPreview. Uses inSampleSize to avoid OOM
-     * on high-megapixel camera outputs.
-     */
-    private void showOrCrPreview(Uri uri) {
-        try {
-            // Pass 1: measure dimensions without allocating pixels
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inJustDecodeBounds = true;
-            InputStream is1 = getContentResolver().openInputStream(uri);
-            BitmapFactory.decodeStream(is1, null, opts);
-            if (is1 != null) is1.close();
-
-            // Calculate sample size to keep the bitmap within ~800px on longest side
-            int sampleSize = 1;
-            while ((opts.outWidth / sampleSize) > 800 || (opts.outHeight / sampleSize) > 800) {
-                sampleSize *= 2;
-            }
-
-            // Pass 2: decode the scaled bitmap
-            BitmapFactory.Options opts2 = new BitmapFactory.Options();
-            opts2.inSampleSize = sampleSize;
-            InputStream is2 = getContentResolver().openInputStream(uri);
-            Bitmap thumbnail = BitmapFactory.decodeStream(is2, null, opts2);
-            if (is2 != null) is2.close();
-
-            if (thumbnail != null) {
-                imgOrCrPreview.setImageBitmap(thumbnail);
-                imgOrCrPreview.setVisibility(View.VISIBLE);
-                layoutOrCrPlaceholder.setVisibility(View.GONE);
-                btnCaptureOrCr.setText("📷  RETAKE OR/CR PHOTO");
-            }
-
-        } catch (IOException e) {
-            Toast.makeText(this, "Could not load photo preview.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /** Clears any captured OR/CR photo and resets the capture UI to its initial state. */
-    private void clearOrCrPhoto() {
-        orcrImageUri  = null;
-        orcrImagePath = null;
-        imgOrCrPreview.setImageBitmap(null);
-        imgOrCrPreview.setVisibility(View.GONE);
-        layoutOrCrPlaceholder.setVisibility(View.VISIBLE);
-        btnCaptureOrCr.setText("📷  CAPTURE OR/CR PHOTO");
-    }
-
-    // ─────────────────────────────────────────────
-    //  Runtime Permission Result
-    // ─────────────────────────────────────────────
-    //  Delegated to MediaPickerHelper via ActivityResultLauncher.
-    //  No onRequestPermissionsResult override needed.
-    // ─────────────────────────────────────────────
-
-    // ─────────────────────────────────────────────
     //  Booking logic
     // ─────────────────────────────────────────────
 
     private void attemptBooking() {
-        // Validate car details
         int carModelPos  = spinnerCarModel.getSelectedItemPosition();
         int yearModelPos = spinnerYearModel.getSelectedItemPosition();
         int fuelTypeId   = rgFuelType.getCheckedRadioButtonId();
@@ -442,31 +433,9 @@ public class BookActivity extends AppCompatActivity {
             return;
         }
 
-        // Validate OR/CR answer
-        int orCrId = rgOrCr.getCheckedRadioButtonId();
-        if (orCrId == -1) {
-            Toast.makeText(this, "Please indicate if you have your OR/CR",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // If "Yes" but no photo yet, prompt the user
-        if (orCrId == R.id.rbOrCrYes && orcrImageUri == null) {
-            new AlertDialog.Builder(this)
-                .setTitle("OR/CR Photo Required")
-                .setMessage("You indicated you have your OR/CR. " +
-                        "Please capture a photo so admin can verify your car details.\n\n" +
-                        "Tap \"Take Photo\" to proceed, or tap \"Skip\" to continue without a photo.")
-                .setPositiveButton("Take Photo", (d, w) -> orcrPicker.showPickerDialog())
-                .setNegativeButton("Skip", (d, w) -> proceedWithBookingValidation())
-                .show();
-            return;
-        }
-
         proceedWithBookingValidation();
     }
 
-    /** Validates remaining form fields and shows the confirmation AlertDialog. */
     private void proceedWithBookingValidation() {
         String plate   = etCarPlate.getText().toString().trim();
         String date    = etDate.getText().toString().trim();
@@ -478,6 +447,13 @@ public class BookActivity extends AppCompatActivity {
         }
         if (plate.isEmpty()) {
             Toast.makeText(this, "Please enter your car plate number", Toast.LENGTH_SHORT).show();
+            etCarPlate.requestFocus();
+            return;
+        }
+        if (!PLATE_PATTERN.matcher(plate.toUpperCase()).matches()) {
+            tvCarPlateError.setText("Format: 3 letters, space, 4 digits — e.g. ABC 1234");
+            tvCarPlateError.setVisibility(View.VISIBLE);
+            etCarPlate.requestFocus();
             return;
         }
         if (date.isEmpty()) {
@@ -492,13 +468,14 @@ public class BookActivity extends AppCompatActivity {
         String carModel    = CAR_MODELS[spinnerCarModel.getSelectedItemPosition()];
         String yearModel   = YEAR_MODELS[spinnerYearModel.getSelectedItemPosition()];
         String fuelType    = getSelectedFuelType();
-        String orCrStatus  = getOrCrStatus();
+        String concerns    = getSelectedConcerns();
+        String notes       = etAdditionalNotes.getText().toString().trim();
         String serviceName = services.get(spinPos - 1).name;
         String timeSlot    = getSelectedTime();
         double total       = calculateTotal();
 
-        String orCrLine = "OR/CR:     " + orCrStatus;
-        if (orcrImageUri != null) orCrLine += " (photo attached)";
+        String concernLine = concerns.isEmpty() ? "None" : concerns;
+        String notesLine   = notes.isEmpty()    ? "None" : notes;
 
         new AlertDialog.Builder(this)
             .setTitle("Confirm Booking")
@@ -506,7 +483,8 @@ public class BookActivity extends AppCompatActivity {
                 "Car Model: " + carModel    + "\n" +
                 "Year:      " + yearModel   + "\n" +
                 "Fuel:      " + fuelType    + "\n" +
-                orCrLine                    + "\n" +
+                "Concerns:  " + concernLine + "\n" +
+                "Notes:     " + notesLine   + "\n" +
                 "Service:   " + serviceName + "\n" +
                 "Plate:     " + plate       + "\n" +
                 "Date:      " + date        + "\n" +
@@ -515,7 +493,8 @@ public class BookActivity extends AppCompatActivity {
                 "Total:     ₱" + String.format("%.2f", total)
             )
             .setPositiveButton("Book Now", (dialog, which) ->
-                saveAppointment(carModel, yearModel, fuelType, orCrStatus,
+                saveAppointment(carModel, yearModel, fuelType,
+                                concerns, notes,
                                 serviceName, plate, date, timeSlot, total))
             .setNegativeButton("Cancel", null)
             .show();
@@ -530,13 +509,6 @@ public class BookActivity extends AppCompatActivity {
         if (id == R.id.rbGasoline) return "Gasoline";
         if (id == R.id.rbDiesel)   return "Diesel";
         return "";
-    }
-
-    private String getOrCrStatus() {
-        int id = rgOrCr.getCheckedRadioButtonId();
-        if (id == R.id.rbOrCrYes) return orcrImageUri != null ? "Yes (photo captured)" : "Yes (no photo)";
-        if (id == R.id.rbOrCrNo)  return "No";
-        return "Not answered";
     }
 
     private String getSelectedTime() {
@@ -559,21 +531,32 @@ public class BookActivity extends AppCompatActivity {
         tvTotal.setText("Estimated Total:  ₱" + String.format("%.2f", calculateTotal()));
     }
 
-    /**
-     * Persists the appointment to the local SQLite database.
-     *
-     * New fields written:
-     *   carModel      — brand selected from spinnerCarModel
-     *   yearModel     — year selected from spinnerYearModel
-     *   fuelType      — "Gasoline" or "Diesel"
-     *   orcrStatus    — human-readable OR/CR answer
-     *   orcrImagePath — content URI string of the captured photo (or null)
-     *
-     * The admin-side activity reads orcrImagePath to display the OR/CR
-     * photo and mark the appointment as verified or rejected.
-     */
+    // ─────────────────────────────────────────────
+    //  Step 4: Booking Confirmation Dialog
+    // ─────────────────────────────────────────────
+
+    private void showBookingSuccessDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle("Booking Submitted")
+            .setMessage(
+                "Your booking request has been successfully submitted.\n\n" +
+                "Please wait for the administrator's confirmation."
+            )
+            .setCancelable(false)
+            .setPositiveButton("Book Again", (dialog, which) -> {
+                // Restart BookActivity so the user can submit another request
+                startActivity(new Intent(this, BookActivity.class));
+                finish();
+            })
+            .setNegativeButton("View My Appointments", (dialog, which) -> {
+                startActivity(new Intent(this, AppointmentsActivity.class));
+                finish();
+            })
+            .show();
+    }
+
     private void saveAppointment(String carModel, String yearModel, String fuelType,
-                                  String orCrStatus, String serviceName,
+                                  String concerns, String notes, String serviceName,
                                   String plate, String date, String time, double total) {
         SessionManager session = new SessionManager(this);
         DatabaseHelper  db     = new DatabaseHelper(this);
@@ -583,8 +566,10 @@ public class BookActivity extends AppCompatActivity {
         appt.carModel      = carModel;
         appt.yearModel     = yearModel;
         appt.fuelType      = fuelType;
-        appt.orcrStatus    = orCrStatus;
-        appt.orcrImagePath = orcrImagePath; // null if not captured — admin will follow up
+        appt.orcrStatus    = "N/A";
+        appt.orcrImagePath = null;
+        appt.vehicleConcerns = concerns;
+        appt.additionalNotes = notes;
         appt.serviceName   = serviceName;
         appt.carPlate      = plate;
         appt.date          = date;
@@ -595,10 +580,9 @@ public class BookActivity extends AppCompatActivity {
 
         long id = db.insertAppointment(appt);
         if (id > 0) {
-            Toast.makeText(this,
-                    "Appointment booked! We'll confirm within 24 hrs.", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, AppointmentsActivity.class));
-            finish();
+            // Remember the plate for next time (helps existing accounts with null DB plate)
+            savePlateToPrefs(appt.userId, plate);
+            showBookingSuccessDialog();
         } else {
             Toast.makeText(this, "Booking failed. Try again.", Toast.LENGTH_SHORT).show();
         }

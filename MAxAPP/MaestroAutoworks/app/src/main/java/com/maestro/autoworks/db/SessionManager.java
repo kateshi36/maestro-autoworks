@@ -6,11 +6,12 @@ import android.content.SharedPreferences;
 /** Manages login session using SharedPreferences. */
 public class SessionManager {
 
-    private static final String PREF_NAME   = "maestro_session";
-    private static final String KEY_USER_ID = "user_id";
-    private static final String KEY_NAME    = "full_name";
-    private static final String KEY_UNAME   = "username";
-    private static final String KEY_ROLE    = "role";
+    private static final String PREF_NAME    = "maestro_session";
+    private static final String KEY_USER_ID  = "user_id";
+    private static final String KEY_NAME     = "full_name";
+    private static final String KEY_UNAME    = "username";
+    private static final String KEY_ROLE     = "role";
+    private static final String KEY_PLATE    = "license_plate";
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -42,6 +43,14 @@ public class SessionManager {
     public String getUsername() { return prefs.getString(KEY_UNAME, ""); }
     public String getRole()     { return prefs.getString(KEY_ROLE, "customer"); }
     public boolean isAdmin()    { return "admin".equals(getRole()); }
+
+    /** Returns the license plate saved at login time, or empty string if not set. */
+    public String getLicensePlate() { return prefs.getString(KEY_PLATE, ""); }
+
+    /** Saves the plate so BookActivity can pre-fill it without an extra DB query. */
+    public void saveLicensePlate(String plate) {
+        editor.putString(KEY_PLATE, plate != null ? plate : "").apply();
+    }
 
     public void logout() { editor.clear().apply(); }
 }

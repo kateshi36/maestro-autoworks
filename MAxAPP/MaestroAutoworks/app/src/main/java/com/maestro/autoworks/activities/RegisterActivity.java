@@ -1074,6 +1074,11 @@ public class RegisterActivity extends AppCompatActivity {
         user.conductorsLicenseExpiry = cbHasConductors.isChecked()
                 ? etConductorsExpiry.getText().toString().trim() : null;
         user.licenseImagePath        = licenseImagePath;
+        // Vehicle fields — were collected in the UI but previously never saved
+        user.licensePlate            = etLicensePlate.getText().toString().trim();
+        user.mvFileNumber            = etMvFileNumber.getText().toString().trim();
+        user.vehicleMake             = etVehicleMake.getText().toString().trim();
+        user.vehicleModel            = etVehicleModel.getText().toString().trim();
 
         long id = db.insertUser(user);
         if (id > 0) {

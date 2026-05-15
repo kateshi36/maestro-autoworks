@@ -27,12 +27,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // If already logged in, route appropriately
+        // If already logged in as admin, route to admin dashboard
         SessionManager session = new SessionManager(this);
-        if (session.isLoggedIn()) {
-            Intent intent = session.isAdmin()
-                ? new Intent(this, AdminDashboardActivity.class)
-                : new Intent(this, HomeActivity.class);
+        if (session.isLoggedIn() && session.isAdmin()) {
+            Intent intent = new Intent(this, AdminDashboardActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
@@ -53,9 +51,14 @@ public class MainActivity extends AppCompatActivity {
         Button btnBookNow    = findViewById(R.id.btnBookNow);    // hero button
         Button btnBookNowCta = findViewById(R.id.btnBookNowCta); // CTA banner button
 
-        // Both Book Now buttons go to Login so the user can authenticate first
-        android.view.View.OnClickListener bookNowClick = v ->
-            startActivity(new Intent(this, LoginActivity.class));
+        // Book Now: go to BookActivity if logged in, otherwise go to Login first
+        android.view.View.OnClickListener bookNowClick = v -> {
+            if (session.isLoggedIn()) {
+                startActivity(new Intent(this, BookActivity.class));
+            } else {
+                startActivity(new Intent(this, LoginActivity.class));
+            }
+        };
 
         if (btnBookNow    != null) btnBookNow.setOnClickListener(bookNowClick);
         if (btnBookNowCta != null) btnBookNowCta.setOnClickListener(bookNowClick);

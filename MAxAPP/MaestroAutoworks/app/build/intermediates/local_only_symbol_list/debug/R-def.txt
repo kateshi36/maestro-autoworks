@@ -34,7 +34,6 @@ id btnBook
 id btnBookNow
 id btnBookNowCta
 id btnCaptureLicense
-id btnCaptureOrCr
 id btnEditService
 id btnFilter
 id btnFpResetPassword
@@ -83,6 +82,14 @@ id cardUploadDl
 id cardUploadOr
 id cbBold
 id cbCarWash
+id cbConcernAircon
+id cbConcernBrakes
+id cbConcernElectrical
+id cbConcernEngine
+id cbConcernExhaust
+id cbConcernOil
+id cbConcernSteering
+id cbConcernTires
 id cbHasConductors
 id cbInspection
 id cbLarge
@@ -92,6 +99,7 @@ id cbYellow
 id completionBarBg
 id completionBarFill
 id dailyActivityContainer
+id etAdditionalNotes
 id etAddress
 id etAdminNote
 id etBirthdate
@@ -133,10 +141,10 @@ id etVehicleModel
 id imgCrPreview
 id imgDlPreview
 id imgLicensePreview
-id imgOrCrPreview
 id imgOrPreview
 id layoutAdminNotice
 id layoutAllDocsUploaded
+id layoutConcernSummary
 id layoutConductors
 id layoutFpStep1
 id layoutFpStep2
@@ -146,9 +154,6 @@ id layoutLicenseBlocked
 id layoutLicensePlaceholder
 id layoutLicenseReady
 id layoutLockout
-id layoutOrCr
-id layoutOrCrCapture
-id layoutOrCrPlaceholder
 id layoutOtpSection
 id layoutRoot
 id layoutSecurityQuestion
@@ -185,13 +190,10 @@ id rbGray
 id rbLicenseNo
 id rbLicenseYes
 id rbMorning
-id rbOrCrNo
-id rbOrCrYes
 id rgBackground
 id rgFuelType
 id rgGender
 id rgHasLicense
-id rgOrCr
 id rgTimeSlot
 id rptCancelled
 id rptCompleted
@@ -234,8 +236,10 @@ id tvApptStatus
 id tvAttempts
 id tvCaptchaError
 id tvCaptchaQuestion
+id tvCarPlateError
 id tvCharCount
 id tvCompletionRate
+id tvConcernSummaryText
 id tvCrPlaceholder
 id tvCrUploadStatus
 id tvDialogMessage
@@ -259,6 +263,7 @@ id tvMvFileNumberError
 id tvMvHelp
 id tvNoPending
 id tvNoToday
+id tvNotifBadge
 id tvOcrResult
 id tvOcrStatus
 id tvOrPlaceholder

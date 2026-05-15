@@ -117,46 +117,93 @@
             </RadioGroup>
         </LinearLayout>
 
-        <!-- ── OR/CR SECTION ── -->
+        <!-- ═══ VEHICLE INSPECTION CHECKLIST ═══ -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="OR/CR VERIFICATION"
+            android:text="VEHICLE INSPECTION CHECKLIST"
             android:textColor="@color/yellow"
-            android:textSize="11sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+            android:textSize="10sp"
+            android:letterSpacing="0.15"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
 
-        <LinearLayout
-            android:id="@+id/layoutOrCr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Select all concerns that apply to your vehicle:"
+            android:textColor="@color/muted"
+            android:textSize="12sp"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/black_card"
             android:padding="16dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Do you have your OR/CR (Official Receipt / Certificate of Registration)?"
-                android:textColor="@color/white" android:textSize="13sp"
-                android:lineSpacingMultiplier="1.4" android:layout_marginBottom="12dp"/>
+            <CheckBox android:id="@+id/cbConcernEngine"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🔧  Engine — knocking, misfires, or rough idle"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
 
-            <RadioGroup android:id="@+id/rgOrCr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp">
+            <CheckBox android:id="@+id/cbConcernBrakes"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🛑  Brakes — squealing, grinding, or soft pedal"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
 
-                <RadioButton android:id="@+id/rbOrCrYes"
-                    android:layout_width="match_parent" android:layout_height="48dp"
-                    android:text="✅  Yes — I have my OR/CR"
-                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
+            <CheckBox android:id="@+id/cbConcernAircon"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="❄️  Air-Con — not cooling or unusual odour"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
 
-                <RadioButton android:id="@+id/rbOrCrNo"
-                    android:layout_width="match_parent" android:layout_height="48dp"
-                    android:text="❌  No — I don't have it right now"
-                    android:textColor="@color/white" android:buttonTint="@color/yellow"/>
-            </RadioGroup>
+            <CheckBox android:id="@+id/cbConcernElectrical"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="⚡  Electrical — battery, lights, or dashboard warnings"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+
+            <CheckBox android:id="@+id/cbConcernTires"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🛞  Tires / Wheels — vibration, pulling, or uneven wear"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+
+            <CheckBox android:id="@+id/cbConcernOil"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🛢️  Oil / Fluids — leaks or low fluid levels"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+
+            <CheckBox android:id="@+id/cbConcernSteering"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="🔄  Steering / Suspension — stiffness or clunking"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
+
+            <CheckBox android:id="@+id/cbConcernExhaust"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:text="💨  Exhaust — smoke colour changes or loud noise"
+                android:textColor="@color/muted" android:buttonTint="@color/yellow"/>
         </LinearLayout>
 
-        <!-- OR/CR Camera Capture (shown only when rbOrCrYes is selected) -->
+        <!-- Optional notes field -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ADDITIONAL NOTES (optional)"
+            android:textColor="@color/yellow"
+            android:textSize="11sp" android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etAdditionalNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="96dp"
+            android:hint="Describe any other issues or details about your vehicle…"
+            android:inputType="textMultiLine|textCapSentences"
+            android:gravity="top|start"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:background="@color/black_card"
+            android:padding="14dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Live concern summary card (hidden until user selects at least one item) -->
         <LinearLayout
-            android:id="@+id/layoutOrCrCapture"
+            android:id="@+id/layoutConcernSummary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -165,45 +212,19 @@
             android:layout_marginBottom="24dp"
             android:visibility="gone">
 
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Please take a clear photo of your OR/CR. Admin will verify that the car details match before confirming your booking."
-                android:textColor="@color/muted" android:textSize="12sp"
-                android:lineSpacingMultiplier="1.5" android:layout_marginBottom="16dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="📋  INSPECTION SUMMARY"
+                android:textColor="@color/yellow"
+                android:textSize="10sp" android:textStyle="bold"
+                android:layout_marginBottom="10dp"/>
 
-            <!-- Preview of captured image -->
-            <ImageView
-                android:id="@+id/imgOrCrPreview"
+            <TextView
+                android:id="@+id/tvConcernSummaryText"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:background="#1A1A1A"
-                android:scaleType="centerCrop"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone"/>
-
-            <!-- Placeholder shown before capture -->
-            <LinearLayout
-                android:id="@+id/layoutOrCrPlaceholder"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="#1A1A1A"
-                android:layout_marginBottom="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="📄" android:textSize="36sp" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="No photo yet" android:textColor="@color/muted" android:textSize="12sp"/>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnCaptureOrCr"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="📷  CAPTURE OR/CR PHOTO"
-                android:backgroundTint="@color/yellow"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="13sp"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:lineSpacingMultiplier="1.6"/>
         </LinearLayout>
 
         <!-- Divider between vehicle details and service booking -->
@@ -248,7 +269,16 @@
             android:textColorHint="@color/muted"
             android:background="@color/black_card"
             android:paddingStart="16dp" android:paddingEnd="16dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvCarPlateError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#E05252"
+            android:textSize="12sp"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"/>
 
         <!-- ── CALENDAR: Preferred Date ── -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

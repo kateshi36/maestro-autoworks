@@ -19,7 +19,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "maestro_autoworks.db";
-    private static final int    DB_VERSION = 8;
+    private static final int    DB_VERSION = 10;
 
     // Tables
     public static final String TABLE_USERS        = "users";
@@ -69,6 +69,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_APPT_FUEL_TYPE   = "fuel_type";
     public static final String COL_APPT_ORCR_STATUS = "orcr_status";
     public static final String COL_APPT_ORCR_IMAGE  = "orcr_image_path";
+    public static final String COL_APPT_CONCERNS    = "vehicle_concerns";   // Step 2 checklist
+    public static final String COL_APPT_NOTES       = "additional_notes";   // Step 2 free text
 
     private static final String CREATE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
@@ -111,7 +113,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COL_APPT_YEAR_MODEL  + " TEXT, " +
                     COL_APPT_FUEL_TYPE   + " TEXT, " +
                     COL_APPT_ORCR_STATUS + " TEXT, " +
-                    COL_APPT_ORCR_IMAGE  + " TEXT)";
+                    COL_APPT_ORCR_IMAGE  + " TEXT, " +
+                    COL_APPT_CONCERNS    + " TEXT, " +
+                    COL_APPT_NOTES       + " TEXT)";
 
     // Repair tasks (PMS)
     public static final String TABLE_REPAIR_TASKS  = "repair_tasks";
@@ -131,6 +135,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COL_TASK_STATUS   + " TEXT NOT NULL DEFAULT 'pending', " +
                     COL_TASK_SORT     + " INTEGER DEFAULT 0)";
 
+    // ── In-app notifications ─────────────────────────────────────────────────
+    public static final String TABLE_NOTIFICATIONS  = "notifications";
+    public static final String COL_NOTIF_ID         = "id";
+    public static final String COL_NOTIF_USER_ID    = "user_id";
+    public static final String COL_NOTIF_APPT_ID    = "appt_id";
+    public static final String COL_NOTIF_TITLE      = "title";
+    public static final String COL_NOTIF_MESSAGE    = "message";
+    public static final String COL_NOTIF_IS_READ    = "is_read";
+    public static final String COL_NOTIF_CREATED_AT = "created_at";
+
+    private static final String CREATE_NOTIFICATIONS =
+            "CREATE TABLE IF NOT EXISTS " + TABLE_NOTIFICATIONS + " (" +
+                    COL_NOTIF_ID         + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_NOTIF_USER_ID    + " INTEGER NOT NULL, " +
+                    COL_NOTIF_APPT_ID    + " INTEGER, " +
+                    COL_NOTIF_TITLE      + " TEXT NOT NULL, " +
+                    COL_NOTIF_MESSAGE    + " TEXT NOT NULL, " +
+                    COL_NOTIF_IS_READ    + " INTEGER NOT NULL DEFAULT 0, " +
+                    COL_NOTIF_CREATED_AT + " TEXT NOT NULL)";
+
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -141,6 +165,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_USERS);
         db.execSQL(CREATE_APPOINTMENTS);
         db.execSQL(CREATE_REPAIR_TASKS);
+        db.execSQL(CREATE_NOTIFICATIONS);
         // Seed default admin: username=admin  password=Admin@1234
         db.execSQL("INSERT INTO " + TABLE_USERS +
                 " (first_name,last_name,username,email,password,role) VALUES " +
@@ -194,6 +219,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_DL_UPLOAD     + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_OR_IMAGE      + " TEXT"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COL_CR_IMAGE      + " TEXT"); } catch (Exception ignored) {}
+        }
+        if (oldVersion < 9) {
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_CONCERNS + " TEXT"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_APPOINTMENTS + " ADD COLUMN " + COL_APPT_NOTES    + " TEXT"); } catch (Exception ignored) {}
+        }
+        if (oldVersion < 10) {
+            // In-app notifications table (Step 5 — admin confirmation receipt)
+            db.execSQL(CREATE_NOTIFICATIONS);
         }
     }
 
@@ -255,6 +288,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.query(TABLE_USERS, null,
                 COL_EMAIL + "=? OR " + COL_PHONE + "=?",
                 new String[]{input, input}, null, null, null);
+        User user = null;
+        if (c.moveToFirst()) {
+            user = cursorToUser(c);
+        }
+        c.close();
+        db.close();
+        return user;
+    }
+
+    /**
+     * Fetches a single user record by primary key.
+     * Used to pre-fill booking fields (e.g. license plate) from the user's registration data.
+     *
+     * @param userId The user's ID from the session.
+     * @return The {@link User} object, or {@code null} if not found.
+     */
+    public User getUserById(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_USERS, null,
+                COL_ID + "=?", new String[]{String.valueOf(userId)},
+                null, null, null);
         User user = null;
         if (c.moveToFirst()) {
             user = cursorToUser(c);
@@ -362,6 +416,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_APPT_FUEL_TYPE,   appt.fuelType);
         cv.put(COL_APPT_ORCR_STATUS, appt.orcrStatus);
         cv.put(COL_APPT_ORCR_IMAGE,  appt.orcrImagePath);
+        cv.put(COL_APPT_CONCERNS,    appt.vehicleConcerns);
+        cv.put(COL_APPT_NOTES,       appt.additionalNotes);
         long id = db.insert(TABLE_APPOINTMENTS, null, cv);
         db.close();
         return id;
@@ -477,6 +533,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (osIdx >= 0) a.orcrStatus = c.getString(osIdx);
         int oiIdx = c.getColumnIndex(COL_APPT_ORCR_IMAGE);
         if (oiIdx >= 0) a.orcrImagePath = c.getString(oiIdx);
+        int cnIdx = c.getColumnIndex(COL_APPT_CONCERNS);
+        if (cnIdx >= 0) a.vehicleConcerns = c.getString(cnIdx);
+        int ntIdx = c.getColumnIndex(COL_APPT_NOTES);
+        if (ntIdx >= 0) a.additionalNotes = c.getString(ntIdx);
         return a;
     }
 
@@ -576,5 +636,100 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static class RepairTask {
         public int id, apptId, sortOrder;
         public String taskName, assignedTo, status;
+    }
+
+    // ── IN-APP NOTIFICATION OPERATIONS ───────────────────────────────────────
+
+    /**
+     * Inserts a new in-app notification for a specific user.
+     *
+     * @param userId    The customer's user ID.
+     * @param apptId    The related appointment ID.
+     * @param title     Short notification title.
+     * @param message   Full notification message / receipt summary.
+     * @return Inserted row ID, or -1 on failure.
+     */
+    public long insertNotification(int userId, int apptId, String title, String message) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_NOTIF_USER_ID,    userId);
+        cv.put(COL_NOTIF_APPT_ID,    apptId);
+        cv.put(COL_NOTIF_TITLE,      title);
+        cv.put(COL_NOTIF_MESSAGE,    message);
+        cv.put(COL_NOTIF_IS_READ,    0);
+        cv.put(COL_NOTIF_CREATED_AT,
+                new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+                        java.util.Locale.getDefault())
+                        .format(new java.util.Date()));
+        long id = db.insert(TABLE_NOTIFICATIONS, null, cv);
+        db.close();
+        return id;
+    }
+
+    /**
+     * Returns all notifications for a user, newest first.
+     */
+    public java.util.List<AppNotification> getNotificationsForUser(int userId) {
+        java.util.List<AppNotification> list = new java.util.ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_NOTIFICATIONS, null,
+                COL_NOTIF_USER_ID + "=?", new String[]{String.valueOf(userId)},
+                null, null, COL_NOTIF_ID + " DESC");
+        while (c.moveToNext()) {
+            AppNotification n = new AppNotification();
+            n.id        = c.getInt(c.getColumnIndexOrThrow(COL_NOTIF_ID));
+            n.userId    = c.getInt(c.getColumnIndexOrThrow(COL_NOTIF_USER_ID));
+            n.apptId    = c.getInt(c.getColumnIndexOrThrow(COL_NOTIF_APPT_ID));
+            n.title     = c.getString(c.getColumnIndexOrThrow(COL_NOTIF_TITLE));
+            n.message   = c.getString(c.getColumnIndexOrThrow(COL_NOTIF_MESSAGE));
+            n.isRead    = c.getInt(c.getColumnIndexOrThrow(COL_NOTIF_IS_READ)) == 1;
+            n.createdAt = c.getString(c.getColumnIndexOrThrow(COL_NOTIF_CREATED_AT));
+            list.add(n);
+        }
+        c.close(); db.close();
+        return list;
+    }
+
+    /** Count of unread notifications for the badge. */
+    public int countUnreadNotifications(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_NOTIFICATIONS +
+                " WHERE " + COL_NOTIF_USER_ID + "=? AND " + COL_NOTIF_IS_READ + "=0",
+                new String[]{String.valueOf(userId)});
+        int count = c.moveToFirst() ? c.getInt(0) : 0;
+        c.close(); db.close();
+        return count;
+    }
+
+    /** Mark a single notification as read. */
+    public void markNotificationRead(int notifId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_NOTIF_IS_READ, 1);
+        db.update(TABLE_NOTIFICATIONS, cv,
+                COL_NOTIF_ID + "=?", new String[]{String.valueOf(notifId)});
+        db.close();
+    }
+
+    /** Mark ALL notifications for a user as read. */
+    public void markAllNotificationsRead(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_NOTIF_IS_READ, 1);
+        db.update(TABLE_NOTIFICATIONS, cv,
+                COL_NOTIF_USER_ID + "=?", new String[]{String.valueOf(userId)});
+        db.close();
+    }
+
+    /** Simple notification model. */
+    public static class AppNotification {
+        public int     id;
+        public int     userId;
+        public int     apptId;
+        public String  title;
+        public String  message;
+        public boolean isRead;
+        public String  createdAt;
     }
 }
