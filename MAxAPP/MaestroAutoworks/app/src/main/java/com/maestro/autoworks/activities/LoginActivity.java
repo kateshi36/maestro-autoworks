@@ -115,17 +115,23 @@ public class LoginActivity extends AppCompatActivity {
     private void setRole(boolean adminMode) {
         isAdminMode = adminMode;
 
+        // Use drawables so rounded corners are preserved on toggle
+        android.graphics.drawable.Drawable selectedBg =
+                androidx.core.content.ContextCompat.getDrawable(this, R.drawable.bg_tab_selected);
+        android.graphics.drawable.Drawable unselectedBg =
+                androidx.core.content.ContextCompat.getDrawable(this, R.drawable.bg_tab_unselected);
+
         if (adminMode) {
-            tabAdmin.setBackgroundColor(getColor(R.color.yellow));
-            tabCustomer.setBackgroundColor(getColor(R.color.black_card));
+            tabAdmin.setBackground(selectedBg);
+            tabCustomer.setBackground(unselectedBg);
             ((TextView) tabAdmin.getChildAt(1)).setTextColor(getColor(R.color.black));
             ((TextView) tabCustomer.getChildAt(1)).setTextColor(getColor(R.color.muted));
             layoutAdminNotice.setVisibility(View.VISIBLE);
             btnSignIn.setText("SIGN IN AS ADMIN");
             tvGoRegister.setVisibility(View.GONE);
         } else {
-            tabCustomer.setBackgroundColor(getColor(R.color.yellow));
-            tabAdmin.setBackgroundColor(getColor(R.color.black_card));
+            tabCustomer.setBackground(selectedBg);
+            tabAdmin.setBackground(unselectedBg);
             ((TextView) tabCustomer.getChildAt(1)).setTextColor(getColor(R.color.black));
             ((TextView) tabAdmin.getChildAt(1)).setTextColor(getColor(R.color.muted));
             layoutAdminNotice.setVisibility(View.GONE);

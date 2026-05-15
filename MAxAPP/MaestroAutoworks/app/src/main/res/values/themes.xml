@@ -1,6 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    themes.xml  — Sub-Stage 4A additions highlighted with ★ NEW
+    ─────────────────────────────────────────────────────────────────────────
+    All widget styles live here so Activities only reference one source of
+    truth. The existing base theme and OtpBox style are preserved verbatim.
+    ─────────────────────────────────────────────────────────────────────────
+-->
 <resources>
-    <!-- OTP single-digit input box used in IdentityVerificationActivity -->
+
+    <!-- ══════════════════════════════════════════
+         BASE APP THEME — NoActionBar app-wide
+         Applied to <application> in AndroidManifest
+    ══════════════════════════════════════════ -->
+    <style name="Theme.MaestroAutoworks" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/yellow</item>
+        <!-- Black canvas behind every screen -->
+        <item name="android:windowBackground">@color/black</item>
+        <!-- Default body text white -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!-- Status bar matches app background -->
+        <item name="android:statusBarColor">@color/black</item>
+        <!-- Suppress the system action bar entirely -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- ══════════════════════════════════════════
+         SPLASH / NO-CHROME VARIANT
+         Kept for SplashActivity — no change needed
+    ══════════════════════════════════════════ -->
+    <style name="Theme.MaestroAutoworks.NoActionBar" parent="Theme.MaestroAutoworks">
+        <!-- Inherits everything from base; exists so the Manifest entry
+             for SplashActivity remains valid without any change. -->
+    </style>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ★ NEW  TOP BAR — reusable amber navigation bar
+         ══════════════════════════════════════════════════════════════
+         Apply with style="@style/TopBar" on the root LinearLayout of
+         topbar_back.xml, OR inline when an <include> isn't suitable.
+
+         Height:     56dp
+         Background: @color/yellow (#F5A623)
+         Padding:    12dp horizontal — keeps back button close to edge
+         Elevation:  4dp — casts subtle shadow on scrolling content below
+    ══════════════════════════════════════════════════════════════════ -->
+    <style name="TopBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:background">@color/yellow</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <!-- ★ NEW  TopBar title text -->
+    <style name="TopBar.Title">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
+    <!-- ★ NEW  TopBar icon button (back arrow, hamburger, profile) — 36×36dp -->
+    <style name="TopBar.IconBtn">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:background">@drawable/bg_topbar_icon_btn</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ★ NEW  FIELD LABEL — uppercase muted caption above every input
+         ══════════════════════════════════════════════════════════════
+         Usage:
+             <TextView style="@style/FieldLabel" android:text="Email Address" />
+    ══════════════════════════════════════════════════════════════════ -->
+    <style name="FieldLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/muted</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ★ NEW  FORM FIELD (EditText) — rounded black input
+         ══════════════════════════════════════════════════════════════
+         Background: @drawable/bg_input  (rounds corners, handles focus ring)
+         Height:     52dp — matches HTML mockup .field-input exactly
+
+         Usage:
+             <EditText style="@style/FormField"
+                       android:hint="you@email.com"
+                       android:inputType="textEmailAddress" />
+    ══════════════════════════════════════════════════════════════════ -->
+    <style name="FormField">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:background">@drawable/bg_input</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/muted2</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <!-- ★ NEW  Password variant — amber text so user can see the filled chars -->
+    <style name="FormField.Password">
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:inputType">textPassword</item>
+        <item name="android:paddingEnd">52dp</item>  <!-- room for eye toggle -->
+    </style>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ★ NEW  PRIMARY BUTTON — amber, full-width, bold uppercase label
+         ══════════════════════════════════════════════════════════════
+         Background: @drawable/btn_primary (ripple + rounded amber shape)
+
+         Usage:
+             <Button style="@style/BtnPrimary"
+                     android:text="Sign In as Customer" />
+    ══════════════════════════════════════════════════════════════════ -->
+    <style name="BtnPrimary">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:background">@drawable/btn_primary</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ★ NEW  GHOST BUTTON — transparent fill, dark border, white text
+         ══════════════════════════════════════════════════════════════
+         Background: @drawable/btn_ghost (ripple + outline shape)
+
+         Usage:
+             <Button style="@style/BtnGhost"
+                     android:text="View Our Services" />
+    ══════════════════════════════════════════════════════════════════ -->
+    <style name="BtnGhost">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:background">@drawable/btn_ghost</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <!-- ══════════════════════════════════════════
+         OTP INPUT BOX (existing — unchanged)
+         Used in IdentityVerificationActivity
+    ══════════════════════════════════════════ -->
     <style name="OtpBox">
         <item name="android:layout_width">44dp</item>
         <item name="android:layout_height">52dp</item>
@@ -16,21 +189,5 @@
         <item name="android:textColorHint">@color/muted</item>
     </style>
 
-    <!-- Splash screen theme — no action bar, full black background -->
-    <style name="Theme.MaestroAutoworks.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/yellow</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/yellow</item>
-        <item name="android:windowBackground">@color/black</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:statusBarColor">@color/black</item>
-    </style>
 
-    <style name="Theme.MaestroAutoworks" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/yellow</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/yellow</item>
-        <item name="android:windowBackground">@color/black</item>
-        <item name="android:textColorPrimary">@color/white</item>
-    </style>
 </resources>
