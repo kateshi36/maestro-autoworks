@@ -1,236 +1,1173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    AdminDashboardActivity layout — Admin unified dashboard.
+    Structure mirrors activity_home.xml exactly:
+      DrawerLayout (root)
+        └─ ConstraintLayout (contentPane)
+             ├─ LinearLayout  #topbar               (amber, 60dp, pinned top)
+             ├─ FrameLayout   #adminPanelContainer  (topbar↓ to bottomNav↑, hosts all 5 panels)
+             │    ├─ [panelDashboard]     — stats strip + pending requests + today's schedule
+             │    ├─ [panelAppointments]  — filter chips + RecyclerView + confirm/decline
+             │    ├─ [panelServices]      — add button + RecyclerView + edit/delete
+             │    ├─ [panelReports]       — stat cards + most-booked list
+             │    └─ [panelPms]           — search + add + filter chips + RecyclerView
+             └─ LinearLayout  #bottomNav            (5-tab bar, pinned bottom)
+        └─ LinearLayout #navigationDrawer  (slide-in from start, 280dp)
+             ├─ Amber header   — logo + brand + admin name + ADMIN badge
+             └─ Menu items     — Dashboard, Appointments, Services, Reports, PMS, Logout
+-->
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <!-- ═══════════════════════════════════════
+         MAIN CONTENT PANE
+    ═══════════════════════════════════════ -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentPane"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <!-- ═══ LOGO HEADER ═══ -->
+        android:layout_height="match_parent"
+        android:background="@color/surface">
+
+        <!-- ═══ TOPBAR ═══ -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/topbar"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="16dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="16dp"
-            android:background="@color/black">
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@color/yellow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:src="@drawable/logo_maestro"
-                android:scaleType="fitCenter"
-                android:layout_marginEnd="12dp"/>
+                android:id="@+id/btnHamburger"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_menu"
+                android:scaleType="center"
+                android:background="@drawable/bg_topbar_icon_btn"
+                android:padding="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Open navigation drawer" />
 
-            <TextView
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+            <!-- Logo + brand shown on Dashboard tab -->
+            <LinearLayout
+                android:id="@+id/topbarLogoGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maestro Autoworks"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/logo_maestro"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/circle_black"
+                    android:padding="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Maestro Autoworks logo" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAESTRO"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+            </LinearLayout>
+
+            <!-- Section title shown on non-Dashboard tabs -->
+            <TextView
+                android:id="@+id/tvTopbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:visibility="gone" />
+
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/btnNotifications"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_bell"
+                android:scaleType="center"
+                android:background="@drawable/bg_topbar_icon_btn"
+                android:padding="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Notifications" />
+
         </LinearLayout>
 
+        <!-- ═══ BOTTOM NAV BAR — 5 tabs ═══ -->
+        <LinearLayout
+            android:id="@+id/bottomNav"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:background="@color/black_card"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <!-- Tab 1: Dashboard (active by default) -->
+            <LinearLayout
+                android:id="@+id/navAdminDashboard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/navAdminDashboardIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_home"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Dashboard" />
+                <TextView
+                    android:id="@+id/navAdminDashboardLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dashboard"
+                    android:textColor="@color/yellow"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp" />
+            </LinearLayout>
 
-        <!-- Header -->
+            <!-- Tab 2: Appointments -->
+            <LinearLayout
+                android:id="@+id/navAdminAppointments"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/navAdminAppointmentsIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_appointments"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Appointments" />
+                <TextView
+                    android:id="@+id/navAdminAppointmentsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Appts"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp" />
+            </LinearLayout>
+
+            <!-- Tab 3: Services -->
+            <LinearLayout
+                android:id="@+id/navAdminServices"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/navAdminServicesIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_services"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Services" />
+                <TextView
+                    android:id="@+id/navAdminServicesLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Services"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp" />
+            </LinearLayout>
+
+            <!-- Tab 4: Reports -->
+            <LinearLayout
+                android:id="@+id/navAdminReports"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/navAdminReportsIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_book"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Reports" />
+                <TextView
+                    android:id="@+id/navAdminReportsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reports"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp" />
+            </LinearLayout>
+
+            <!-- Tab 5: PMS -->
+            <LinearLayout
+                android:id="@+id/navAdminPms"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/navAdminPmsIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_profile"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="PMS" />
+                <TextView
+                    android:id="@+id/navAdminPmsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PMS"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ═══════════════════════════════════════
+             PANEL CONTAINER
+             Fills the space between topbar and bottomNav.
+             Java toggles visibility on each panel child.
+        ═══════════════════════════════════════ -->
+        <FrameLayout
+            android:id="@+id/adminPanelContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/topbar"
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- ══════════════════════════════════════
+                 PANEL 1 — DASHBOARD (default visible)
+            ══════════════════════════════════════ -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/panelDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Hero greeting -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingTop="24dp"
+                        android:paddingBottom="20dp">
+
+                        <TextView
+                            android:id="@+id/tvAdminGreeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="GOOD MORNING! 👋"
+                            android:textColor="@color/yellow"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.10"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Admin,"
+                            android:textColor="@color/white"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvAdminName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Admin"
+                            android:textColor="@color/yellow"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="10dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Here's what's happening at the shop today."
+                            android:textColor="@color/muted"
+                            android:textSize="13sp"
+                            android:lineSpacingMultiplier="1.5" />
+
+                    </LinearLayout>
+
+                    <!-- Stats strip (4 counts) -->
+                    <LinearLayout
+                        android:id="@+id/adminStatsBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:orientation="horizontal"
+                        android:background="@color/black_card"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                            <TextView android:id="@+id/tvStatTotal"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="22sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="TOTAL" android:textColor="@color/muted"
+                                android:textSize="10sp" android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <View android:layout_width="1dp" android:layout_height="32dp"
+                            android:layout_gravity="center_vertical" android:background="@color/border" />
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                            <TextView android:id="@+id/tvStatPending"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="22sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="PENDING" android:textColor="@color/muted"
+                                android:textSize="10sp" android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <View android:layout_width="1dp" android:layout_height="32dp"
+                            android:layout_gravity="center_vertical" android:background="@color/border" />
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                            <TextView android:id="@+id/tvStatConfirmed"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="22sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="CONFIRMED" android:textColor="@color/muted"
+                                android:textSize="10sp" android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <View android:layout_width="1dp" android:layout_height="32dp"
+                            android:layout_gravity="center_vertical" android:background="@color/border" />
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                            <TextView android:id="@+id/tvStatToday"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="22sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="TODAY" android:textColor="@color/muted"
+                                android:textSize="10sp" android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="@color/border" />
+
+                    <!-- Pending Requests section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingTop="24dp"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PENDING REQUESTS"
+                            android:textColor="@color/yellow"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.15"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp" />
+
+                        <ListView
+                            android:id="@+id/listDashboardPending"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:divider="@null"
+                            android:scrollbars="none"
+                            android:nestedScrollingEnabled="false" />
+
+                        <TextView
+                            android:id="@+id/tvNoPending"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No pending requests 🎉"
+                            android:textColor="@color/muted"
+                            android:textSize="14sp"
+                            android:gravity="center"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <!-- Today's Schedule section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="32dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TODAY'S SCHEDULE"
+                            android:textColor="@color/yellow"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.15"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp" />
+
+                        <ListView
+                            android:id="@+id/listDashboardToday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:divider="@null"
+                            android:scrollbars="none"
+                            android:nestedScrollingEnabled="false" />
+
+                        <TextView
+                            android:id="@+id/tvNoToday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No appointments scheduled for today."
+                            android:textColor="@color/muted"
+                            android:textSize="14sp"
+                            android:gravity="center"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+            <!-- end panelDashboard -->
+
+            <!-- ══════════════════════════════════════
+                 PANEL 2 — APPOINTMENTS
+            ══════════════════════════════════════ -->
+            <LinearLayout
+                android:id="@+id/panelAppointments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Filter chip bar -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:background="@color/black_card"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/filterChipsRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView android:id="@+id/chipAll"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            android:text="All" android:textColor="@color/black"
+                            android:textSize="13sp" android:textStyle="bold" android:gravity="center"
+                            android:paddingStart="16dp" android:paddingEnd="16dp"
+                            android:layout_marginEnd="8dp" android:background="@color/yellow"
+                            android:clickable="true" android:focusable="true" />
+
+                        <TextView android:id="@+id/chipPending"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            android:text="Pending" android:textColor="@color/white"
+                            android:textSize="13sp" android:gravity="center"
+                            android:paddingStart="16dp" android:paddingEnd="16dp"
+                            android:layout_marginEnd="8dp" android:background="@drawable/bg_form_card"
+                            android:clickable="true" android:focusable="true" />
+
+                        <TextView android:id="@+id/chipConfirmed"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            android:text="Confirmed" android:textColor="@color/white"
+                            android:textSize="13sp" android:gravity="center"
+                            android:paddingStart="16dp" android:paddingEnd="16dp"
+                            android:layout_marginEnd="8dp" android:background="@drawable/bg_form_card"
+                            android:clickable="true" android:focusable="true" />
+
+                        <TextView android:id="@+id/chipDeclined"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            android:text="Declined" android:textColor="@color/white"
+                            android:textSize="13sp" android:gravity="center"
+                            android:paddingStart="16dp" android:paddingEnd="16dp"
+                            android:background="@drawable/bg_form_card"
+                            android:clickable="true" android:focusable="true" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAppointments"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/tvNoAppointments"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="No appointments found."
+                    android:textColor="@color/muted"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+            <!-- end panelAppointments -->
+
+            <!-- ══════════════════════════════════════
+                 PANEL 3 — SERVICES
+            ══════════════════════════════════════ -->
+            <LinearLayout
+                android:id="@+id/panelServices"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Add button row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:background="@color/black_card">
+
+                    <Button
+                        android:id="@+id/btnAddService"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="+ ADD SERVICE"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/yellow" />
+
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/tvNoServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="No services found."
+                    android:textColor="@color/muted"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+            <!-- end panelServices -->
+
+            <!-- ══════════════════════════════════════
+                 PANEL 4 — REPORTS
+            ══════════════════════════════════════ -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/panelReports"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="32dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="REPORTS OVERVIEW"
+                        android:textColor="@color/yellow"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Stat card row 1 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginEnd="6dp">
+                            <TextView android:id="@+id/tvReportTotalAppts"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="28sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Total Appointments" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginStart="6dp">
+                            <TextView android:id="@+id/tvReportCompleted"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="28sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Completed" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Stat card row 2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="20dp">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginEnd="6dp">
+                            <TextView android:id="@+id/tvReportPending"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="28sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Still Pending" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginStart="6dp">
+                            <TextView android:id="@+id/tvReportDeclined"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="0" android:textColor="@color/yellow"
+                                android:textSize="28sp" android:textStyle="bold" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Declined" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Most Booked Services -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MOST BOOKED SERVICES"
+                        android:textColor="@color/yellow"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.15"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <ListView
+                        android:id="@+id/listReportServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:scrollbars="none"
+                        android:nestedScrollingEnabled="false" />
+
+                    <TextView
+                        android:id="@+id/tvNoReportData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No report data available."
+                        android:textColor="@color/muted"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingTop="16dp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+            <!-- end panelReports -->
+
+            <!-- ══════════════════════════════════════
+                 PANEL 5 — PMS (Repair Tracker)
+            ══════════════════════════════════════ -->
+            <LinearLayout
+                android:id="@+id/panelPms"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Search + Add row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:background="@color/black_card">
+
+                    <EditText
+                        android:id="@+id/etPmsSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:hint="Search by plate or name…"
+                        android:textColorHint="@color/muted"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:background="@drawable/bg_input"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:inputType="text"
+                        android:imeOptions="actionSearch"
+                        android:layout_marginEnd="10dp" />
+
+                    <Button
+                        android:id="@+id/btnAddPmsRecord"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="+ ADD"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/yellow" />
+
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" />
+
+                <!-- Status filter chips -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <LinearLayout
+                        android:id="@+id/pmsFilterRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView android:id="@+id/pmsChipAll"
+                            android:layout_width="wrap_content" android:layout_height="32dp"
+                            android:text="All" android:textColor="@color/black"
+                            android:textSize="12sp" android:textStyle="bold" android:gravity="center"
+                            android:paddingStart="14dp" android:paddingEnd="14dp"
+                            android:layout_marginEnd="8dp" android:background="@color/yellow"
+                            android:clickable="true" android:focusable="true" />
+
+                        <TextView android:id="@+id/pmsChipInProgress"
+                            android:layout_width="wrap_content" android:layout_height="32dp"
+                            android:text="In Progress" android:textColor="@color/white"
+                            android:textSize="12sp" android:gravity="center"
+                            android:paddingStart="14dp" android:paddingEnd="14dp"
+                            android:layout_marginEnd="8dp" android:background="@drawable/bg_form_card"
+                            android:clickable="true" android:focusable="true" />
+
+                        <TextView android:id="@+id/pmsChipDone"
+                            android:layout_width="wrap_content" android:layout_height="32dp"
+                            android:text="Done" android:textColor="@color/white"
+                            android:textSize="12sp" android:gravity="center"
+                            android:paddingStart="14dp" android:paddingEnd="14dp"
+                            android:background="@drawable/bg_form_card"
+                            android:clickable="true" android:focusable="true" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPmsRecords"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/tvNoPmsRecords"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="No repair records found."
+                    android:textColor="@color/muted"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+            <!-- end panelPms -->
+
+        </FrameLayout>
+        <!-- end adminPanelContainer -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- end contentPane -->
+
+    <!-- ═══════════════════════════════════════
+         SLIDE-OUT DRAWER PANEL (start / left)
+    ═══════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/navigationDrawer"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:background="@color/black_card"
+        android:fitsSystemWindows="true"
+        android:elevation="16dp">
+
+        <!-- Amber header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/black_card"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:background="@color/yellow"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="44dp"
+            android:paddingBottom="24dp">
 
-            <TextView
+            <!-- Logo + brand row -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADMIN PORTAL"
-                android:textColor="@color/yellow"
-                android:textSize="11sp"
-                android:letterSpacing="0.15"
-                android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
 
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/logo_maestro"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/circle_black"
+                    android:padding="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="Maestro Autoworks logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAESTRO"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+
+            </LinearLayout>
+
+            <!-- Admin full name -->
             <TextView
-                android:id="@+id/tvAdminName"
+                android:id="@+id/drawerAdminName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome, Admin"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:text="Admin"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Role badge + email -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Operations Dashboard"
-                android:textColor="@color/muted"
-                android:textSize="13sp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ADMIN"
+                    android:textColor="@color/yellow"
+                    android:background="@color/black"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/drawerAdminEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#99000000"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
-        <!-- Stat Tiles Row 1 -->
-        <LinearLayout
+        <!-- Menu items -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:background="@color/black_card" android:padding="12dp" android:layout_marginEnd="4dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Today's Jobs" android:textColor="@color/muted" android:textSize="11sp"/>
-                <TextView android:id="@+id/statToday"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textColor="#2196F3" android:textSize="28sp" android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
+                <!-- Dashboard -->
+                <LinearLayout
+                    android:id="@+id/drawerNavDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_home" android:scaleType="fitCenter"
+                        android:contentDescription="Dashboard" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Dashboard" android:textColor="@color/white"
+                        android:textSize="14sp" android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <!-- Appointments -->
+                <LinearLayout
+                    android:id="@+id/drawerNavAppointments"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_appointments" android:scaleType="fitCenter"
+                        android:contentDescription="Appointments" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Appointments" android:textColor="@color/white"
+                        android:textSize="14sp" android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <!-- Services -->
+                <LinearLayout
+                    android:id="@+id/drawerNavServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_services" android:scaleType="fitCenter"
+                        android:contentDescription="Services" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Services" android:textColor="@color/white"
+                        android:textSize="14sp" android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <!-- Reports -->
+                <LinearLayout
+                    android:id="@+id/drawerNavReports"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_book" android:scaleType="fitCenter"
+                        android:contentDescription="Reports" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Reports" android:textColor="@color/white"
+                        android:textSize="14sp" android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <!-- PMS -->
+                <LinearLayout
+                    android:id="@+id/drawerNavPms"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_profile" android:scaleType="fitCenter"
+                        android:contentDescription="PMS" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="PMS / Repair Tracker" android:textColor="@color/white"
+                        android:textSize="14sp" android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/border"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Logout -->
+                <LinearLayout
+                    android:id="@+id/drawerNavLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Logout"
+                        android:textColor="@color/danger"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
             </LinearLayout>
-
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:background="@color/black_card" android:padding="12dp" android:layout_marginStart="4dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Pending" android:textColor="@color/muted" android:textSize="11sp"/>
-                <TextView android:id="@+id/statPending"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textColor="@color/yellow" android:textSize="28sp" android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Stat Tiles Row 2 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:background="@color/black_card" android:padding="12dp" android:layout_marginEnd="4dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Confirmed" android:textColor="@color/muted" android:textSize="11sp"/>
-                <TextView android:id="@+id/statConfirmed"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textColor="@color/success" android:textSize="28sp" android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:background="@color/black_card" android:padding="12dp" android:layout_marginStart="4dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Completed" android:textColor="@color/muted" android:textSize="11sp"/>
-                <TextView android:id="@+id/statCompleted"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textColor="#7B61FF" android:textSize="28sp" android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Stat Tiles Row 3 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:background="@color/black_card" android:padding="12dp" android:layout_marginEnd="4dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Customers" android:textColor="@color/muted" android:textSize="11sp"/>
-                <TextView android:id="@+id/statCustomers"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textColor="@color/danger" android:textSize="28sp" android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:background="@color/black_card" android:padding="12dp" android:layout_marginStart="4dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="All Bookings" android:textColor="@color/muted" android:textSize="11sp"/>
-                <TextView android:id="@+id/statTotal"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textColor="@color/yellow" android:textSize="28sp" android:textStyle="bold"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Nav Buttons -->
-        <Button android:id="@+id/btnManageAppointments"
-            android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="📋  Manage All Appointments"
-            android:backgroundTint="@color/yellow" android:textColor="@color/black"
-            android:textStyle="bold" android:layout_marginBottom="8dp"/>
-
-        <Button android:id="@+id/btnViewReports"
-            android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="📊 Reports" android:backgroundTint="@color/black_ele"
-            android:textColor="@color/yellow" android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <Button android:id="@+id/btnRepairTracker"
-            android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="🔧 Repair Tracker" android:backgroundTint="@color/black_ele"
-            android:textColor="@color/yellow" android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <Button android:id="@+id/btnManageServices"
-            android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="🔧  Manage Services"
-            android:backgroundTint="@color/black_card" android:textColor="@color/white"
-            android:textStyle="bold" android:layout_marginBottom="16dp"/>
-
-        <!-- Pending Requests Section -->
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Pending Requests"
-            android:textColor="@color/white" android:textSize="16sp" android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Review and accept or decline incoming bookings"
-            android:textColor="@color/muted" android:textSize="12sp" android:layout_marginBottom="8dp"/>
-
-        <TextView android:id="@+id/tvNoPending"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="No pending requests. 🎉"
-            android:textColor="@color/muted" android:textSize="13sp"
-            android:gravity="center" android:padding="16dp"
-            android:background="@color/black_card" android:layout_marginBottom="16dp"/>
-
-        <ListView android:id="@+id/lvPending"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:divider="@color/black" android:dividerHeight="8dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Today's Schedule Section -->
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Today's Schedule"
-            android:textColor="@color/white" android:textSize="16sp" android:textStyle="bold"
-            android:layout_marginBottom="2dp"/>
-        <TextView android:id="@+id/tvTodayCount"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="0 appointments"
-            android:textColor="@color/muted" android:textSize="12sp" android:layout_marginBottom="8dp"/>
-
-        <TextView android:id="@+id/tvNoToday"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="No appointments scheduled for today."
-            android:textColor="@color/muted" android:textSize="13sp"
-            android:gravity="center" android:padding="16dp"
-            android:background="@color/black_card" android:layout_marginBottom="16dp"/>
-
-        <ListView android:id="@+id/lvToday"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:divider="@color/black" android:dividerHeight="8dp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Logout -->
-        <Button android:id="@+id/btnAdminLogout"
-            android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="Logout"
-            android:backgroundTint="@color/danger" android:textColor="@color/white"
-            android:textStyle="bold" android:layout_marginTop="8dp" android:layout_marginBottom="8dp"/>
+        </ScrollView>
 
     </LinearLayout>
-</ScrollView>
+    <!-- end navigationDrawer -->
+
+</androidx.drawerlayout.widget.DrawerLayout>
