@@ -64,17 +64,6 @@
         <!-- A1. Admin Dashboard -->
         <activity android:name=".activities.AdminDashboardActivity" android:exported="false"/>
 
-        <!-- A2. Admin Appointments -->
-        <activity android:name=".activities.AdminReportsActivity"
-            android:label="Reports — Maestro Autoworks"
-            android:exported="false"/>
-        <activity android:name=".activities.AdminPmsActivity"
-            android:label="Repair Tracker — Maestro Autoworks"
-            android:exported="false"/>
-        <activity android:name=".activities.AdminAppointmentsActivity" android:exported="false"/>
-
-        <!-- A3. Admin Services -->
-        <activity android:name=".activities.AdminServicesActivity" android:exported="false"/>
 
         <!-- FileProvider for OR/CR camera capture on Android 9 and below -->
         <provider
