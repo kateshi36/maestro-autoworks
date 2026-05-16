@@ -1,125 +1,1721 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- HomeActivity: Intent navigation to all screens -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    HomeActivity layout — Authenticated user dashboard.
+    Structure:
+      DrawerLayout (root)
+        └─ ConstraintLayout (contentPane)
+             ├─ LinearLayout  #topbar          (amber, 60dp, pinned top)
+             ├─ NestedScrollView #bodyScroll   (topbar↓ to bottomNav↑)
+             │    └─ LinearLayout (vertical)
+             │         ├─ LinearLayout #sectionHero    (greeting, name, CTAs)
+             │         ├─ LinearLayout #statsBar        (4-stat strip)
+             │         └─ LinearLayout #sectionFeatures (2×2 grid)
+             └─ LinearLayout  #bottomNav       (5-tab bar, pinned bottom)
+-->
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentPane"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/surface">
+
+        <!-- ═══ TOPBAR ═══ -->
+        <LinearLayout
+            android:id="@+id/topbar"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@color/yellow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/btnHamburger"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_menu"
+                android:scaleType="center"
+                android:background="@drawable/bg_topbar_icon_btn"
+                android:padding="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Open navigation drawer" />
+
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/logo_maestro"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/circle_black"
+                    android:padding="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Maestro Autoworks logo" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAESTRO"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+            </LinearLayout>
+
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/btnProfile"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_nav_profile"
+                android:scaleType="center"
+                android:background="@drawable/bg_topbar_icon_btn"
+                android:padding="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Profile" />
+
+        </LinearLayout>
+
+        <!-- ═══ BOTTOM NAV BAR ═══ -->
+        <LinearLayout
+            android:id="@+id/bottomNav"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:background="@color/black_card"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Home (active — label amber) -->
+            <LinearLayout
+                android:id="@+id/navHome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_home"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Home"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:textColor="@color/yellow"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+            <!-- Services -->
+            <LinearLayout
+                android:id="@+id/navServices"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_services"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Services"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Services"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+            <!-- Book (amber pill bg on icon) -->
+            <LinearLayout
+                android:id="@+id/navBook"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_feature_icon"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_nav_book"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Book"/>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Book"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <!-- My Appts -->
+            <LinearLayout
+                android:id="@+id/navAppointments"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_appointments"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="My Appointments"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Appts"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+            <!-- Profile -->
+            <LinearLayout
+                android:id="@+id/navProfile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_nav_profile"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Profile"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:textColor="@color/muted"
+                    android:textSize="10sp"
+                    android:layout_marginTop="3dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ═══ SCROLLABLE BODY ═══ -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/bodyScroll"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/topbar"
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- HERO -->
+                <LinearLayout
+                    android:id="@+id/sectionHero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="28dp"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="GOOD MORNING! 👋"
+                        android:textColor="@color/yellow"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.10"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hi,"
+                        android:textColor="@color/white"
+                        android:textSize="36sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvWelcome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Patrick!"
+                        android:textColor="@color/yellow"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:id="@+id/tvSubtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome to Maestro Autoworks. Ready for your next service?"
+                        android:textColor="@color/muted"
+                        android:textSize="14sp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:layout_marginBottom="22dp" />
+
+                    <Button
+                        android:id="@+id/btnBook"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="BOOK AN APPOINTMENT"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.06"
+                        android:background="@drawable/btn_primary"
+                        android:stateListAnimator="@null"
+                        android:layout_marginBottom="12dp" />
+
+                    <Button
+                        android:id="@+id/btnServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="BROWSE SERVICES"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.06"
+                        android:background="@drawable/btn_ghost"
+                        android:stateListAnimator="@null" />
+
+                </LinearLayout>
+
+                <!-- STATS BAR -->
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" />
+
+                <LinearLayout
+                    android:id="@+id/statsBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@color/black_card"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="18dp">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="15+" android:textColor="@color/yellow" android:textSize="22sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="YEARS" android:textColor="@color/muted" android:textSize="10sp" android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="1dp" android:layout_height="32dp"
+                        android:layout_gravity="center_vertical" android:background="@color/border"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="12" android:textColor="@color/yellow" android:textSize="22sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="MECHANICS" android:textColor="@color/muted" android:textSize="10sp" android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="1dp" android:layout_height="32dp"
+                        android:layout_gravity="center_vertical" android:background="@color/border"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="50+" android:textColor="@color/yellow" android:textSize="22sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="CARS/DAY" android:textColor="@color/muted" android:textSize="10sp" android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="1dp" android:layout_height="32dp"
+                        android:layout_gravity="center_vertical" android:background="@color/border"/>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="98%" android:textColor="@color/yellow" android:textSize="22sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="SATISFIED" android:textColor="@color/muted" android:textSize="10sp" android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/border" />
+
+                <!-- FEATURES GRID (2×2) -->
+                <LinearLayout
+                    android:id="@+id/sectionFeatures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp">
+
+                    <!-- Row 1 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginEnd="6dp">
+                            <ImageView android:layout_width="44dp" android:layout_height="44dp"
+                                android:src="@drawable/ic_feature_certified"
+                                android:background="@drawable/bg_feature_icon" android:padding="10dp"
+                                android:scaleType="center" android:contentDescription="Certified"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Certified Mechanics" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold" android:layout_marginTop="12dp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="ASE-certified technicians on every job."
+                                android:textColor="@color/muted" android:textSize="12sp"
+                                android:lineSpacingMultiplier="1.35" android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginStart="6dp">
+                            <ImageView android:layout_width="44dp" android:layout_height="44dp"
+                                android:src="@drawable/ic_feature_turnaround"
+                                android:background="@drawable/bg_feature_icon" android:padding="10dp"
+                                android:scaleType="center" android:contentDescription="Turnaround"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Fast Turnaround" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold" android:layout_marginTop="12dp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Most jobs done same-day."
+                                android:textColor="@color/muted" android:textSize="12sp"
+                                android:lineSpacingMultiplier="1.35" android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Row 2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginEnd="6dp">
+                            <ImageView android:layout_width="44dp" android:layout_height="44dp"
+                                android:src="@drawable/ic_feature_booking"
+                                android:background="@drawable/bg_feature_icon" android:padding="10dp"
+                                android:scaleType="center" android:contentDescription="Booking"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Online Booking" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold" android:layout_marginTop="12dp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Schedule 24/7 from your phone."
+                                android:textColor="@color/muted" android:textSize="12sp"
+                                android:lineSpacingMultiplier="1.35" android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical"
+                            android:background="@drawable/bg_form_card" android:padding="16dp"
+                            android:layout_marginStart="6dp">
+                            <ImageView android:layout_width="44dp" android:layout_height="44dp"
+                                android:src="@drawable/ic_feature_pricing"
+                                android:background="@drawable/bg_feature_icon" android:padding="10dp"
+                                android:scaleType="center" android:contentDescription="Pricing"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Clear Pricing" android:textColor="@color/white"
+                                android:textSize="13sp" android:textStyle="bold" android:layout_marginTop="12dp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="No hidden fees, ever."
+                                android:textColor="@color/muted" android:textSize="12sp"
+                                android:lineSpacingMultiplier="1.35" android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Hidden stubs — wired in Sub-stage 5 -->
+                <Button android:id="@+id/btnAppointments" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+                <Button android:id="@+id/btnSearch"       android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+                <Button android:id="@+id/btnAbout"        android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+                <Button android:id="@+id/btnLogout"       android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+
+                <!-- ═══════════════════════════════════════════════════════
+                     PANEL: SERVICES
+                     Hidden by default; shown when bottom nav "Services" or
+                     drawer "Services" is tapped (wired in Sub-stage 5).
+                     Mirrors Image 2 exactly — header + 12 service cards.
+                     Card anatomy (per row):
+                       Left  col: CATEGORY tag · Name · Description
+                       Right col: ₱Price · Duration (right-aligned)
+                     All data sourced from ServiceData.java.
+                ═══════════════════════════════════════════════════════ -->
+                <LinearLayout
+                    android:id="@+id/panelServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- ── Section header ── -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingTop="28dp"
+                        android:paddingBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Services"
+                            android:textColor="@color/white"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tap a service to book it"
+                            android:textColor="@color/muted"
+                            android:textSize="13sp"
+                            android:layout_marginTop="4dp" />
+
+                    </LinearLayout>
+
+                    <!-- ── Service cards container ── -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="24dp">
+
+                        <!-- ─── CARD 1: Oil Change & Filter ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardOilChange"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <!-- Left: category + name + description -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="MAINTENANCE"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Oil Change &amp; Filter"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Full synthetic or conventional oil change with new filter and 27-point inspection."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <!-- Right: price + duration -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱699"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 2: Brake Pad Replacement ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardBrakePad"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="BRAKES"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Brake Pad Replacement"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Front or rear disc brake pad swap using OEM-grade compound with road test."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱2,500"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 3: Air-Con Regas & Check ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardAirCon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="AIRCON"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Air-Con Regas &amp; Check"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Refrigerant top-up, leak check, and cabin filter inspection."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱1,200"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1.5 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 4: Engine Tune-Up ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardEngineTuneUp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ENGINE"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Engine Tune-Up"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Spark plugs, air filter, fuel injector cleaning, and timing check."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱3,800"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 5: Wheel Alignment & Balance ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardWheelAlignment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TIRES"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Wheel Alignment &amp; Balance"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4-wheel computer alignment and dynamic wheel balancing."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱950"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1.5 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 6: Transmission Service ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardTransmission"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="DRIVETRAIN"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Transmission Service"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ATF or MTF flush, filter replacement, and computer scan."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱4,200"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2.5 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 7: Battery Replacement ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardBattery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ELECTRICAL"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Battery Replacement"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="OEM or aftermarket battery swap with charging system test."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱3,500"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.5 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 8: Coolant System Flush ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardCoolant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="MAINTENANCE"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Coolant System Flush"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Full coolant drain, flush, and refill with premium antifreeze."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱1,500"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1.5 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 9: Timing Belt Replacement ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardTimingBelt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ENGINE"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Timing Belt Replacement"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Belt, tensioner, and idler pulley replacement with water pump check."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱8,500"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 10: Suspension Check & Repair ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardSuspension"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="SUSPENSION"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Suspension Check &amp; Repair"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Shock absorbers, struts, ball joints, and bushings inspection."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱5,000"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 11: Exhaust System Repair ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardExhaust"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="EXHAUST"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Exhaust System Repair"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Muffler, catalytic converter, and pipe inspection and replacement."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱2,800"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ─── CARD 12: Full Car Detailing ─── -->
+                        <LinearLayout
+                            android:id="@+id/cardDetailing"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/bg_form_card"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="DETAILING"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.10"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Full Car Detailing"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="6dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Interior vacuuming, exterior wash, wax, and trim restoration."
+                                    android:textColor="@color/muted"
+                                    android:textSize="12sp"
+                                    android:lineSpacingMultiplier="1.35" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₱2,500"
+                                    android:textColor="@color/yellow"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3.0 hr"
+                                    android:textColor="@color/muted"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="3dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <!-- end cards container -->
+
+                </LinearLayout>
+                <!-- end panelServices -->
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ═══ SLIDE-OUT DRAWER PANEL ═══
+         Second child of DrawerLayout — slides in from the left.
+         Width: 280dp (standard material drawer).
+         Structure:
+           • Amber header  — logo + brand, user full name, username
+           • Menu items    — Home, Services, Book, My Appts, Profile
+           • Divider
+           • Logout row    — danger-red label
+    -->
+    <LinearLayout
+        android:id="@+id/navigationDrawer"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
         android:orientation="vertical"
-        android:padding="24dp">
-        <!-- ═══ LOGO HEADER ═══ -->
+        android:background="@color/black_card"
+        android:fitsSystemWindows="true"
+        android:elevation="16dp">
+
+        <!-- ── DRAWER HEADER (amber) ── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="16dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="16dp"
-            android:background="@color/black">
+            android:orientation="vertical"
+            android:background="@color/yellow"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="44dp"
+            android:paddingBottom="24dp">
 
-            <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:src="@drawable/logo_maestro"
-                android:scaleType="fitCenter"
-                android:layout_marginEnd="12dp"/>
-
-            <TextView
+            <!-- Logo + brand row -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maestro Autoworks"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/logo_maestro"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/circle_black"
+                    android:padding="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="Maestro Autoworks logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAESTRO"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+
+            </LinearLayout>
+
+            <!-- User full name -->
+            <TextView
+                android:id="@+id/drawerUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!-- Username / email -->
+            <TextView
+                android:id="@+id/drawerUserEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#99000000"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+
         </LinearLayout>
 
-
-
-        <!-- Welcome -->
-        <TextView
-            android:id="@+id/tvWelcome"
+        <!-- ── MENU ITEMS ── -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Welcome back!"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="What would you like to do today?"
-            android:textColor="@color/muted"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="32dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
-        <!-- Book Appointment -->
-        <Button
-            android:id="@+id/btnBook"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="📅  Book an Appointment"
-            android:backgroundTint="@color/yellow"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+                <!-- Home -->
+                <LinearLayout
+                    android:id="@+id/drawerNavHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_home"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Home" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Home"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
 
-        <!-- My Appointments -->
-        <Button
-            android:id="@+id/btnAppointments"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="🗂  My Appointments"
-            android:backgroundTint="@color/black_card"
-            android:textColor="@color/white"
-            android:layout_marginBottom="12dp"/>
+                <!-- Services -->
+                <LinearLayout
+                    android:id="@+id/drawerNavServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_services"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Services" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Services"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
 
-        <!-- Services -->
-        <Button
-            android:id="@+id/btnServices"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="🔧  Browse Services"
-            android:backgroundTint="@color/black_card"
-            android:textColor="@color/white"
-            android:layout_marginBottom="12dp"/>
+                <!-- Book -->
+                <LinearLayout
+                    android:id="@+id/drawerNavBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_book"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Book" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Book Appointment"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
 
-        <!-- Search -->
-        <Button
-            android:id="@+id/btnSearch"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="🔍  Search Services"
-            android:backgroundTint="@color/black_card"
-            android:textColor="@color/white"
-            android:layout_marginBottom="12dp"/>
+                <!-- My Appointments -->
+                <LinearLayout
+                    android:id="@+id/drawerNavAppointments"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_appointments"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="My Appointments" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Appointments"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
 
-        <!-- About / Appearance -->
-        <Button
-            android:id="@+id/btnAbout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="🎨  App Appearance"
-            android:backgroundTint="@color/black_card"
-            android:textColor="@color/white"
-            android:layout_marginBottom="12dp"/>
+                <!-- Profile -->
+                <LinearLayout
+                    android:id="@+id/drawerNavProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_nav_profile"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Profile" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Profile"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
 
-        <!-- WebView -->
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/border"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
 
-        <!-- Logout -->
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="LOG OUT"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:textColor="@color/danger"/>
+                <!-- Logout -->
+                <LinearLayout
+                    android:id="@+id/drawerNavLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Logout"
+                        android:textColor="@color/danger"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
-</ScrollView>
+
+</androidx.drawerlayout.widget.DrawerLayout>
