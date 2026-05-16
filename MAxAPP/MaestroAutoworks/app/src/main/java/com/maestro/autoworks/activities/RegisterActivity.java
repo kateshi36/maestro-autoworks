@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
+import android.widget.ImageView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.maestro.autoworks.utils.MediaPickerHelper;
@@ -40,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // ── Step containers ───────────────────────────────────────────────────────
     private LinearLayout layoutStep1, layoutStep2, layoutStep3,
-            layoutStep4, layoutStep5, layoutStep6, layoutStep8, layoutStep9;
+            layoutStep4, layoutStep5, layoutStep6, layoutStep7, layoutStep8, layoutStep9;
 
     // ── Step 1: Terms & CAPTCHA ───────────────────────────────────────────────
     private CheckBox cbTerms;
@@ -131,11 +132,35 @@ public class RegisterActivity extends AppCompatActivity {
             java.util.regex.Pattern.compile("^[A-Za-z0-9][A-Za-z0-9\\s.\\-/()']{1,59}$");
 
     // ── Step 4: License Details ───────────────────────────────────────────────
-    private EditText     etDriversLicNo, etDriversExpiry;
+    private EditText     etDriversLicNo, etDriversIssuance, etDriversExpiry;
+    private TextView     tvDriversLicNoError, tvDriversIssuanceError, tvDriversExpiryError;
     private CheckBox     cbHasConductors;
     private LinearLayout layoutConductors;
-    private EditText     etConductorsLicNo, etConductorsExpiry;
+    private EditText     etConductorsLicNo, etConductorsIssuance, etConductorsExpiry;
+    private TextView     tvConductorsLicNoError, tvConductorsIssuanceError, tvConductorsExpiryError;
     private Button       btnStep4Next;
+
+    // DL codes chip TextViews (A, A1, B, B1, B2, C, D, BE, CE)
+    private TextView chipDlA, chipDlA1, chipDlB, chipDlB1, chipDlB2,
+            chipDlC, chipDlD, chipDlBE, chipDlCE;
+    private TextView tvDlCodesError;
+    private final java.util.Set<String> selectedDlCodes = new java.util.LinkedHashSet<>();
+
+
+    // ── Step 4: License validation booleans ──────────────────────────────────
+    private boolean isDriversLicNoValid    = false;
+    private boolean isDriversIssuanceValid = false;
+    private boolean isDriversExpiryValid   = false;
+    private boolean isDlCodesSelected      = false;
+
+    // Conductor's license validation (only enforced when checkbox is checked)
+    private boolean isCondLicNoValid      = false;
+    private boolean isCondIssuanceValid   = false;
+    private boolean isCondExpiryValid     = false;
+
+    // ── DL Number regex: one letter, two digits, dash, two digits, dash, six digits ──
+    private static final java.util.regex.Pattern DL_NUMBER_PATTERN =
+            java.util.regex.Pattern.compile("^[A-Z][0-9]{2}-[0-9]{2}-[0-9]{6}$");
 
     // ── Step 5: License Photo + OCR ───────────────────────────────────────────
     private ImageView    imgLicensePreview;
@@ -160,6 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
     // REQUEST_CAMERA_PERMISSION removed — now handled by MediaPickerHelper (licensePicker).
     private TextView tvStepIndicator;
     private static final int TOTAL_STEPS = 8;
+    private int currentStep = 1;
     private DatabaseHelper db;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -203,10 +229,15 @@ public class RegisterActivity extends AppCompatActivity {
         layoutStep4 = findViewById(R.id.layoutStep4);
         layoutStep5 = findViewById(R.id.layoutStep5);
         layoutStep6 = findViewById(R.id.layoutStep6);
+        layoutStep7 = findViewById(R.id.layoutStep7);
         layoutStep8 = findViewById(R.id.layoutStep8);
         layoutStep9 = findViewById(R.id.layoutStep9);
 
         tvStepIndicator = findViewById(R.id.tvStepIndicator);
+
+        // ── Topbar back button — go to previous step, finish() only on step 1 ──
+        ImageView btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> navigateBack());
 
         setupStep1();
         setupStep2();
@@ -214,6 +245,7 @@ public class RegisterActivity extends AppCompatActivity {
         setupStep4();
         setupStep5();
         setupStep6();
+        setupStep7();
         setupStep8();
 
         showStep(1);
@@ -226,23 +258,44 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        navigateBack();
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     //  Step navigation
     // ─────────────────────────────────────────────────────────────────────────
 
     private void showStep(int step) {
+        currentStep = step;
         layoutStep1.setVisibility(step == 1 ? View.VISIBLE : View.GONE);
         layoutStep2.setVisibility(step == 2 ? View.VISIBLE : View.GONE);
         layoutStep3.setVisibility(step == 3 ? View.VISIBLE : View.GONE);
         layoutStep4.setVisibility(step == 4 ? View.VISIBLE : View.GONE);
         layoutStep5.setVisibility(step == 5 ? View.VISIBLE : View.GONE);
         layoutStep6.setVisibility(step == 6 ? View.VISIBLE : View.GONE);
+        layoutStep7.setVisibility(step == 7 ? View.VISIBLE : View.GONE);
         layoutStep8.setVisibility(step == 8 ? View.VISIBLE : View.GONE);
         layoutStep9.setVisibility(step == 9 ? View.VISIBLE : View.GONE);
         if (step == 9) {
             tvStepIndicator.setText("Registration Complete");
         } else {
             tvStepIndicator.setText("Step " + step + " of " + TOTAL_STEPS);
+        }
+    }
+
+    private void navigateBack() {
+        switch (currentStep) {
+            case 1:  finish();       break;
+            case 2:  showStep(1);    break;
+            case 3:  showStep(2);    break;
+            case 4:  showStep(3);    break;
+            case 5:  showStep(4);    break;
+            case 6:  showStep(5);    break;
+            case 7:  showStep(6);    break;
+            case 8:  showStep(7);    break;
+            default: finish();       break;
         }
     }
 
@@ -340,8 +393,7 @@ public class RegisterActivity extends AppCompatActivity {
             showStep(3);
         });
 
-        Button btnStep2Back = findViewById(R.id.btnStep2Back);
-        if (btnStep2Back != null) btnStep2Back.setOnClickListener(v -> showStep(1));
+
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -385,12 +437,7 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail.addTextChangedListener(emailWatcher);
         etEmailConfirm.addTextChangedListener(emailWatcher);
 
-        Button btnStep3Next = findViewById(R.id.btnStep3Next);
-        Button btnStep3Back = findViewById(R.id.btnStep3Back);
-
-        if (btnStep3Back != null) btnStep3Back.setOnClickListener(v -> showStep(2));
-
-        if (btnStep3Next != null) btnStep3Next.setOnClickListener(v -> {
+        Button btnStep3Next = findViewById(R.id.btnStep3Next);        if (btnStep3Next != null) btnStep3Next.setOnClickListener(v -> {
             String firstName = etFirstName.getText().toString().trim();
             String lastName  = etLastName.getText().toString().trim();
             String username  = etUsername.getText().toString().trim();
@@ -550,17 +597,64 @@ public class RegisterActivity extends AppCompatActivity {
         refreshStep4Continue();
     }
 
-    /** Enables Continue only when all fields are valid AND all 3 docs uploaded. */
+    /** Enables Continue only when all license fields, vehicle fields, and docs are valid. */
     private void refreshStep4Continue() {
         boolean allDocsUploaded = isDlUploaded && isOrUploaded && isCrUploaded;
         View banner = findViewById(R.id.layoutAllDocsUploaded);
         if (banner != null)
             banner.setVisibility(allDocsUploaded ? View.VISIBLE : View.GONE);
 
-        boolean canContinue = isLicensePlateValid && isMvFileNumberValid
+        // Conductor's fields are only required when the checkbox is ticked
+        boolean conductorsOk = true;
+        if (cbHasConductors != null && cbHasConductors.isChecked()) {
+            conductorsOk = isCondLicNoValid && isCondIssuanceValid && isCondExpiryValid;
+        }
+
+        boolean canContinue = isDriversLicNoValid && isDriversIssuanceValid && isDriversExpiryValid
+                && isDlCodesSelected
+                && isLicensePlateValid && isMvFileNumberValid
                 && isVehicleMakeValid && isVehicleModelValid
-                && allDocsUploaded;
+                && allDocsUploaded
+                && conductorsOk;
         if (btnStep4Next != null) btnStep4Next.setEnabled(canContinue);
+    }
+
+    // ── Date validation helpers ───────────────────────────────────────────────
+
+    /** Returns true if the given YYYY-MM-DD string is today or earlier. */
+    private boolean isPastOrToday(String yyyymmdd) {
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+            sdf.setLenient(false);
+            java.util.Date date = sdf.parse(yyyymmdd);
+            return date != null && !date.after(new java.util.Date());
+        } catch (Exception e) { return false; }
+    }
+
+    /** Returns true if the given YYYY-MM-DD string is strictly after today. */
+    private boolean isFuture(String yyyymmdd) {
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+            sdf.setLenient(false);
+            java.util.Date date = sdf.parse(yyyymmdd);
+            return date != null && date.after(new java.util.Date());
+        } catch (Exception e) { return false; }
+    }
+
+    // ── Chip toggle helper ────────────────────────────────────────────────────
+
+    private void toggleChip(TextView chip, String code,
+                            java.util.Set<String> bag, Runnable onChanged) {
+        if (bag.contains(code)) {
+            bag.remove(code);
+            chip.setTextColor(getResources().getColor(R.color.muted, null));
+            chip.setBackgroundResource(R.drawable.bg_input);
+        } else {
+            bag.add(code);
+            chip.setTextColor(getResources().getColor(R.color.black, null));
+            chip.setBackgroundColor(getResources().getColor(R.color.yellow, null));
+        }
+        onChanged.run();
     }
 
     /** Show the camera-vs-gallery picker for the given document target. */
@@ -573,28 +667,50 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupStep4() {
-        // ── License fields (existing) ─────────────────────────────────────
-        etDriversLicNo    = findViewById(R.id.etDriversLicNo);
-        etDriversExpiry   = findViewById(R.id.etDriversExpiry);
-        cbHasConductors   = findViewById(R.id.cbHasConductors);
-        layoutConductors  = findViewById(R.id.layoutConductors);
-        etConductorsLicNo = findViewById(R.id.etConductorsLicNo);
-        etConductorsExpiry= findViewById(R.id.etConductorsExpiry);
-        btnStep4Next      = findViewById(R.id.btnStep4Next);
+        // ── License fields ────────────────────────────────────────────────────
+        etDriversLicNo       = findViewById(R.id.etDriversLicNo);
+        etDriversIssuance    = findViewById(R.id.etDriversIssuance);
+        etDriversExpiry      = findViewById(R.id.etDriversExpiry);
+        tvDriversLicNoError  = findViewById(R.id.tvDriversLicNoError);
+        tvDriversIssuanceError = findViewById(R.id.tvDriversIssuanceError);
+        tvDriversExpiryError = findViewById(R.id.tvDriversExpiryError);
 
-        // ── Vehicle text fields ───────────────────────────────────────────
+        cbHasConductors      = findViewById(R.id.cbHasConductors);
+        layoutConductors     = findViewById(R.id.layoutConductors);
+        etConductorsLicNo    = findViewById(R.id.etConductorsLicNo);
+        etConductorsIssuance = findViewById(R.id.etConductorsIssuance);
+        etConductorsExpiry   = findViewById(R.id.etConductorsExpiry);
+        tvConductorsLicNoError   = findViewById(R.id.tvConductorsLicNoError);
+        tvConductorsIssuanceError = findViewById(R.id.tvConductorsIssuanceError);
+        tvConductorsExpiryError  = findViewById(R.id.tvConductorsExpiryError);
+        btnStep4Next         = findViewById(R.id.btnStep4Next);
+
+        // ── DL Code chips ─────────────────────────────────────────────────────
+        chipDlA   = findViewById(R.id.chipDlA);
+        chipDlA1  = findViewById(R.id.chipDlA1);
+        chipDlB   = findViewById(R.id.chipDlB);
+        chipDlB1  = findViewById(R.id.chipDlB1);
+        chipDlB2  = findViewById(R.id.chipDlB2);
+        chipDlC   = findViewById(R.id.chipDlC);
+        chipDlD   = findViewById(R.id.chipDlD);
+        chipDlBE  = findViewById(R.id.chipDlBE);
+        chipDlCE  = findViewById(R.id.chipDlCE);
+        tvDlCodesError = findViewById(R.id.tvDlCodesError);
+
+
+        // ── Vehicle text fields ───────────────────────────────────────────────
         etLicensePlate    = findViewById(R.id.etLicensePlate);
         etMvFileNumber    = findViewById(R.id.etMvFileNumber);
         etVehicleMake     = findViewById(R.id.etVehicleMake);
         etVehicleModel    = findViewById(R.id.etVehicleModel);
 
-        // ── Inline error TextViews ────────────────────────────────────────
+        // ── Inline error TextViews ────────────────────────────────────────────
         tvLicensePlateError  = findViewById(R.id.tvLicensePlateError);
         tvMvFileNumberError  = findViewById(R.id.tvMvFileNumberError);
         tvVehicleMakeError   = findViewById(R.id.tvVehicleMakeError);
         tvVehicleModelError  = findViewById(R.id.tvVehicleModelError);
 
-        // ── Document upload card views ────────────────────────────────────
+        // ── Document upload card views ────────────────────────────────────────
         imgDlPreview      = findViewById(R.id.imgDlPreview);
         imgOrPreview      = findViewById(R.id.imgOrPreview);
         imgCrPreview      = findViewById(R.id.imgCrPreview);
@@ -602,19 +718,181 @@ public class RegisterActivity extends AppCompatActivity {
         tvOrUploadStatus  = findViewById(R.id.tvOrUploadStatus);
         tvCrUploadStatus  = findViewById(R.id.tvCrUploadStatus);
 
-        // ── Date pickers ──────────────────────────────────────────────────
+        // ── DL Number real-time validation ────────────────────────────────────
+        etDriversLicNo.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            public void afterTextChanged(android.text.Editable s) {
+                // Auto-insert dashes as user types
+                String raw = s.toString().toUpperCase();
+                if (!raw.equals(s.toString())) {
+                    etDriversLicNo.removeTextChangedListener(this);
+                    etDriversLicNo.setText(raw);
+                    etDriversLicNo.setSelection(raw.length());
+                    etDriversLicNo.addTextChangedListener(this);
+                }
+                String val = raw.trim();
+                if (val.isEmpty()) {
+                    isDriversLicNoValid = false;
+                    tvDriversLicNoError.setVisibility(View.GONE);
+                } else if (DL_NUMBER_PATTERN.matcher(val).matches()) {
+                    isDriversLicNoValid = true;
+                    tvDriversLicNoError.setVisibility(View.GONE);
+                } else {
+                    isDriversLicNoValid = false;
+                    tvDriversLicNoError.setVisibility(View.VISIBLE);
+                }
+                refreshStep4Continue();
+            }
+        });
+
+        // ── Driver's Issuance Date (must be past/today) ───────────────────────
+        DatePickerHelper.attach(this, etDriversIssuance,
+                1960,
+                Calendar.getInstance().get(Calendar.YEAR));
+        etDriversIssuance.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString().trim();
+                if (val.isEmpty()) {
+                    isDriversIssuanceValid = false;
+                    tvDriversIssuanceError.setVisibility(View.GONE);
+                } else if (isPastOrToday(val)) {
+                    isDriversIssuanceValid = true;
+                    tvDriversIssuanceError.setVisibility(View.GONE);
+                } else {
+                    isDriversIssuanceValid = false;
+                    tvDriversIssuanceError.setVisibility(View.VISIBLE);
+                }
+                refreshStep4Continue();
+            }
+        });
+
+        // ── Driver's Expiry Date (must be future) ─────────────────────────────
         DatePickerHelper.attach(this, etDriversExpiry,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.YEAR) + 10);
+        etDriversExpiry.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString().trim();
+                if (val.isEmpty()) {
+                    isDriversExpiryValid = false;
+                    tvDriversExpiryError.setVisibility(View.GONE);
+                } else if (isFuture(val)) {
+                    isDriversExpiryValid = true;
+                    tvDriversExpiryError.setVisibility(View.GONE);
+                } else {
+                    isDriversExpiryValid = false;
+                    tvDriversExpiryError.setVisibility(View.VISIBLE);
+                }
+                refreshStep4Continue();
+            }
+        });
+
+        // ── DL Code chip listeners ────────────────────────────────────────────
+        Runnable dlCodeChanged = () -> {
+            isDlCodesSelected = !selectedDlCodes.isEmpty();
+            if (tvDlCodesError != null)
+                tvDlCodesError.setVisibility(isDlCodesSelected ? View.GONE : View.VISIBLE);
+            refreshStep4Continue();
+        };
+        chipDlA.setOnClickListener(v  -> toggleChip(chipDlA,  "A",  selectedDlCodes, dlCodeChanged));
+        chipDlA1.setOnClickListener(v -> toggleChip(chipDlA1, "A1", selectedDlCodes, dlCodeChanged));
+        chipDlB.setOnClickListener(v  -> toggleChip(chipDlB,  "B",  selectedDlCodes, dlCodeChanged));
+        chipDlB1.setOnClickListener(v -> toggleChip(chipDlB1, "B1", selectedDlCodes, dlCodeChanged));
+        chipDlB2.setOnClickListener(v -> toggleChip(chipDlB2, "B2", selectedDlCodes, dlCodeChanged));
+        chipDlC.setOnClickListener(v  -> toggleChip(chipDlC,  "C",  selectedDlCodes, dlCodeChanged));
+        chipDlD.setOnClickListener(v  -> toggleChip(chipDlD,  "D",  selectedDlCodes, dlCodeChanged));
+        chipDlBE.setOnClickListener(v -> toggleChip(chipDlBE, "BE", selectedDlCodes, dlCodeChanged));
+        chipDlCE.setOnClickListener(v -> toggleChip(chipDlCE, "CE", selectedDlCodes, dlCodeChanged));
+
+        // ── Conductor's License toggle ────────────────────────────────────────
+        cbHasConductors.setOnCheckedChangeListener((btn, checked) -> {
+            layoutConductors.setVisibility(checked ? View.VISIBLE : View.GONE);
+            if (!checked) {
+                // Reset conductor's validation state when hidden
+                isCondLicNoValid = isCondIssuanceValid = isCondExpiryValid = false;
+            }
+            refreshStep4Continue();
+        });
+
+        // ── Conductor's License Number ────────────────────────────────────────
+        etConductorsLicNo.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            public void afterTextChanged(android.text.Editable s) {
+                String raw = s.toString().toUpperCase();
+                if (!raw.equals(s.toString())) {
+                    etConductorsLicNo.removeTextChangedListener(this);
+                    etConductorsLicNo.setText(raw);
+                    etConductorsLicNo.setSelection(raw.length());
+                    etConductorsLicNo.addTextChangedListener(this);
+                }
+                String val = raw.trim();
+                if (val.isEmpty()) {
+                    isCondLicNoValid = false;
+                    tvConductorsLicNoError.setVisibility(View.GONE);
+                } else if (DL_NUMBER_PATTERN.matcher(val).matches()) {
+                    isCondLicNoValid = true;
+                    tvConductorsLicNoError.setVisibility(View.GONE);
+                } else {
+                    isCondLicNoValid = false;
+                    tvConductorsLicNoError.setVisibility(View.VISIBLE);
+                }
+                refreshStep4Continue();
+            }
+        });
+
+        // ── Conductor's Issuance Date ─────────────────────────────────────────
+        DatePickerHelper.attach(this, etConductorsIssuance,
+                1960,
+                Calendar.getInstance().get(Calendar.YEAR));
+        etConductorsIssuance.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString().trim();
+                if (val.isEmpty()) {
+                    isCondIssuanceValid = false;
+                    tvConductorsIssuanceError.setVisibility(View.GONE);
+                } else if (isPastOrToday(val)) {
+                    isCondIssuanceValid = true;
+                    tvConductorsIssuanceError.setVisibility(View.GONE);
+                } else {
+                    isCondIssuanceValid = false;
+                    tvConductorsIssuanceError.setVisibility(View.VISIBLE);
+                }
+                refreshStep4Continue();
+            }
+        });
+
+        // ── Conductor's Expiry Date ───────────────────────────────────────────
         DatePickerHelper.attach(this, etConductorsExpiry,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.YEAR) + 10);
+        etConductorsExpiry.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString().trim();
+                if (val.isEmpty()) {
+                    isCondExpiryValid = false;
+                    tvConductorsExpiryError.setVisibility(View.GONE);
+                } else if (isFuture(val)) {
+                    isCondExpiryValid = true;
+                    tvConductorsExpiryError.setVisibility(View.GONE);
+                } else {
+                    isCondExpiryValid = false;
+                    tvConductorsExpiryError.setVisibility(View.VISIBLE);
+                }
+                refreshStep4Continue();
+            }
+        });
 
-        // ── Conductor's license toggle ────────────────────────────────────
-        cbHasConductors.setOnCheckedChangeListener((btn, checked) ->
-                layoutConductors.setVisibility(checked ? View.VISIBLE : View.GONE));
-
-        // ── MV File Number help tooltip (Toast) ───────────────────────────
+        // ── MV File Number help tooltip ───────────────────────────────────────
         TextView tvMvHelp = findViewById(R.id.tvMvHelp);
         if (tvMvHelp != null) {
             tvMvHelp.setOnClickListener(v ->
@@ -623,7 +901,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show());
         }
 
-        // ── Vehicle field real-time validation ────────────────────────────
+        // ── Vehicle field real-time validation ────────────────────────────────
         etLicensePlate.addTextChangedListener(new android.text.TextWatcher() {
             public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
             public void onTextChanged(CharSequence s, int st, int b, int c) {}
@@ -704,49 +982,59 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // ── Document upload card click listeners ──────────────────────────
+        // ── Document upload card click listeners ──────────────────────────────
         findViewById(R.id.cardUploadDl).setOnClickListener(v -> showDocPicker(DocTarget.DL));
         findViewById(R.id.cardUploadOr).setOnClickListener(v -> showDocPicker(DocTarget.OR));
         findViewById(R.id.cardUploadCr).setOnClickListener(v -> showDocPicker(DocTarget.CR));
 
-        // ── Continue button ───────────────────────────────────────────────
+        // ── Continue button ───────────────────────────────────────────────────
         btnStep4Next.setEnabled(false);
         btnStep4Next.setOnClickListener(v -> {
-            String dlNo     = etDriversLicNo.getText().toString().trim();
-            String dlExpiry = etDriversExpiry.getText().toString().trim();
+            String dlNo      = etDriversLicNo.getText().toString().trim();
+            String dlIssue   = etDriversIssuance.getText().toString().trim();
+            String dlExpiry  = etDriversExpiry.getText().toString().trim();
 
-            // — Driver's License —
-            if (dlNo.isEmpty()) {
-                Toast.makeText(this, "Please enter your Driver's License number.", Toast.LENGTH_SHORT).show();
+            if (dlNo.isEmpty() || !isDriversLicNoValid) {
+                Toast.makeText(this, "Please enter a valid Driver's License number (e.g. D01-00-123456).", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (dlExpiry.isEmpty()) {
-                Toast.makeText(this, "Please enter your Driver's License expiry date.", Toast.LENGTH_SHORT).show();
+            if (dlIssue.isEmpty() || !isDriversIssuanceValid) {
+                Toast.makeText(this, "Please enter a valid issuance date (today or earlier).", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (dlExpiry.isEmpty() || !isDriversExpiryValid) {
+                Toast.makeText(this, "Please enter a valid expiry date (must be in the future).", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!isDlCodesSelected) {
+                Toast.makeText(this, "Please select at least one DL code.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // — Conductor's License (optional) —
             if (cbHasConductors.isChecked()) {
                 String clNo     = etConductorsLicNo.getText().toString().trim();
+                String clIssue  = etConductorsIssuance.getText().toString().trim();
                 String clExpiry = etConductorsExpiry.getText().toString().trim();
-                if (clNo.isEmpty()) {
-                    Toast.makeText(this, "Please enter your Conductor's License number.", Toast.LENGTH_SHORT).show();
+                if (clNo.isEmpty() || !isCondLicNoValid) {
+                    Toast.makeText(this, "Please enter a valid Conductor's License number.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (clExpiry.isEmpty()) {
-                    Toast.makeText(this, "Please enter your Conductor's License expiry date.", Toast.LENGTH_SHORT).show();
+                if (clIssue.isEmpty() || !isCondIssuanceValid) {
+                    Toast.makeText(this, "Please enter a valid Conductor's issuance date.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (clExpiry.isEmpty() || !isCondExpiryValid) {
+                    Toast.makeText(this, "Please enter a valid Conductor's expiry date (must be in the future).", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
 
-            // — Vehicle fields (should already be valid, guarded by button enable state) —
             if (!isLicensePlateValid || !isMvFileNumberValid
                     || !isVehicleMakeValid || !isVehicleModelValid) {
                 Toast.makeText(this, "Please complete all vehicle fields correctly.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // — Documents —
             if (!isDlUploaded || !isOrUploaded || !isCrUploaded) {
                 Toast.makeText(this, "Please upload all 3 required documents.", Toast.LENGTH_SHORT).show();
                 return;
@@ -754,9 +1042,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             showStep(5);
         });
-
-        Button btnStep4Back = findViewById(R.id.btnStep4Back);
-        if (btnStep4Back != null) btnStep4Back.setOnClickListener(v -> showStep(3));
 
         refreshStep4Continue();
     }
@@ -885,8 +1170,6 @@ public class RegisterActivity extends AppCompatActivity {
             showStep(6);
         });
 
-        Button btnStep5Back = findViewById(R.id.btnStep5Back);
-        if (btnStep5Back != null) btnStep5Back.setOnClickListener(v -> showStep(4));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -902,15 +1185,23 @@ public class RegisterActivity extends AppCompatActivity {
         tvSummaryPhone     = findViewById(R.id.tvSummaryPhone);
         tvSummaryLicense   = findViewById(R.id.tvSummaryLicense);
 
-        Button btnStep6Back = findViewById(R.id.btnStep6Back);
         Button btnStep6Next = findViewById(R.id.btnStep6Next);
 
-        if (btnStep6Back != null) btnStep6Back.setOnClickListener(v -> showStep(5));
-        if (btnStep6Next != null) btnStep6Next.setOnClickListener(v -> showStep(8));
+        if (btnStep6Next != null) btnStep6Next.setOnClickListener(v -> showStep(7));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    //  STEP 7 — Password + Create Account
+    // ─────────────────────────────────────────────────────────────────────────
+    //  STEP 7 — Details Confirmed
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void setupStep7() {
+        Button btnStep7Next = findViewById(R.id.btnStep7Next);
+        if (btnStep7Next != null) btnStep7Next.setOnClickListener(v -> showStep(8));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  STEP 8 — Password + Create Account
     // ─────────────────────────────────────────────────────────────────────────
 
     private void setupStep8() {
@@ -921,9 +1212,6 @@ public class RegisterActivity extends AppCompatActivity {
         btnCreateAccount      = findViewById(R.id.btnRegister);
         btnTogglePassword        = findViewById(R.id.btnTogglePassword);
         btnToggleConfirmPassword = findViewById(R.id.btnToggleConfirmPassword);
-
-        Button btnStep8Back = findViewById(R.id.btnStep8Back);
-        if (btnStep8Back != null) btnStep8Back.setOnClickListener(v -> showStep(6));
 
         // Eye-toggle: Password
         btnTogglePassword.setOnClickListener(v -> {
@@ -1006,7 +1294,10 @@ public class RegisterActivity extends AppCompatActivity {
         tvSummaryEmail.setText(etEmail.getText().toString().trim());
         String phone = etPhone.getText().toString().trim();
         tvSummaryPhone.setText(phone.isEmpty() ? "—" : phone);
-        tvSummaryLicense.setText(etDriversLicNo.getText().toString().trim());
+        String licSummary = etDriversLicNo.getText().toString().trim();
+        if (!selectedDlCodes.isEmpty())
+            licSummary += "  [" + android.text.TextUtils.join(", ", selectedDlCodes) + "]";
+        tvSummaryLicense.setText(licSummary);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -1067,11 +1358,14 @@ public class RegisterActivity extends AppCompatActivity {
         user.email                   = email;
         user.phone                   = phone;
         user.password                = password;
-        user.driversLicenseNo        = etDriversLicNo.getText().toString().trim();
-        user.driversLicenseExpiry    = etDriversExpiry.getText().toString().trim();
-        user.conductorsLicenseNo     = cbHasConductors.isChecked()
+        user.driversLicenseNo          = etDriversLicNo.getText().toString().trim();
+        user.driversLicenseExpiry      = etDriversExpiry.getText().toString().trim();
+        user.driversLicenseCodes       = android.text.TextUtils.join(",", selectedDlCodes);
+        user.conductorsLicenseNo       = cbHasConductors.isChecked()
                 ? etConductorsLicNo.getText().toString().trim() : null;
-        user.conductorsLicenseExpiry = cbHasConductors.isChecked()
+        user.conductorsLicenseIssuance = cbHasConductors.isChecked()
+                ? etConductorsIssuance.getText().toString().trim() : null;
+        user.conductorsLicenseExpiry   = cbHasConductors.isChecked()
                 ? etConductorsExpiry.getText().toString().trim() : null;
         user.licenseImagePath        = licenseImagePath;
         // Vehicle fields — were collected in the UI but previously never saved

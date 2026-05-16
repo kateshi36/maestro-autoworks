@@ -14,12 +14,16 @@ public class User {
     public String birthdate; // "YYYY-MM-DD"
     public String gender;    // "Male" | "Female" | "Prefer not to say"
 
-    // ── License fields (added in registration Step 3) ──
-    public String driversLicenseNo;     // e.g. "N01-23-456789"
-    public String driversLicenseExpiry; // "YYYY-MM-DD"
-    public String conductorsLicenseNo;  // null if not a conductor
-    public String conductorsLicenseExpiry;
-    public String licenseImagePath;     // content URI of captured license photo
+    // ── License fields (added in registration Step 3/4) ──
+    public String driversLicenseNo;       // e.g. "D01-00-123456"
+    public String driversLicenseIssuance; // "YYYY-MM-DD"
+    public String driversLicenseExpiry;   // "YYYY-MM-DD"
+    /** Comma-separated DL codes, e.g. "A,B,BE" */
+    public String driversLicenseCodes;
+    public String conductorsLicenseNo;       // null if not a conductor
+    public String conductorsLicenseIssuance; // "YYYY-MM-DD"
+    public String conductorsLicenseExpiry;   // "YYYY-MM-DD"
+    public String licenseImagePath;          // content URI of captured license photo
 
     // ── Vehicle & verification fields (added in registration Step 4) ──
     /** Philippine license plate, e.g. "ABC 1234" or "AB 1234" (pre-2014). */

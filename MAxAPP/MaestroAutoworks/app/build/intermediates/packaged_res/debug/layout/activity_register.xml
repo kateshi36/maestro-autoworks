@@ -63,20 +63,22 @@
          but replacing viewTopbarTrail with the tvStepIndicator pill so
          RegisterActivity can find it via R.id.tvStepIndicator.
     ══════════════════════════════════════════════════════════════════ -->
-    <LinearLayout
+    <!-- Topbar: RelativeLayout so the title is truly centred to the full
+         bar width regardless of back button or pill sizes. -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/yellow"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:paddingStart="12dp"
         android:paddingEnd="12dp">
 
-        <!-- Back button — identical to TopBar.IconBtn style -->
+        <!-- Back button — pinned to the left -->
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
             android:background="@drawable/bg_topbar_icon_btn"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="Go back"
@@ -85,26 +87,25 @@
             android:scaleType="center"
             android:padding="0dp" />
 
-        <!-- Screen title — weight=1, centred -->
+        <!-- Title — absolutely centred to the full bar -->
         <TextView
             android:id="@+id/tvTopbarTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_centerInParent="true"
             android:text="Create Account"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif-condensed"
-            android:letterSpacing="0.04" />
+            android:letterSpacing="0.02" />
 
-        <!-- Step indicator pill — replaces the invisible spacer from topbar_back.
-             Text updated by showStep() in RegisterActivity via tvStepIndicator. -->
+        <!-- Step pill — pinned to the right -->
         <TextView
             android:id="@+id/tvStepIndicator"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
             android:text="Step 1 of 8"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -115,7 +116,7 @@
             android:paddingEnd="10dp"
             android:background="@drawable/bg_step_pill" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- ══════════════════════════════════════════════════════════════════
          2. SCROLLABLE BODY
@@ -124,7 +125,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true"
         android:scrollbars="none">
 
         <LinearLayout
@@ -134,7 +134,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="24dp"
-            android:paddingBottom="40dp">
+            android:paddingBottom="24dp">
 
             <!-- ════════════════════════════════════════════════════════
                  STEP 1 — Terms & CAPTCHA
@@ -321,7 +321,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="&#x1FAA9;  License Verification"
+                        android:text="&#x1FAAA;  License Verification"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -386,7 +386,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="&#x1F4CB;  Please Prepare Your Driver&#8217;s License"
+                        android:text="&#x1FAAA;  Please Prepare Your Driver&#8217;s License"
                         android:textColor="@color/success"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -431,39 +431,19 @@
                 </LinearLayout>
 
                 <!-- Navigation row -->
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnStep2Next"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnStep2Back"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:text="&#8592; BACK"
-                        android:background="@drawable/btn_ghost"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:layout_marginEnd="8dp"
-                        android:stateListAnimator="@null" />
-
-                    <Button
-                        android:id="@+id/btnStep2Next"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="2"
-                        android:text="CONTINUE →"
-                        android:background="@drawable/btn_primary"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:visibility="gone"
-                        android:stateListAnimator="@null" />
-                </LinearLayout>
+                    android:layout_height="56dp"
+                    android:text="CONTINUE →"
+                    android:background="@drawable/btn_primary"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:fontFamily="sans-serif-condensed"
+                    android:visibility="gone"
+                    android:stateListAnimator="@null" />
 
             </LinearLayout>
 
@@ -775,38 +755,18 @@
                 </LinearLayout>
 
                 <!-- Navigation row -->
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnStep3Next"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnStep3Back"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:text="&#8592; BACK"
-                        android:background="@drawable/btn_ghost"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:layout_marginEnd="8dp"
-                        android:stateListAnimator="@null" />
-
-                    <Button
-                        android:id="@+id/btnStep3Next"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="2"
-                        android:text="CONTINUE →"
-                        android:background="@drawable/btn_primary"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:stateListAnimator="@null" />
-                </LinearLayout>
+                    android:layout_height="56dp"
+                    android:text="CONTINUE →"
+                    android:background="@drawable/btn_primary"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:fontFamily="sans-serif-condensed"
+                    android:stateListAnimator="@null" />
 
             </LinearLayout>
 
@@ -869,7 +829,7 @@
                         android:id="@+id/etDriversLicNo"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:hint="e.g. N01-23-456789"
+                        android:hint="e.g. D01-00-123456"
                         android:inputType="textCapCharacters"
                         android:textColor="@color/white"
                         android:textColorHint="@color/muted2"
@@ -877,7 +837,53 @@
                         android:background="@drawable/bg_input"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:id="@+id/tvDriversLicNoError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Format: X00-00-XXXXXX (e.g. D01-00-123456)"
+                        android:textColor="@color/danger"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone" />
+
+                    <!-- Issuance Date -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Issuance Date *"
+                        android:textColor="@color/muted"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+                    <EditText
+                        android:id="@+id/etDriversIssuance"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:hint="Tap to select issuance date"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/muted2"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_input"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="48dp"
+                        android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                        android:drawableTint="@color/muted"
+                        android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:id="@+id/tvDriversIssuanceError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Issuance date must be today or in the past"
+                        android:textColor="@color/danger"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone" />
 
                     <!-- Expiry Date -->
                     <TextView
@@ -905,7 +911,95 @@
                         android:paddingEnd="48dp"
                         android:drawableEnd="@android:drawable/ic_menu_my_calendar"
                         android:drawableTint="@color/muted"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="4dp" />
+                    <TextView
+                        android:id="@+id/tvDriversExpiryError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Expiry date must be in the future"
+                        android:textColor="@color/danger"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone" />
+
+                    <!-- DL Codes -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DL Codes * (select all that apply)"
+                        android:textColor="@color/muted"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+                    <!-- Chip row 1: A  A1  B  B1  B2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
+                        <TextView android:id="@+id/chipDlA"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="A" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlA1"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="A1" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlB"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="B" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlB1"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="B1" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlB2"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="B2" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input" />
+                    </LinearLayout>
+                    <!-- Chip row 2: C  D  BE  CE -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="4dp">
+                        <TextView android:id="@+id/chipDlC"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="C" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlD"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="D" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlBE"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="BE" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <TextView android:id="@+id/chipDlCE"
+                            android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1"
+                            android:text="CE" android:gravity="center" android:textSize="13sp"
+                            android:textColor="@color/muted" android:background="@drawable/bg_input"
+                            android:layout_marginEnd="6dp" />
+                        <!-- spacer to balance weight -->
+                        <View android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvDlCodesError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Please select at least one DL code"
+                        android:textColor="@color/danger"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone" />
 
                     <!-- Conductor's License checkbox -->
                     <CheckBox
@@ -950,7 +1044,7 @@
                             android:id="@+id/etConductorsLicNo"
                             android:layout_width="match_parent"
                             android:layout_height="56dp"
-                            android:hint="e.g. C01-23-456789"
+                            android:hint="e.g. C01-00-123456"
                             android:inputType="textCapCharacters"
                             android:textColor="@color/white"
                             android:textColorHint="@color/muted2"
@@ -958,7 +1052,53 @@
                             android:background="@drawable/bg_input"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
-                            android:layout_marginBottom="16dp" />
+                            android:layout_marginBottom="4dp" />
+                        <TextView
+                            android:id="@+id/tvConductorsLicNoError"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Format: X00-00-XXXXXX (e.g. C01-00-123456)"
+                            android:textColor="@color/danger"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="12dp"
+                            android:visibility="gone" />
+
+                        <!-- Conductor Issuance Date -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Issuance Date *"
+                            android:textColor="@color/muted"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp" />
+                        <EditText
+                            android:id="@+id/etConductorsIssuance"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:hint="Tap to select issuance date"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:cursorVisible="false"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/muted2"
+                            android:textSize="14sp"
+                            android:background="@drawable/bg_input"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="48dp"
+                            android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                            android:drawableTint="@color/muted"
+                            android:layout_marginBottom="4dp" />
+                        <TextView
+                            android:id="@+id/tvConductorsIssuanceError"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Issuance date must be today or in the past"
+                            android:textColor="@color/danger"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="12dp"
+                            android:visibility="gone" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -984,7 +1124,16 @@
                             android:paddingStart="16dp"
                             android:paddingEnd="48dp"
                             android:drawableEnd="@android:drawable/ic_menu_my_calendar"
-                            android:drawableTint="@color/muted" />
+                            android:drawableTint="@color/muted"
+                            android:layout_marginBottom="4dp" />
+                        <TextView
+                            android:id="@+id/tvConductorsExpiryError"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Expiry date must be in the future"
+                            android:textColor="@color/danger"
+                            android:textSize="11sp"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -1264,7 +1413,7 @@
                                 android:id="@+id/tvDlPlaceholder"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:text="&#x1FAA9;"
+                                android:text="&#x1FAAA;"
                                 android:textSize="28sp"
                                 android:gravity="center" />
 
@@ -1504,39 +1653,19 @@
                 </LinearLayout>
 
                 <!-- Navigation row -->
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnStep4Next"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnStep4Back"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:text="&#8592; BACK"
-                        android:background="@drawable/btn_ghost"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:layout_marginEnd="8dp"
-                        android:stateListAnimator="@null" />
-
-                    <Button
-                        android:id="@+id/btnStep4Next"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="2"
-                        android:text="CONTINUE →"
-                        android:background="@drawable/btn_primary"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:enabled="false"
-                        android:stateListAnimator="@null" />
-                </LinearLayout>
+                    android:layout_height="56dp"
+                    android:text="CONTINUE →"
+                    android:background="@drawable/btn_primary"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:fontFamily="sans-serif-condensed"
+                    android:enabled="false"
+                    android:stateListAnimator="@null" />
 
             </LinearLayout>
 
@@ -1603,7 +1732,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="&#x1FAA9;"
+                                android:text="&#x1FAAA;"
                                 android:textSize="48sp" />
 
                             <TextView
@@ -1657,39 +1786,19 @@
                     android:visibility="gone" />
 
                 <!-- Navigation row -->
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnStep5Next"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="16dp">
-
-                    <Button
-                        android:id="@+id/btnStep5Back"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:text="&#8592; BACK"
-                        android:background="@drawable/btn_ghost"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:layout_marginEnd="8dp"
-                        android:stateListAnimator="@null" />
-
-                    <Button
-                        android:id="@+id/btnStep5Next"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="2"
-                        android:text="CONTINUE →"
-                        android:background="@drawable/btn_primary"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:stateListAnimator="@null" />
-                </LinearLayout>
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:text="CONTINUE →"
+                    android:background="@drawable/btn_primary"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:fontFamily="sans-serif-condensed"
+                    android:stateListAnimator="@null" />
 
             </LinearLayout>
 
@@ -1834,38 +1943,163 @@
                 </LinearLayout>
 
                 <!-- Navigation row -->
+                <Button
+                    android:id="@+id/btnStep6Next"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="LOOKS GOOD →"
+                    android:background="@drawable/btn_primary"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:fontFamily="sans-serif-condensed"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+            <!-- ════════════════════════════════════════════════════════
+                 STEP 7 — Details Confirmed
+            ════════════════════════════════════════════════════════ -->
+            <LinearLayout
+                android:id="@+id/layoutStep7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingTop="32dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
+
+                <!-- Check circle -->
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:text="&#10004;"
+                    android:textSize="36sp"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:background="@color/success"
+                    android:layout_marginBottom="24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Details Confirmed!"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your registration details have been successfully submitted and verified. One last step — set a secure password for your account."
+                    android:textColor="@color/muted"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- Summary strip -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_login_card"
+                    android:padding="20dp"
+                    android:layout_marginBottom="28dp">
 
-                    <Button
-                        android:id="@+id/btnStep6Back"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:text="&#8592; BACK"
-                        android:background="@drawable/btn_ghost"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="WHAT HAPPENS NEXT"
+                        android:textColor="@color/yellow"
+                        android:textSize="11sp"
                         android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:layout_marginEnd="8dp"
-                        android:stateListAnimator="@null" />
+                        android:letterSpacing="0.12"
+                        android:layout_marginBottom="14dp" />
 
-                    <Button
-                        android:id="@+id/btnStep6Next"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="2"
-                        android:text="LOOKS GOOD →"
-                        android:background="@drawable/btn_primary"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:stateListAnimator="@null" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="1."
+                            android:textColor="@color/yellow"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Set your password on the next screen."
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:lineSpacingMultiplier="1.4" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="2."
+                            android:textColor="@color/yellow"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="An admin will review and verify your license before your first booking."
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:lineSpacingMultiplier="1.4" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="wrap_content"
+                            android:text="3."
+                            android:textColor="@color/yellow"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Once approved, you can start booking services right away."
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:lineSpacingMultiplier="1.4" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnStep7Next"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="SET PASSWORD →"
+                    android:background="@drawable/btn_primary"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:fontFamily="sans-serif-condensed"
+                    android:stateListAnimator="@null" />
 
             </LinearLayout>
 
@@ -2022,20 +2256,6 @@
                         android:text=""
                         android:textSize="12sp" />
                 </LinearLayout>
-
-                <!-- Back (full-width ghost) -->
-                <Button
-                    android:id="@+id/btnStep8Back"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="&#8592; BACK"
-                    android:background="@drawable/btn_ghost"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-condensed"
-                    android:layout_marginBottom="10dp"
-                    android:stateListAnimator="@null" />
 
                 <!-- Create Account (full-width amber) -->
                 <Button
