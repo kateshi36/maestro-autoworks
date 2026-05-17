@@ -20,6 +20,27 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     role ENUM('customer','admin') NOT NULL DEFAULT 'customer',
     phone VARCHAR(30),
+    birthdate DATE,
+    gender ENUM('Male','Female','Other'),
+    address TEXT,
+    -- Step 4: Driver's License
+    drivers_license_no         VARCHAR(15),
+    drivers_license_issuance   DATE,
+    drivers_license_expiry     DATE,
+    dl_codes                   VARCHAR(50),
+    -- Step 4: Conductor's License (optional)
+    conductors_license_no      VARCHAR(15),
+    conductors_license_issuance DATE,
+    conductors_license_expiry   DATE,
+    -- Step 4: Vehicle
+    license_plate              VARCHAR(9),
+    mv_file_number             VARCHAR(15),
+    vehicle_make               VARCHAR(40),
+    vehicle_model              VARCHAR(60),
+    -- Step 5: Document uploads
+    dl_upload_path             VARCHAR(255),
+    or_image_path              VARCHAR(255),
+    cr_image_path              VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

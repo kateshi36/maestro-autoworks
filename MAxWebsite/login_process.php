@@ -28,14 +28,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             // Role matches — allow login
             else {
-                $_SESSION['user_id']  = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['role']     = $user['role'];
-
                 if ($user['role'] === 'admin') {
+                    // Admins skip identity verification — go straight to dashboard
+                    $_SESSION['user_id']  = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['role']     = $user['role'];
                     header('Location: admin_dashboard.php');
                 } else {
-                    header('Location: home.php');
+                    // Customers go through identity verification first
+                    $_SESSION['iv_user_id']   = $user['id'];
+                    $_SESSION['iv_username']  = $user['username'];
+                    $_SESSION['iv_first_name']= $user['first_name'];
+                    $_SESSION['iv_role']      = $user['role'];
+                    $_SESSION['iv_email']     = $user['email'];
+                    header('Location: identity_verification.php');
                 }
                 exit;
             }

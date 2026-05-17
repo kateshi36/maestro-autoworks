@@ -1,6 +1,55 @@
 <?php // partials/footer.php ?>
 </div><!-- .app-body -->
 <script>
+// ── Live notification badge ───────────────────────────────────────────────
+(function () {
+    const badge        = document.getElementById('notifBadge');
+    const markAllBtn   = document.getElementById('markAllRead');
+    const POLL_MS      = 30000; // poll every 30 seconds
+
+    function applyCount(n) {
+        if (!badge) return;
+        if (n <= 0) {
+            badge.style.display = 'none';
+            badge.textContent   = '0';
+            if (markAllBtn) markAllBtn.style.display = 'none';
+        } else {
+            badge.style.display = '';
+            badge.textContent   = n > 9 ? '9+' : n;
+            if (markAllBtn) markAllBtn.style.display = '';
+        }
+    }
+
+    function pollCount() {
+        fetch('notif_count.php', { credentials: 'same-origin' })
+            .then(r => r.json())
+            .then(d => applyCount(d.count))
+            .catch(() => {}); // silently ignore network errors
+    }
+
+    // Start polling
+    setInterval(pollCount, POLL_MS);
+
+    // Mark-all-read via AJAX (no navigation)
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            fetch('mark_read.php', {
+                method: 'POST',
+                credentials: 'same-origin'
+            })
+            .then(() => {
+                applyCount(0);
+                // Also clear the unread dots in the open panel
+                document.querySelectorAll('.notif-item.unread').forEach(el => {
+                    el.classList.remove('unread');
+                });
+            })
+            .catch(() => {});
+        });
+    }
+})();
+
 // ── Dropdown & Notification toggles ──────────────────────────────────────
 (function () {
     const notifBtn   = document.getElementById('notifBtn');
@@ -16,7 +65,17 @@
     notifBtn?.addEventListener('click', e => {
         e.stopPropagation();
         const open = notifPanel.classList.toggle('open');
-        if (open) userMenu.classList.remove('open');
+        if (open) {
+            userMenu.classList.remove('open');
+            // Mark as read the moment the user opens the panel
+            fetch('mark_read.php', { method: 'POST', credentials: 'same-origin' })
+                .then(() => {
+                    document.getElementById('notifBadge')?.style && (document.getElementById('notifBadge').style.display = 'none');
+                    document.getElementById('markAllRead')?.style && (document.getElementById('markAllRead').style.display = 'none');
+                    document.querySelectorAll('.notif-item.unread').forEach(el => el.classList.remove('unread'));
+                })
+                .catch(() => {});
+        }
     });
 
     userChip?.addEventListener('click', e => {

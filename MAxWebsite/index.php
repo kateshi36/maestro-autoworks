@@ -669,6 +669,121 @@ if (isset($_SESSION['user_id'])) {
             font-size: 12px; color: var(--muted); text-align: center;
         }
 
+        /* ── SPLASH OVERLAY — mirrors SplashActivity animation sequence ─────── */
+        /*    Logo:     scale(0.4→1) + fade-in  700ms @ 0ms    (decelerate)     */
+        /*    Text:     translateY(40px→0) + fade-in 600ms @ 500ms              */
+        /*    Footer:   translateY(20px→0) + fade-in 500ms @ 1000ms             */
+
+        #splash {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #F5A623;          /* @color/yellow */
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        /* Dismiss transition — class added by JS on button click */
+        #splash.splash-out {
+            opacity: 0;
+            transition: opacity .55s cubic-bezier(.4,0,1,1);
+            pointer-events: none;
+        }
+
+        #splash.splash-hidden { display: none; }
+
+        /* ── Center block: logo + brand + tagline ── */
+        .splash-center {
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* Mirrors bg_splash_bolt_circle + splashLogo: scale(0.4)→1, opacity 0→1 */
+        #splash-logo {
+            width: 96px; height: 96px;
+            background: #0a0a0a;
+            border-radius: 50%; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            margin-bottom: 28px;
+            animation: splash-logo-in 700ms cubic-bezier(0,0,.2,1) both;
+        }
+        #splash-logo img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
+
+        /* Mirrors splashBrandName: textSize="44sp" bold black */
+        #splash-brand {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(3.2rem, 14vw, 5.5rem);
+            font-weight: 900; letter-spacing: 5px;
+            color: #0a0a0a; text-align: center;
+            margin-bottom: 10px;
+            animation: splash-text-in 600ms cubic-bezier(0,0,.2,1) 500ms both;
+        }
+
+        /* Mirrors splashTagline: textSize="13sp" semi-transparent black */
+        #splash-tagline {
+            font-family: 'Barlow', sans-serif;
+            font-size: 14px; font-weight: 400;
+            color: rgba(0,0,0,.6); text-align: center;
+            animation: splash-text-in 600ms cubic-bezier(0,0,.2,1) 500ms both;
+        }
+
+        /* ── Bottom block: rule + est. + button ── */
+        .splash-footer {
+            text-align: center;
+            padding-bottom: 48px;
+            width: 100%; max-width: 360px;
+            animation: splash-btn-in 500ms cubic-bezier(0,0,.2,1) 1000ms both;
+        }
+
+        /* Mirrors the View 120dp / 3dp black bar */
+        .splash-rule {
+            width: 120px; height: 3px;
+            background: #0a0a0a;
+            margin: 0 auto 10px;
+        }
+
+        /* Mirrors "EST. 2010 · QUEZON CITY" textSize="10sp" bold letterSpacing=0.15 */
+        .splash-est {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: rgba(0,0,0,.55);
+            margin-bottom: 24px;
+        }
+
+        /* Mirrors btnLetsStart: backgroundTint=black textColor=yellow */
+        #splash-btn {
+            width: 100%; height: 54px;
+            background: #0a0a0a; color: #F5A623;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            border: none; border-radius: 6px;
+            cursor: pointer;
+            transition: background .18s, transform .15s, box-shadow .18s;
+        }
+        #splash-btn:hover {
+            background: #1c1c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0,0,0,.35);
+        }
+        #splash-btn:active { transform: translateY(0); }
+
+        @keyframes splash-logo-in {
+            from { opacity: 0; transform: scale(.4); }
+            to   { opacity: 1; transform: scale(1);  }
+        }
+        @keyframes splash-text-in {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+        @keyframes splash-btn-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+        /* ── End Splash ───────────────────────────────────────────────────── */
+
         /* ── SCROLL ANIMATIONS ────────────────────────────────────────────── */
         .reveal {
             opacity: 0; transform: translateY(24px);
@@ -700,6 +815,34 @@ if (isset($_SESSION['user_id'])) {
 </head>
 <body>
 
+<!-- ════════════════════════════ SPLASH OVERLAY ═════════════════════════════ -->
+<!-- Mirrors SplashActivity: yellow bg, logo circle, brand name, tagline,     -->
+<!-- EST. rule, "Let's Start!" button. sessionStorage guards single-play.     -->
+<div id="splash" role="dialog" aria-label="Welcome to Maestro Autoworks" aria-modal="true">
+
+    <div style="flex:1;min-height:60px;"></div>
+
+    <!-- Center: logo + brand + tagline -->
+    <div class="splash-center">
+        <div id="splash-logo">
+            <img src="logo.png" alt="Maestro Autoworks Logo">
+        </div>
+        <div id="splash-brand">MAESTRO</div>
+        <div id="splash-tagline">Your car deserves expert hands.</div>
+    </div>
+
+    <div style="flex:1;min-height:60px;"></div>
+
+    <!-- Footer: rule + est. + CTA button -->
+    <div class="splash-footer">
+        <div class="splash-rule"></div>
+        <div class="splash-est">Est. 2010 &middot; Quezon City</div>
+        <button id="splash-btn" autofocus>Let&rsquo;s Start!</button>
+    </div>
+
+</div>
+<!-- ═════════════════════════ END SPLASH OVERLAY ════════════════════════════ -->
+
 <!-- ═══════════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="nav" role="navigation">
     <a href="index.php" class="nav-logo">
@@ -721,7 +864,7 @@ if (isset($_SESSION['user_id'])) {
             <svg viewBox="0 0 24 24"><path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/></svg>
             Log In
         </a>
-        <a href="register.php" class="btn btn-primary">
+        <a href="register.php?reset=1" class="btn btn-primary">
             <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             Sign Up
         </a>
@@ -744,7 +887,7 @@ if (isset($_SESSION['user_id'])) {
     </p>
 
     <div class="hero-actions">
-        <a href="register.php" class="btn btn-primary btn-lg">
+        <a href="register.php?reset=1" class="btn btn-primary btn-lg">
             <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             Create Free Account
         </a>
@@ -840,7 +983,7 @@ if (isset($_SESSION['user_id'])) {
                 — no upsells, no guesswork.
             </p>
             <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;">
-                <a href="register.php" class="btn btn-primary">Get Started Free</a>
+                <a href="register.php?reset=1" class="btn btn-primary">Get Started Free</a>
                 <a href="#services" class="btn btn-outline">View Services</a>
             </div>
         </div>
@@ -956,7 +1099,7 @@ if (isset($_SESSION['user_id'])) {
             <p>Create a free account and manage all your service bookings in one place.</p>
         </div>
         <div class="cta-actions">
-            <a href="register.php" class="btn-dark">
+            <a href="register.php?reset=1" class="btn-dark">
                 <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 Sign Up Free
             </a>
@@ -1008,7 +1151,7 @@ if (isset($_SESSION['user_id'])) {
             <a href="#about">About</a>
             <a href="#services">Services</a>
             <a href="#contact">Contact</a>
-            <a href="register.php">Sign Up</a>
+            <a href="register.php?reset=1">Sign Up</a>
             <a href="login.php">Log In</a>
         </div>
     </div>
@@ -1017,6 +1160,34 @@ if (isset($_SESSION['user_id'])) {
 
 
 <script>
+// ── Splash overlay — mirrors SplashActivity dismiss flow ──────────────────
+(function () {
+    var splash  = document.getElementById('splash');
+    var btn     = document.getElementById('splash-btn');
+    if (!splash || !btn) return;
+
+    // Skip entirely if already played this session (e.g. back-navigation)
+    if (sessionStorage.getItem('mx_splash_seen')) {
+        splash.classList.add('splash-hidden');
+        return;
+    }
+
+    // "Let's Start!" — fade out overlay, mark seen
+    btn.addEventListener('click', function () {
+        sessionStorage.setItem('mx_splash_seen', '1');
+        splash.classList.add('splash-out');
+        setTimeout(function () { splash.classList.add('splash-hidden'); }, 600);
+    });
+
+    // Also allow pressing Enter / Space on the button (already default for <button>)
+    // and dismiss on Escape for accessibility
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !splash.classList.contains('splash-hidden')) {
+            btn.click();
+        }
+    });
+})();
+
 // ── Scroll Reveal ──────────────────────────────────────────────────────────
 const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {

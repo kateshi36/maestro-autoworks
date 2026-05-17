@@ -59,6 +59,7 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         <?php else: ?>
             <a href="home.php"      class="<?= $currentPage==='home'      ?'active':'' ?>">Home</a>
             <a href="services.php"  class="<?= $currentPage==='services'  ?'active':'' ?>">Services</a>
+            <a href="about.php"     class="<?= $currentPage==='about'     ?'active':'' ?>">About</a>
             <a href="dashboard.php" class="<?= $currentPage==='dashboard' ?'active':'' ?>">My Dashboard</a>
             <a href="book.php"      class="<?= $currentPage==='book'      ?'active':'' ?>">Book Service</a>
         <?php endif; ?>

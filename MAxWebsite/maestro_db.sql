@@ -38,11 +38,29 @@ CREATE TABLE `appointments` (
   `vehicle_model` varchar(80) DEFAULT NULL,
   `vehicle_year` year(4) DEFAULT NULL,
   `plate_no` varchar(20) DEFAULT NULL,
+  `fuel_type` enum('Gasoline','Diesel') DEFAULT NULL,
+  `vehicle_concerns` text DEFAULT NULL,
   `appt_date` date NOT NULL,
   `appt_time` time NOT NULL,
   `notes` text DEFAULT NULL,
+  `orcr_status` enum('Yes (photo captured)','No') NOT NULL DEFAULT 'No',
+  `orcr_image_path` varchar(255) DEFAULT NULL,
+  -- ── App-compatible alias columns ──────────────────────────────────────────
+  -- The Android app (DatabaseHelper.java) uses different column names for the
+  -- same data.  These virtual generated columns let the app query by its own
+  -- names without duplicating storage or changing any website PHP.
+  --   app name          →  website column
+  --   car_model         →  vehicle_model   (COL_APPT_CAR_MODEL)
+  --   year_model        →  vehicle_year    (COL_APPT_YEAR_MODEL)
+  --   additional_notes  →  notes           (COL_APPT_NOTES)
+  `car_model`        varchar(80)  GENERATED ALWAYS AS (`vehicle_model`) VIRTUAL,
+  `year_model`       year(4)      GENERATED ALWAYS AS (`vehicle_year`)  VIRTUAL,
+  `additional_notes` text         GENERATED ALWAYS AS (`notes`)         VIRTUAL,
   `status` enum('pending','confirmed','declined','completed','cancelled') NOT NULL DEFAULT 'pending',
   `admin_notes` text DEFAULT NULL,
+  -- rating mirrors BookActivity ratingBar: 0 = not rated, 1–5 = star rating
+  -- Stored as TINYINT to match COL_APPT_RATING in DatabaseHelper.java
+  `rating` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -222,13 +240,45 @@ INSERT INTO `services` (`id`, `name`, `description`, `duration_hr`, `price`, `ca
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
+
+  -- ── Core identity ──────────────────────────────────────────────────────────
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `username` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
+
+  -- ── Personal information (Step 3 of registration) ─────────────────────────
+  `birthdate` date DEFAULT NULL,
+  `gender` enum('Male','Female','Other') DEFAULT NULL,
   `phone` varchar(30) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+
+  -- ── Driver's license (Step 4 of registration) ─────────────────────────────
+  `drivers_license_no` varchar(20) DEFAULT NULL,
+  `drivers_license_issuance` date DEFAULT NULL,
+  `drivers_license_expiry` date DEFAULT NULL,
+  `dl_codes` varchar(50) DEFAULT NULL,           -- comma-separated, e.g. 'A,B,B2'
+
+  -- ── Conductor's license (optional, Step 4) ────────────────────────────────
+  `conductors_license_no` varchar(20) DEFAULT NULL,
+  `conductors_license_issuance` date DEFAULT NULL,
+  `conductors_license_expiry` date DEFAULT NULL,
+
+  -- ── Vehicle information (Step 4 of registration) ──────────────────────────
+  `license_plate` varchar(15) DEFAULT NULL,      -- e.g. 'ABC 1234'
+  `mv_file_number` varchar(15) DEFAULT NULL,     -- 15-digit LTO MV file number
+  `vehicle_make` varchar(40) DEFAULT NULL,       -- e.g. 'Toyota'
+  `vehicle_model` varchar(60) DEFAULT NULL,      -- e.g. 'Vios 1.3 XLE MT'
+
+  -- ── Document upload paths (Step 5 of registration) ────────────────────────
+  -- Paths are relative to the web root, e.g. 'uploads/documents/dl_abc123.jpg'
+  `license_image_path` varchar(255) DEFAULT NULL, -- legacy single-image field (app compat)
+  `dl_upload_path` varchar(255) DEFAULT NULL,     -- Driver's License photo
+  `or_image_path` varchar(255) DEFAULT NULL,      -- Official Receipt
+  `cr_image_path` varchar(255) DEFAULT NULL,      -- Certificate of Registration
+
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

@@ -136,6 +136,20 @@ unset($_SESSION['flash']);
                                     <span class="badge-dot"></span>
                                     <?= ucfirst($row['status']) ?>
                                 </span>
+                                <?php if (!empty($row['admin_notes'])): ?>
+                                <div style="margin-top:8px;padding:8px 10px;
+                                    background:rgba(251,189,35,0.08);
+                                    border-left:3px solid var(--yellow);
+                                    border-radius:0 6px 6px 0;
+                                    font-size:12px;color:var(--text);line-height:1.5;max-width:220px;">
+                                    <span style="font-size:11px;font-weight:700;
+                                        text-transform:uppercase;letter-spacing:.5px;
+                                        color:var(--yellow);display:block;margin-bottom:3px;">
+                                        Shop Note
+                                    </span>
+                                    <?= htmlspecialchars($row['admin_notes']) ?>
+                                </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php if ($row['status'] === 'pending'): ?>
@@ -175,7 +189,7 @@ unset($_SESSION['flash']);
                 <table>
                     <thead><tr>
                         <th>Service</th><th>Vehicle</th>
-                        <th>Date</th><th>Status</th><th>Notes</th>
+                        <th>Date</th><th>Status</th><th>Rating</th><th>Shop Note</th>
                     </tr></thead>
                     <tbody>
                     <?php foreach ($pastRows as $row): ?>
@@ -192,8 +206,39 @@ unset($_SESSION['flash']);
                                     <?= ucfirst($row['status']) ?>
                                 </span>
                             </td>
-                            <td style="max-width:180px;font-size:13px;color:var(--muted);">
-                                <?= $row['admin_notes'] ? htmlspecialchars($row['admin_notes']) : '—' ?>
+                            <td style="white-space:nowrap;">
+                                <?php if (!empty($row['rating']) && (int)$row['rating'] > 0):
+                                    $r = (int)$row['rating'];
+                                    $ratingLabels = ['','Poor 😞','Fair 😐','Good 🙂','Great 😊','Excellent 🌟'];
+                                ?>
+                                <span style="color:var(--yellow);letter-spacing:1px;"><?= str_repeat('★', $r) ?></span><span style="color:var(--border);"><?= str_repeat('★', 5 - $r) ?></span>
+                                <br><span style="font-size:11px;color:var(--muted);"><?= htmlspecialchars($ratingLabels[$r]) ?></span>
+                                <?php else: ?>
+                                <span style="color:var(--muted);font-size:13px;">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td style="max-width:200px;">
+                                <?php if (!empty($row['admin_notes'])): ?>
+                                <div style="font-size:12px;line-height:1.5;">
+                                    <span style="font-size:11px;font-weight:700;text-transform:uppercase;
+                                        letter-spacing:.5px;color:var(--yellow);">Shop&nbsp;◆</span>
+                                    <span style="color:var(--text);">
+                                        <?= htmlspecialchars($row['admin_notes']) ?>
+                                    </span>
+                                </div>
+                                <?php else: ?>
+                                <span style="color:var(--muted);font-size:13px;">—</span>
+                                <?php endif; ?>
+                                <?php if (!empty($row['notes'])): ?>
+                                <div style="font-size:12px;line-height:1.5;margin-top:5px;
+                                    padding-top:5px;border-top:1px solid var(--border-sub);">
+                                    <span style="font-size:11px;font-weight:700;text-transform:uppercase;
+                                        letter-spacing:.5px;color:var(--muted);">You&nbsp;◆</span>
+                                    <span style="color:var(--muted);">
+                                        <?= htmlspecialchars($row['notes']) ?>
+                                    </span>
+                                </div>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

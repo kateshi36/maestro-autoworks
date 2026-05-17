@@ -155,6 +155,36 @@ $fullDates = array_column($fullDatesStmt->fetchAll(), 'appt_date');
                                value="<?= htmlspecialchars($old['plate_no'] ?? '') ?>"
                                style="text-transform:uppercase;">
                     </div>
+
+                    <!-- Fuel Type — mirrors BookActivity.java rgFuelType (required) -->
+                    <div class="form-group" style="margin-top:16px;margin-bottom:0;">
+                        <label>Fuel Type <span style="color:var(--danger);margin-left:2px;">*</span></label>
+                        <div style="display:flex;gap:12px;margin-top:8px;" id="fuel-type-wrap">
+                            <?php
+                            $savedFuel = $old['fuel_type'] ?? '';
+                            foreach (['Gasoline', 'Diesel'] as $fuel):
+                                $icon  = $fuel === 'Gasoline' ? '⛽' : '🛢️';
+                                $isChk = $savedFuel === $fuel;
+                            ?>
+                            <label id="fuel-label-<?= strtolower($fuel) ?>"
+                                style="flex:1;display:flex;align-items:center;gap:12px;
+                                    padding:14px 16px;border-radius:10px;cursor:pointer;
+                                    border:2px solid <?= $isChk ? 'var(--yellow)' : 'var(--border)' ?>;
+                                    background:<?= $isChk ? 'rgba(251,189,35,0.08)' : 'transparent' ?>;
+                                    transition:border-color .15s,background .15s;">
+                                <input type="radio" name="fuel_type" value="<?= $fuel ?>"
+                                    id="fuel-<?= strtolower($fuel) ?>"
+                                    <?= $isChk ? 'checked' : '' ?>
+                                    style="accent-color:var(--yellow);width:16px;height:16px;flex-shrink:0;"
+                                    onchange="selectFuel('<?= strtolower($fuel) ?>')">
+                                <span style="font-size:18px;"><?= $icon ?></span>
+                                <span style="font-weight:600;font-size:14px;color:var(--text);"><?= $fuel ?></span>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                        <div id="err-fuel_type" style="color:var(--danger);font-size:12px;
+                            margin-top:6px;display:none;">Please select a fuel type.</div>
+                    </div>
                 </div>
 
                 <hr style="border:none;border-top:1px solid var(--border-sub);margin-bottom:28px;">
@@ -196,6 +226,11 @@ $fullDates = array_column($fullDatesStmt->fetchAll(), 'appt_date');
                 <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-sub);">
                     <div style="font-size:13px;color:var(--muted);">Vehicle</div>
                     <div id="sumVehicle" style="color:var(--text);font-weight:600;margin-top:4px;">—</div>
+                </div>
+
+                <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-sub);">
+                    <div style="font-size:13px;color:var(--muted);">Fuel Type</div>
+                    <div id="sumFuel" style="color:var(--text);font-weight:600;margin-top:4px;">—</div>
                 </div>
 
                 <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -252,7 +287,39 @@ $fullDates = array_column($fullDatesStmt->fetchAll(), 'appt_date');
         const make = makeI.value.trim(), model = modelI.value.trim(), yr = yearI.value.trim();
         document.getElementById('sumVehicle').textContent =
             (make || model) ? [yr, make, model].filter(Boolean).join(' ') : '—';
+
+        // Fuel type
+        const fuelChk = document.querySelector('input[name="fuel_type"]:checked');
+        const fuelEl  = document.getElementById('sumFuel');
+        if (fuelChk) {
+            fuelEl.textContent = fuelChk.value === 'Gasoline' ? '⛽ Gasoline' : '🛢️ Diesel';
+        } else {
+            fuelEl.textContent = '—';
+        }
     }
+
+    // Fuel chip visual toggle — mirrors BookActivity rgFuelType listener
+    window.selectFuel = function(type) {
+        ['gasoline', 'diesel'].forEach(function(t) {
+            const lbl = document.getElementById('fuel-label-' + t);
+            const isSelected = t === type;
+            lbl.style.borderColor = isSelected ? 'var(--yellow)' : 'var(--border)';
+            lbl.style.background  = isSelected ? 'rgba(251,189,35,0.08)' : 'transparent';
+        });
+        document.getElementById('err-fuel_type').style.display = 'none';
+        updateSummary();
+    };
+
+    // Client-side guard: fuel type is required before submit
+    document.getElementById('bookForm').addEventListener('submit', function(e) {
+        const fuelChk = document.querySelector('input[name="fuel_type"]:checked');
+        if (!fuelChk) {
+            e.preventDefault();
+            const errEl = document.getElementById('err-fuel_type');
+            errEl.style.display = 'block';
+            errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
 
     function checkDay () {
         if (!dateSel.value) {
@@ -271,6 +338,11 @@ $fullDates = array_column($fullDatesStmt->fetchAll(), 'appt_date');
 
     [svcSel, dateSel, timeSel].forEach(el => el.addEventListener('change', () => { updateSummary(); checkDay(); }));
     [makeI, modelI, yearI].forEach(el => el.addEventListener('input', updateSummary));
+    document.querySelectorAll('input[name="fuel_type"]').forEach(el => el.addEventListener('change', updateSummary));
+
+    // Restore chip styles if server reflected an old value back after error
+    const preselectedFuel = document.querySelector('input[name="fuel_type"]:checked');
+    if (preselectedFuel) selectFuel(preselectedFuel.value.toLowerCase());
 
     // Disable Sundays on date input (HTML min/max don't block DOW; we use the change handler + warn)
     updateSummary();

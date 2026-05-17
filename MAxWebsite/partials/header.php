@@ -69,17 +69,17 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         <div style="position:relative;">
             <button class="notif-btn" id="notifBtn" aria-label="Notifications">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <?php if ($unreadCount > 0): ?>
-                    <span class="notif-badge"><?= $unreadCount > 9 ? '9+' : $unreadCount ?></span>
-                <?php endif; ?>
+                <!-- id="notifBadge" lets JS update the count without a page reload -->
+                <span class="notif-badge" id="notifBadge" style="<?= $unreadCount > 0 ? '' : 'display:none;' ?>">
+                    <?= $unreadCount > 9 ? '9+' : $unreadCount ?>
+                </span>
             </button>
 
             <div class="notif-panel" id="notifPanel">
                 <div class="notif-panel-head">
                     <span class="notif-panel-title">Notifications</span>
-                    <?php if ($unreadCount > 0): ?>
-                        <a href="mark_read.php" style="font-size:12px;color:var(--yellow);">Mark all read</a>
-                    <?php endif; ?>
+                    <!-- id="markAllRead" lets JS intercept the click via fetch() instead of navigating away -->
+                    <button id="markAllRead" style="font-size:12px;color:var(--yellow);background:none;border:none;cursor:pointer;padding:0;<?= $unreadCount > 0 ? '' : 'display:none;' ?>">Mark all read</button>
                 </div>
                 <?php if (empty($notifs)): ?>
                     <div style="padding:28px;text-align:center;color:var(--muted);font-size:14px;">No notifications yet.</div>

@@ -405,3 +405,78 @@ input[type="email"]::placeholder { color: var(--muted); font-size: 14px; }
     .form-row { grid-template-columns: 1fr; }
     .reg-card { padding: 32px 24px; }
 }
+
+/* ── Input type fixes: remove browser-default control chrome ────────────── */
+
+/* tel, number, date — extend the existing site input style */
+input[type="tel"],
+input[type="number"],
+input[type="date"] {
+    width: 100%;
+    background: var(--black-input);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 13px 14px 13px 44px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .2s, background .2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color-scheme: dark;
+}
+input[type="email"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color-scheme: dark;
+}
+
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+    border-color: var(--yellow);
+    background: rgba(26,26,26,0.9);
+}
+
+input[type="tel"]::placeholder,
+input[type="number"]::placeholder { color: var(--muted); font-size: 14px; }
+
+/* Hide number spinner arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; }
+
+/* Tint the date calendar icon to match amber theme */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(60%) sepia(80%) saturate(400%) hue-rotate(2deg) brightness(110%);
+    cursor: pointer;
+    opacity: 0.7;
+    margin-right: 4px;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+/* Select — remove native arrow/chrome, keep inside .input-wrap flow */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Textarea — disable the browser resize grip */
+textarea {
+    resize: none;
+}

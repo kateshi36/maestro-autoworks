@@ -2,8 +2,9 @@
 
 session_start();
 
-$error = $_SESSION['error'] ?? '';
-unset($_SESSION['error']);
+$error      = $_SESSION['error']        ?? '';
+$fp_success = $_SESSION['fp_reset_done'] ?? '';
+unset($_SESSION['error'], $_SESSION['fp_reset_done']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -139,6 +140,13 @@ unset($_SESSION['error']);
             </div>
             <?php endif; ?>
 
+            <?php if ($fp_success): ?>
+            <div class="alert alert-success">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/></svg>
+                <?= htmlspecialchars($fp_success) ?>
+            </div>
+            <?php endif; ?>
+
             <!-- Role Selector -->
             <div class="role-section-label">I am a</div>
             <div class="role-selector">
@@ -210,7 +218,7 @@ unset($_SESSION['error']);
             <div class="divider">or</div>
 
             <div class="register-row">
-                Don't have an account? <a href="register.php">Create one free</a>
+                Don't have an account? <a href="register.php?reset=1">Create one free</a>
             </div>
         </div>
 
