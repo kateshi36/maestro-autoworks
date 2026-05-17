@@ -1,5 +1,12 @@
 {
   "devDependencies": {
     "@angular/cli": "^21.2.11"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "npx ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   }
 }
