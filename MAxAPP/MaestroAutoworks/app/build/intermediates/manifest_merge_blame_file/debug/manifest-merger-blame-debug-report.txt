@@ -1,0 +1,427 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.maestro.autoworks"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:4:5-66
+11-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.CAMERA" />
+12-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:5:5-64
+12-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:5:22-62
+13    <!-- POST_NOTIFICATIONS required on Android 13 (API 33+) for push notifications -->
+14    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+14-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:7:5-76
+14-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:7:22-74
+15    <!-- WRITE_EXTERNAL_STORAGE only needed on Android 9 and below -->
+16    <uses-permission
+16-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:9:5-10:37
+17        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+17-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:9:22-78
+18        android:maxSdkVersion="28" />
+18-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:10:9-35
+19
+20    <uses-feature
+20-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:11:5-84
+21        android:name="android.hardware.camera"
+21-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:11:19-57
+22        android:required="false" />
+22-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:11:58-82
+23
+24    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+24-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:26:5-79
+24-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:26:22-76
+25
+26    <permission
+26-->[androidx.core:core:1.9.0] C:\Users\ilard\.gradle\caches\transforms-3\2087c6a6545120842fdb2d57ec65c108\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+27        android:name="com.maestro.autoworks.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+27-->[androidx.core:core:1.9.0] C:\Users\ilard\.gradle\caches\transforms-3\2087c6a6545120842fdb2d57ec65c108\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+28        android:protectionLevel="signature" />
+28-->[androidx.core:core:1.9.0] C:\Users\ilard\.gradle\caches\transforms-3\2087c6a6545120842fdb2d57ec65c108\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+29
+30    <uses-permission android:name="com.maestro.autoworks.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+30-->[androidx.core:core:1.9.0] C:\Users\ilard\.gradle\caches\transforms-3\2087c6a6545120842fdb2d57ec65c108\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+30-->[androidx.core:core:1.9.0] C:\Users\ilard\.gradle\caches\transforms-3\2087c6a6545120842fdb2d57ec65c108\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+31
+32    <application
+32-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:13:5-87:19
+33        android:allowBackup="true"
+33-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:14:9-35
+34        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+34-->[androidx.core:core:1.9.0] C:\Users\ilard\.gradle\caches\transforms-3\2087c6a6545120842fdb2d57ec65c108\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+35        android:debuggable="true"
+36        android:extractNativeLibs="false"
+37        android:icon="@mipmap/ic_launcher"
+37-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:15:9-43
+38        android:label="@string/app_name"
+38-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:16:9-41
+39        android:roundIcon="@mipmap/ic_launcher_round"
+39-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:17:9-54
+40        android:supportsRtl="true"
+40-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:18:9-35
+41        android:testOnly="true"
+42        android:theme="@style/Theme.MaestroAutoworks" >
+42-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:19:9-54
+43
+44        <!-- 0. Animated Splash Screen (LAUNCHER) -->
+45        <activity
+45-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:22:9-30:20
+46            android:name="com.maestro.autoworks.activities.SplashActivity"
+46-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:23:13-54
+47            android:exported="true"
+47-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:24:13-36
+48            android:theme="@style/Theme.MaestroAutoworks.NoActionBar" >
+48-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:25:13-70
+49            <intent-filter>
+49-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:26:13-29:29
+50                <action android:name="android.intent.action.MAIN" />
+50-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:27:17-68
+50-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:27:25-66
+51
+52                <category android:name="android.intent.category.LAUNCHER" />
+52-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:28:17-76
+52-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:28:27-74
+53            </intent-filter>
+54        </activity>
+55
+56        <!-- 1. Public Landing Page -->
+57        <activity
+57-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:33:9-85
+58            android:name="com.maestro.autoworks.activities.MainActivity"
+58-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:33:19-58
+59            android:exported="false" />
+59-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:33:59-83
+60
+61        <!-- 2. Login -->
+62        <activity
+62-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:36:9-86
+63            android:name="com.maestro.autoworks.activities.LoginActivity"
+63-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:36:19-59
+64            android:exported="false" />
+64-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:36:60-84
+65
+66        <!-- 3. Register -->
+67        <activity
+67-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:39:9-89
+68            android:name="com.maestro.autoworks.activities.RegisterActivity"
+68-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:39:19-62
+69            android:exported="false" />
+69-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:39:63-87
+70        <activity
+70-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:41:9-95
+71            android:name="com.maestro.autoworks.activities.ForgotPasswordActivity"
+71-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:41:19-68
+72            android:exported="false" />
+72-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:41:69-93
+73        <!-- 4. Customer Home -->
+74        <activity
+74-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:43:9-85
+75            android:name="com.maestro.autoworks.activities.HomeActivity"
+75-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:43:19-58
+76            android:exported="false" />
+76-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:43:59-83
+77
+78        <!-- 5. Services -->
+79        <activity
+79-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:46:9-89
+80            android:name="com.maestro.autoworks.activities.ServicesActivity"
+80-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:46:19-62
+81            android:exported="false" />
+81-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:46:63-87
+82
+83        <!-- 6. Book Appointment -->
+84        <activity
+84-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:49:9-85
+85            android:name="com.maestro.autoworks.activities.BookActivity"
+85-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:49:19-58
+86            android:exported="false" />
+86-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:49:59-83
+87
+88        <!-- 7. My Appointments -->
+89        <activity
+89-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:52:9-93
+90            android:name="com.maestro.autoworks.activities.AppointmentsActivity"
+90-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:52:19-66
+91            android:exported="false" />
+91-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:52:67-91
+92
+93        <!-- 8. About -->
+94        <activity
+94-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:55:9-86
+95            android:name="com.maestro.autoworks.activities.AboutActivity"
+95-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:55:19-59
+96            android:exported="false" />
+96-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:55:60-84
+97
+98        <!-- 9. Identity Verification (OTP / 2FA) -->
+99        <activity
+99-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:58:9-101
+100            android:name="com.maestro.autoworks.activities.IdentityVerificationActivity"
+100-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:58:19-74
+101            android:exported="false" />
+101-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:58:75-99
+102
+103        <!-- 11. Search -->
+104        <activity
+104-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:61:9-87
+105            android:name="com.maestro.autoworks.activities.SearchActivity"
+105-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:61:19-60
+106            android:exported="false" />
+106-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:61:61-85
+107
+108        <!-- ADMIN SECTION -->
+109        <!-- A1. Admin Dashboard -->
+110        <activity
+110-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:65:9-95
+111            android:name="com.maestro.autoworks.activities.AdminDashboardActivity"
+111-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:65:19-68
+112            android:exported="false" />
+112-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:65:69-93
+113        <!-- A2. Admin Appointments (standalone) -->
+114        <activity
+114-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:67:9-98
+115            android:name="com.maestro.autoworks.activities.AdminAppointmentsActivity"
+115-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:67:19-71
+116            android:exported="false" />
+116-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:67:72-96
+117        <!-- A3. Admin Services (standalone) -->
+118        <activity
+118-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:69:9-94
+119            android:name="com.maestro.autoworks.activities.AdminServicesActivity"
+119-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:69:19-67
+120            android:exported="false" />
+120-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:69:68-92
+121        <!-- A4. Admin Reports (standalone) -->
+122        <activity
+122-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:71:9-93
+123            android:name="com.maestro.autoworks.activities.AdminReportsActivity"
+123-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:71:19-66
+124            android:exported="false" />
+124-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:71:67-91
+125        <!-- A5. Admin PMS / Repair Tracker (standalone) -->
+126        <activity
+126-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:73:9-89
+127            android:name="com.maestro.autoworks.activities.AdminPmsActivity"
+127-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:73:19-62
+128            android:exported="false" />
+128-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:73:63-87
+129
+130        <!-- FileProvider for OR/CR camera capture on Android 9 and below -->
+131        <provider
+132            android:name="androidx.core.content.FileProvider"
+132-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:78:13-62
+133            android:authorities="com.maestro.autoworks.provider"
+133-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:79:13-60
+134            android:exported="false"
+134-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:80:13-37
+135            android:grantUriPermissions="true" >
+135-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:81:13-47
+136            <meta-data
+136-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:82:13-84:62
+137                android:name="android.support.FILE_PROVIDER_PATHS"
+137-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:83:17-67
+138                android:resource="@xml/file_provider_paths" />
+138-->C:\xampp\htdocs\Maestro-Autoworks\MAxAPP\MaestroAutoworks\app\src\main\AndroidManifest.xml:84:17-60
+139        </provider>
+140
+141        <activity
+141-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:29:9-46:20
+142            android:name="com.google.firebase.auth.internal.GenericIdpActivity"
+142-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:30:13-80
+143            android:excludeFromRecents="true"
+143-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:31:13-46
+144            android:exported="true"
+144-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:32:13-36
+145            android:launchMode="singleTask"
+145-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:33:13-44
+146            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+146-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:34:13-72
+147            <intent-filter>
+147-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:35:13-45:29
+148                <action android:name="android.intent.action.VIEW" />
+148-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:36:17-69
+148-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:36:25-66
+149
+150                <category android:name="android.intent.category.DEFAULT" />
+150-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:38:17-76
+150-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:38:27-73
+151                <category android:name="android.intent.category.BROWSABLE" />
+151-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:39:17-78
+151-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:39:27-75
+152
+153                <data
+153-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:41:17-44:51
+154                    android:host="firebase.auth"
+154-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:42:21-49
+155                    android:path="/"
+155-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:43:21-37
+156                    android:scheme="genericidp" />
+156-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:44:21-48
+157            </intent-filter>
+158        </activity>
+159        <activity
+159-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:47:9-64:20
+160            android:name="com.google.firebase.auth.internal.RecaptchaActivity"
+160-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:48:13-79
+161            android:excludeFromRecents="true"
+161-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:49:13-46
+162            android:exported="true"
+162-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:50:13-36
+163            android:launchMode="singleTask"
+163-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:51:13-44
+164            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+164-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:52:13-72
+165            <intent-filter>
+165-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:53:13-63:29
+166                <action android:name="android.intent.action.VIEW" />
+166-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:36:17-69
+166-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:36:25-66
+167
+168                <category android:name="android.intent.category.DEFAULT" />
+168-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:38:17-76
+168-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:38:27-73
+169                <category android:name="android.intent.category.BROWSABLE" />
+169-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:39:17-78
+169-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:39:27-75
+170
+171                <data
+171-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:41:17-44:51
+172                    android:host="firebase.auth"
+172-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:42:21-49
+173                    android:path="/"
+173-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:43:21-37
+174                    android:scheme="recaptcha" />
+174-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:44:21-48
+175            </intent-filter>
+176        </activity>
+177
+178        <service
+178-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:66:9-72:19
+179            android:name="com.google.firebase.components.ComponentDiscoveryService"
+179-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:67:13-84
+180            android:directBootAware="true"
+180-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:32:13-43
+181            android:exported="false" >
+181-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:68:13-37
+182            <meta-data
+182-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:69:13-71:85
+183                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+183-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:70:17-109
+184                android:value="com.google.firebase.components.ComponentRegistrar" />
+184-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\ilard\.gradle\caches\transforms-3\4027d0f5a38337ccdd6e31adc67e86c8\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:71:17-82
+185            <meta-data
+185-->[com.google.firebase:firebase-common-ktx:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\f8c0683ecabc7bb1106be34f34f15dd0\transformed\jetified-firebase-common-ktx-20.4.2\AndroidManifest.xml:12:13-14:85
+186                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+186-->[com.google.firebase:firebase-common-ktx:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\f8c0683ecabc7bb1106be34f34f15dd0\transformed\jetified-firebase-common-ktx-20.4.2\AndroidManifest.xml:13:17-116
+187                android:value="com.google.firebase.components.ComponentRegistrar" />
+187-->[com.google.firebase:firebase-common-ktx:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\f8c0683ecabc7bb1106be34f34f15dd0\transformed\jetified-firebase-common-ktx-20.4.2\AndroidManifest.xml:14:17-82
+188            <meta-data
+188-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:35:13-37:85
+189                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+189-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:36:17-109
+190                android:value="com.google.firebase.components.ComponentRegistrar" />
+190-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:37:17-82
+191        </service>
+192
+193        <provider
+193-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:23:9-28:39
+194            android:name="com.google.firebase.provider.FirebaseInitProvider"
+194-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:24:13-77
+195            android:authorities="com.maestro.autoworks.firebaseinitprovider"
+195-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:25:13-72
+196            android:directBootAware="true"
+196-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:26:13-43
+197            android:exported="false"
+197-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:27:13-37
+198            android:initOrder="100" />
+198-->[com.google.firebase:firebase-common:20.4.2] C:\Users\ilard\.gradle\caches\transforms-3\7c05cbbfb35ba17d564edf8b1b59cbfc\transformed\jetified-firebase-common-20.4.2\AndroidManifest.xml:28:13-36
+199
+200        <activity
+200-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\ilard\.gradle\caches\transforms-3\6469d074abd14cfb5f5d0736a26023c3\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:9-22:45
+201            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+201-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\ilard\.gradle\caches\transforms-3\6469d074abd14cfb5f5d0736a26023c3\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:19-85
+202            android:exported="false"
+202-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\ilard\.gradle\caches\transforms-3\6469d074abd14cfb5f5d0736a26023c3\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:22:19-43
+203            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+203-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\ilard\.gradle\caches\transforms-3\6469d074abd14cfb5f5d0736a26023c3\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:21:19-78
+204
+205        <provider
+205-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+206            android:name="androidx.startup.InitializationProvider"
+206-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+207            android:authorities="com.maestro.autoworks.androidx-startup"
+207-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+208            android:exported="false" >
+208-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+209            <meta-data
+209-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+210                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+210-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+211                android:value="androidx.startup" />
+211-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ilard\.gradle\caches\transforms-3\2efbdbef208cf9683a6ed30b28b5998a\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+212            <meta-data
+212-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\ilard\.gradle\caches\transforms-3\e341a1af2799189924c18778d44f0ea2\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+213                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+213-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\ilard\.gradle\caches\transforms-3\e341a1af2799189924c18778d44f0ea2\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+214                android:value="androidx.startup" />
+214-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\ilard\.gradle\caches\transforms-3\e341a1af2799189924c18778d44f0ea2\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+215            <meta-data
+215-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+216                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+216-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+217                android:value="androidx.startup" />
+217-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+218        </provider>
+219
+220        <meta-data
+220-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\ilard\.gradle\caches\transforms-3\590f9acd0b45b479dbd679fde8599691\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:21:9-23:69
+221            android:name="com.google.android.gms.version"
+221-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\ilard\.gradle\caches\transforms-3\590f9acd0b45b479dbd679fde8599691\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:22:13-58
+222            android:value="@integer/google_play_services_version" />
+222-->[com.google.android.gms:play-services-basement:18.1.0] C:\Users\ilard\.gradle\caches\transforms-3\590f9acd0b45b479dbd679fde8599691\transformed\jetified-play-services-basement-18.1.0\AndroidManifest.xml:23:13-66
+223
+224        <receiver
+224-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+225            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+225-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+226            android:directBootAware="false"
+226-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+227            android:enabled="true"
+227-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+228            android:exported="true"
+228-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+229            android:permission="android.permission.DUMP" >
+229-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+230            <intent-filter>
+230-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+231                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+231-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+231-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+232            </intent-filter>
+233            <intent-filter>
+233-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+234                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+234-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+234-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+235            </intent-filter>
+236            <intent-filter>
+236-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+237                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+237-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+237-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+238            </intent-filter>
+239            <intent-filter>
+239-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+240                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+240-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+240-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ilard\.gradle\caches\transforms-3\f9ef1f22ccf7327eb427e32520490580\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+241            </intent-filter>
+242        </receiver>
+243    </application>
+244
+245</manifest>

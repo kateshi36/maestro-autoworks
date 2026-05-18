@@ -43,8 +43,8 @@ public class BookActivity extends AppCompatActivity {
 
     // ── Step 2: Vehicle Inspection Checklist ──
     private CheckBox     cbConcernEngine, cbConcernBrakes, cbConcernAircon,
-                         cbConcernElectrical, cbConcernTires, cbConcernOil,
-                         cbConcernSteering, cbConcernExhaust;
+            cbConcernElectrical, cbConcernTires, cbConcernOil,
+            cbConcernSteering, cbConcernExhaust;
     private EditText     etAdditionalNotes;
     private LinearLayout layoutConcernSummary;
     private TextView     tvConcernSummaryText;
@@ -71,10 +71,10 @@ public class BookActivity extends AppCompatActivity {
 
     // ── Car model options ──
     private static final String[] CAR_MODELS = {
-        "— Select car model —",
-        "Toyota", "Honda", "Mitsubishi", "Nissan", "Ford",
-        "Hyundai", "Kia", "Suzuki", "Isuzu", "Mazda",
-        "BMW", "Mercedes-Benz", "Chevrolet", "Subaru", "Other"
+            "— Select car model —",
+            "Toyota", "Honda", "Mitsubishi", "Nissan", "Ford",
+            "Hyundai", "Kia", "Suzuki", "Isuzu", "Mazda",
+            "BMW", "Mercedes-Benz", "Chevrolet", "Subaru", "Other"
     };
 
     // ── Year model options (2000 – 2025) ──
@@ -247,9 +247,9 @@ public class BookActivity extends AppCompatActivity {
             Calendar selected = Calendar.getInstance();
             selected.set(y, m, d);
             java.text.SimpleDateFormat displayFmt =
-                new java.text.SimpleDateFormat("EEEE, MMMM d yyyy", java.util.Locale.getDefault());
+                    new java.text.SimpleDateFormat("EEEE, MMMM d yyyy", java.util.Locale.getDefault());
             java.text.SimpleDateFormat storageFmt =
-                new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+                    new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
             tvSelectedDate.setText(displayFmt.format(selected.getTime()));
             tvSelectedDate.setTextColor(getColor(R.color.yellow));
             etDate.setText(storageFmt.format(selected.getTime()));
@@ -261,7 +261,7 @@ public class BookActivity extends AppCompatActivity {
         int day   = today.get(Calendar.DAY_OF_MONTH);
 
         android.app.DatePickerDialog dialog = new android.app.DatePickerDialog(
-            this, onDateSet, year, month, day);
+                this, onDateSet, year, month, day);
 
         dialog.getDatePicker().setMinDate(today.getTimeInMillis());
         Calendar maxCal = Calendar.getInstance();
@@ -269,8 +269,8 @@ public class BookActivity extends AppCompatActivity {
         dialog.getDatePicker().setMaxDate(maxCal.getTimeInMillis());
 
         android.view.inputmethod.InputMethodManager imm =
-            (android.view.inputmethod.InputMethodManager)
-            getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+                (android.view.inputmethod.InputMethodManager)
+                        getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(etDate.getWindowToken(), 0);
 
         dialog.show();
@@ -348,8 +348,8 @@ public class BookActivity extends AppCompatActivity {
 
     private void setupInspectionChecklist() {
         CheckBox[] concerns = {
-            cbConcernEngine, cbConcernBrakes, cbConcernAircon, cbConcernElectrical,
-            cbConcernTires, cbConcernOil, cbConcernSteering, cbConcernExhaust
+                cbConcernEngine, cbConcernBrakes, cbConcernAircon, cbConcernElectrical,
+                cbConcernTires, cbConcernOil, cbConcernSteering, cbConcernExhaust
         };
         android.widget.CompoundButton.OnCheckedChangeListener listener = (btn, checked) -> {
             btn.setTextColor(checked ? getColor(R.color.yellow) : getColor(R.color.muted));
@@ -390,8 +390,8 @@ public class BookActivity extends AppCompatActivity {
 
     private String getSelectedConcerns() {
         CheckBox[] concerns = {
-            cbConcernEngine, cbConcernBrakes, cbConcernAircon, cbConcernElectrical,
-            cbConcernTires, cbConcernOil, cbConcernSteering, cbConcernExhaust
+                cbConcernEngine, cbConcernBrakes, cbConcernAircon, cbConcernElectrical,
+                cbConcernTires, cbConcernOil, cbConcernSteering, cbConcernExhaust
         };
         java.util.List<String> selected = new java.util.ArrayList<>();
         for (CheckBox cb : concerns) {
@@ -478,26 +478,26 @@ public class BookActivity extends AppCompatActivity {
         String notesLine   = notes.isEmpty()    ? "None" : notes;
 
         new AlertDialog.Builder(this)
-            .setTitle("Confirm Booking")
-            .setMessage(
-                "Car Model: " + carModel    + "\n" +
-                "Year:      " + yearModel   + "\n" +
-                "Fuel:      " + fuelType    + "\n" +
-                "Concerns:  " + concernLine + "\n" +
-                "Notes:     " + notesLine   + "\n" +
-                "Service:   " + serviceName + "\n" +
-                "Plate:     " + plate       + "\n" +
-                "Date:      " + date        + "\n" +
-                "Time:      " + timeSlot    + "\n" +
-                "Rating:    " + (int) ratingBar.getRating() + "★\n\n" +
-                "Total:     ₱" + String.format("%.2f", total)
-            )
-            .setPositiveButton("Book Now", (dialog, which) ->
-                saveAppointment(carModel, yearModel, fuelType,
+                .setTitle("Confirm Booking")
+                .setMessage(
+                        "Car Model: " + carModel    + "\n" +
+                                "Year:      " + yearModel   + "\n" +
+                                "Fuel:      " + fuelType    + "\n" +
+                                "Concerns:  " + concernLine + "\n" +
+                                "Notes:     " + notesLine   + "\n" +
+                                "Service:   " + serviceName + "\n" +
+                                "Plate:     " + plate       + "\n" +
+                                "Date:      " + date        + "\n" +
+                                "Time:      " + timeSlot    + "\n" +
+                                "Rating:    " + (int) ratingBar.getRating() + "★\n\n" +
+                                "Total:     ₱" + String.format("%.2f", total)
+                )
+                .setPositiveButton("Book Now", (dialog, which) ->
+                        saveAppointment(carModel, yearModel, fuelType,
                                 concerns, notes,
                                 serviceName, plate, date, timeSlot, total))
-            .setNegativeButton("Cancel", null)
-            .show();
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     // ─────────────────────────────────────────────
@@ -537,27 +537,27 @@ public class BookActivity extends AppCompatActivity {
 
     private void showBookingSuccessDialog() {
         new AlertDialog.Builder(this)
-            .setTitle("Booking Submitted")
-            .setMessage(
-                "Your booking request has been successfully submitted.\n\n" +
-                "Please wait for the administrator's confirmation."
-            )
-            .setCancelable(false)
-            .setPositiveButton("Book Again", (dialog, which) -> {
-                // Restart BookActivity so the user can submit another request
-                startActivity(new Intent(this, BookActivity.class));
-                finish();
-            })
-            .setNegativeButton("View My Appointments", (dialog, which) -> {
-                startActivity(new Intent(this, AppointmentsActivity.class));
-                finish();
-            })
-            .show();
+                .setTitle("Booking Submitted")
+                .setMessage(
+                        "Your booking request has been successfully submitted.\n\n" +
+                                "Please wait for the administrator's confirmation."
+                )
+                .setCancelable(false)
+                .setPositiveButton("Book Again", (dialog, which) -> {
+                    // Restart BookActivity so the user can submit another request
+                    startActivity(new Intent(this, BookActivity.class));
+                    finish();
+                })
+                .setNegativeButton("View My Appointments", (dialog, which) -> {
+                    startActivity(new Intent(this, AppointmentsActivity.class));
+                    finish();
+                })
+                .show();
     }
 
     private void saveAppointment(String carModel, String yearModel, String fuelType,
-                                  String concerns, String notes, String serviceName,
-                                  String plate, String date, String time, double total) {
+                                 String concerns, String notes, String serviceName,
+                                 String plate, String date, String time, double total) {
         SessionManager session = new SessionManager(this);
         DatabaseHelper  db     = new DatabaseHelper(this);
 
@@ -578,8 +578,33 @@ public class BookActivity extends AppCompatActivity {
         appt.status        = "pending";
         appt.rating        = (int) ratingBar.getRating();
 
+        // Stage 3: populate customerName from session so it appears in the
+        // admin notification title and body.  The field is already declared in
+        // the Appointment model but was never set here before the DB insert.
+        String fullName = session.getFullName();
+        appt.customerName = (fullName != null && !fullName.trim().isEmpty())
+                ? fullName.trim() : "Customer #" + appt.userId;
+
         long id = db.insertAppointment(appt);
         if (id > 0) {
+            appt.id = (int) id;   // populate ID so notification can reference it
+
+            // ── Notify the admin of the new pending booking ──────────────────
+            // 1. In-app notification → admin dashboard badge
+            db.insertAdminNotification(appt.id,
+                    "New Booking — " + appt.customerName + " (#" + appt.id + ")",
+                    "A new appointment request is waiting for your review.\n\n"
+                            + "Customer: " + appt.customerName + "\n"
+                            + "Service : " + (appt.serviceName != null ? appt.serviceName : "N/A") + "\n"
+                            + "Date    : " + (appt.date        != null ? appt.date        : "N/A") + "\n"
+                            + "Time    : " + (appt.time        != null ? appt.time        : "N/A") + "\n"
+                            + "Plate   : " + (appt.carPlate    != null ? appt.carPlate    : "N/A") + "\n"
+                            + String.format("Total   : \u20b1%.2f", appt.totalPrice));
+
+            // 2. Android push → admin device (heads-up)
+            com.maestro.autoworks.utils.NotificationHelper.postNewBookingToAdmin(this, appt);
+            // ─────────────────────────────────────────────────────────────────
+
             // Remember the plate for next time (helps existing accounts with null DB plate)
             savePlateToPrefs(appt.userId, plate);
             showBookingSuccessDialog();

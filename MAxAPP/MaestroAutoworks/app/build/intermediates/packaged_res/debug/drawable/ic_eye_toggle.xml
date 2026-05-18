@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ic_eye_toggle.xml
+    ─────────────────────────────────────────────────────────────────────────
+    Eye icon used for the password-visibility toggle button in LoginActivity.
+    Toggled in code: when password is hidden show the open-eye path;
+    when visible, swap src to ic_eye_off (or tint changes — see LoginActivity).
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Eye outline -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#888888"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M1,12 C1,12 5,5 12,5 C19,5 23,12 23,12 C23,12 19,19 12,19 C5,19 1,12 1,12 Z" />
+
+    <!-- Pupil -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#888888"
+        android:strokeWidth="1.8"
+        android:pathData="M12,9 A3,3 0 1,1 11.99,9 Z" />
+
+</vector>

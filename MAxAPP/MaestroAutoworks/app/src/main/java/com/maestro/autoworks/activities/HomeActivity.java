@@ -9,6 +9,8 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.adapters.AppointmentAdapter;
@@ -989,18 +991,18 @@ public class HomeActivity extends AppCompatActivity {
         loadAppointmentsIntoPanel();
     }
 
-    /** Injects a real ListView into panelAppointments (replaces static cards). */
+    /** Injects a real RecyclerView into panelAppointments (replaces static cards). */
     private void loadAppointmentsIntoPanel() {
-        // Tag the dynamic ListView so we don't add it twice
+        // Tag the dynamic RecyclerView so we don't add it twice
         final String TAG_LISTVIEW = "dynamic_appt_list";
 
         LinearLayout panelLL = (LinearLayout) panelAppointments;
 
-        // Check if we already added the dynamic ListView
+        // Check if we already added the dynamic RecyclerView
         View existingList = panelLL.findViewWithTag(TAG_LISTVIEW);
         if (existingList != null) {
             // Already inserted — just refresh the adapter
-            refreshAppointmentList((ListView) existingList);
+            refreshAppointmentList((RecyclerView) existingList);
             return;
         }
 
@@ -1021,11 +1023,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        // Create and add a dynamic ListView
-        ListView listView = new ListView(this);
+        // Create and add a dynamic RecyclerView
+        RecyclerView listView = new RecyclerView(this);
         listView.setTag(TAG_LISTVIEW);
-        listView.setDivider(null);
-        listView.setDividerHeight(0);
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        listView.setNestedScrollingEnabled(false); // outer NestedScrollView handles scrolling
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1039,7 +1041,7 @@ public class HomeActivity extends AppCompatActivity {
         refreshAppointmentList(listView);
     }
 
-    private void refreshAppointmentList(ListView listView) {
+    private void refreshAppointmentList(RecyclerView listView) {
         List<Appointment> appointments = db.getAppointmentsByUser(session.getUserId());
         TextView tvEmpty = panelAppointments.findViewById(R.id.tvEmpty);
 
@@ -1049,30 +1051,10 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             if (tvEmpty != null) tvEmpty.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
-            com.maestro.autoworks.adapters.AppointmentAdapter adapter =
-                    new com.maestro.autoworks.adapters.AppointmentAdapter(this, appointments);
+            AppointmentAdapter adapter =
+                    new AppointmentAdapter(this, appointments);
             listView.setAdapter(adapter);
-            // Make ListView show all rows without internal scrolling
-            setListViewHeightBasedOnItems(listView);
         }
-    }
-
-    /** Expands ListView to show all rows (the outer NestedScrollView handles scrolling). */
-    private void setListViewHeightBasedOnItems(ListView lv) {
-        ListAdapter adapter = lv.getAdapter();
-        if (adapter == null) return;
-        int totalHeight = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View item = adapter.getView(i, null, lv);
-            item.measure(
-                    View.MeasureSpec.makeMeasureSpec(lv.getWidth(), View.MeasureSpec.AT_MOST),
-                    View.MeasureSpec.UNSPECIFIED);
-            totalHeight += item.getMeasuredHeight();
-        }
-        android.view.ViewGroup.LayoutParams params = lv.getLayoutParams();
-        params.height = totalHeight + (lv.getDividerHeight() * (adapter.getCount() - 1));
-        lv.setLayoutParams(params);
-        lv.requestLayout();
     }
 
     private void refreshNotifBadge() {

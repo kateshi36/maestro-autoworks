@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.adapters.AdminAppointmentAdapter;
+import com.maestro.autoworks.adapters.VerificationAdapter;
 import com.maestro.autoworks.db.DatabaseHelper;
 import com.maestro.autoworks.db.ServiceData;
 import com.maestro.autoworks.db.SessionManager;
@@ -56,8 +57,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private DatabaseHelper db;
     private SessionManager session;
 
+    /** Cached admin user ID — resolved once in onCreate via the DB, used for notification badge. */
+    private int adminUserId = -1;
+
     // Panels
-    private View panelDashboard, panelAppointments, panelServices, panelReports, panelPms;
+    private View panelDashboard, panelAppointments, panelServices, panelReports, panelPms,
+            panelVerifications;
     private DrawerLayout drawerLayout;
 
     // Panel 1 – Dashboard
@@ -92,6 +97,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private String pmsStatusFilter = "all";
     private String pmsSearchQuery  = "";
 
+    // Panel 6 – Verifications
+    private RecyclerView rvVerifications;
+    private TextView tvNoVerifications;
+    private TextView tvVerifPendingCount;
+    private boolean verifShowAll = false;
+
     private int currentPanel = 1;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -102,6 +113,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         db      = new DatabaseHelper(this);
         session = new SessionManager(this);
+
+        // Resolve the admin's user-table row ID once, for notification badge queries.
+        adminUserId = db.getAdminUserId();
+        if (adminUserId == -1) adminUserId = session.getUserId(); // fallback to session
 
         if (!session.isAdmin()) {
             Toast.makeText(this, "Access denied.", Toast.LENGTH_SHORT).show();
@@ -127,6 +142,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         findViewById(R.id.btnHamburger).setOnClickListener(
                 v -> drawerLayout.openDrawer(GravityCompat.START));
 
+        // Bell always opens the admin notification dialog, regardless of badge count
+        findViewById(R.id.btnNotifications).setOnClickListener(
+                v -> openAdminNotificationsDialog());
+
         showPanel(1);
     }
 
@@ -134,6 +153,29 @@ public class AdminDashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         refreshCurrentPanel();
+        refreshAdminNotifBadge();
+    }
+
+    /**
+     * Refreshes the pending-appointment badge visible in the drawer / hamburger area.
+     * Shows the count of unread admin notifications so the admin always sees the latest
+     * number when returning to the screen — even after acting on a booking elsewhere.
+     */
+    private void refreshAdminNotifBadge() {
+        if (adminUserId == -1) return;
+        int unread = db.countUnreadNotifications(adminUserId);
+        // tvAdminNotifBadge is an optional overlay TextView on the hamburger button.
+        // If the layout doesn't include it yet, this block is a safe no-op.
+        View badge = findViewById(R.id.tvAdminNotifBadge);
+        if (badge instanceof TextView) {
+            if (unread > 0) {
+                ((TextView) badge).setText(unread > 99 ? "99+" : String.valueOf(unread));
+                badge.setVisibility(View.VISIBLE);
+            } else {
+                badge.setVisibility(View.GONE);
+            }
+            // Tap target is the bell (btnNotifications); badge is visual only.
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -145,6 +187,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         panelServices     = findViewById(R.id.panelServices);
         panelReports      = findViewById(R.id.panelReports);
         panelPms          = findViewById(R.id.panelPms);
+        panelVerifications = findViewById(R.id.panelVerifications);
 
         // Dashboard
         tvStatTotal          = findViewById(R.id.tvStatTotal);
@@ -217,6 +260,18 @@ public class AdminDashboardActivity extends AppCompatActivity {
         // PMS add — not applicable here (appointments come from booking flow)
         findViewById(R.id.btnAddPmsRecord).setOnClickListener(v ->
                 Toast.makeText(this, "Appointments are added via the customer booking flow.", Toast.LENGTH_SHORT).show());
+
+        // Panel 6 – Verifications
+        rvVerifications    = findViewById(R.id.rvVerifications);
+        tvNoVerifications  = findViewById(R.id.tvNoVerifications);
+        tvVerifPendingCount = findViewById(R.id.tvVerifPendingCount);
+
+        findViewById(R.id.verifChipPending).setOnClickListener(v -> {
+            verifShowAll = false; updateVerifChips(); loadPanelVerifications();
+        });
+        findViewById(R.id.verifChipAll).setOnClickListener(v -> {
+            verifShowAll = true; updateVerifChips(); loadPanelVerifications();
+        });
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -226,6 +281,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         findViewById(R.id.navAdminServices).setOnClickListener(v     -> showPanel(3));
         findViewById(R.id.navAdminReports).setOnClickListener(v      -> showPanel(4));
         findViewById(R.id.navAdminPms).setOnClickListener(v          -> showPanel(5));
+        findViewById(R.id.navAdminVerif).setOnClickListener(v        -> showPanel(6));
     }
 
     private void wireDrawer() {
@@ -239,6 +295,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START); showPanel(4); });
         findViewById(R.id.drawerNavPms).setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START); showPanel(5); });
+        findViewById(R.id.drawerNavVerif).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START); showPanel(6); });
         findViewById(R.id.drawerNavLogout).setOnClickListener(v -> {
             session.logout();
             Intent i = new Intent(this, MainActivity.class);
@@ -255,6 +313,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         panelServices.setVisibility(panel == 3 ? View.VISIBLE : View.GONE);
         panelReports.setVisibility(panel == 4 ? View.VISIBLE : View.GONE);
         panelPms.setVisibility(panel == 5 ? View.VISIBLE : View.GONE);
+        panelVerifications.setVisibility(panel == 6 ? View.VISIBLE : View.GONE);
         updateBottomNavHighlight(panel);
         updateTopbarTitle(panel);
         refreshCurrentPanel();
@@ -262,18 +321,20 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void refreshCurrentPanel() {
         switch (currentPanel) {
-            case 1: loadPanelDashboard();    break;
-            case 2: loadPanelAppointments(); break;
-            case 3: loadPanelServices();     break;
-            case 4: loadPanelReports();      break;
-            case 5: loadPanelPms();          break;
+            case 1: loadPanelDashboard();      break;
+            case 2: loadPanelAppointments();   break;
+            case 3: loadPanelServices();       break;
+            case 4: loadPanelReports();        break;
+            case 5: loadPanelPms();            break;
+            case 6: loadPanelVerifications();  break;
         }
     }
 
     private void updateBottomNavHighlight(int active) {
         int[] labelIds = {
                 R.id.navAdminDashboardLabel, R.id.navAdminAppointmentsLabel,
-                R.id.navAdminServicesLabel,  R.id.navAdminReportsLabel, R.id.navAdminPmsLabel
+                R.id.navAdminServicesLabel,  R.id.navAdminReportsLabel,
+                R.id.navAdminPmsLabel,       R.id.navAdminVerifLabel
         };
         for (int i = 0; i < labelIds.length; i++) {
             ((TextView) findViewById(labelIds[i])).setTextColor(
@@ -292,7 +353,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         } else {
             logoGroup.setVisibility(View.GONE);
             tvTitle.setVisibility(View.VISIBLE);
-            String[] titles = {"", "Dashboard", "Appointments", "Services", "Reports", "Repair Tracker"};
+            String[] titles = {"", "Dashboard", "Appointments", "Services", "Reports",
+                    "Repair Tracker", "Verifications"};
             tvTitle.setText(titles[panel]);
         }
     }
@@ -514,16 +576,39 @@ public class AdminDashboardActivity extends AppCompatActivity {
                                                 }
                                             });
 
-                                    // 2. In-app notification (AppointmentsActivity bell)
+                                    // 2. In-app notification → customer (AppointmentsActivity bell)
                                     db.insertNotification(a.userId, a.id,
                                             "Booking Confirmed — Receipt #" + a.id,
                                             buildApptReceiptMessage(a));
 
-                                    // 3. Android push notification (status bar)
+                                    // 3. Android push → customer (status bar)
                                     NotificationHelper.postBookingConfirmed(this, a);
+
+                                    // 4. In-app notification → admin (dashboard badge)
+                                    db.insertAdminNotification(a.id,
+                                            "Booking Confirmed — #" + a.id,
+                                            "You confirmed appointment #" + a.id
+                                                    + " for " + nullSafeStr(a.serviceName)
+                                                    + " on " + nullSafeStr(a.date) + ".");
                                 }
+                            } else if ("declined".equals(newStatus)) {
+                                a.status    = newStatus;
+                                a.adminNote = note.isEmpty() ? null : note;
+
+                                // In-app notification → admin (dashboard badge)
+                                db.insertAdminNotification(a.id,
+                                        "Appointment Declined — #" + a.id,
+                                        "You declined appointment #" + a.id
+                                                + " for " + nullSafeStr(a.serviceName)
+                                                + " on " + nullSafeStr(a.date) + ".");
+
+                                // Android push → admin (status bar)
+                                NotificationHelper.postStatusChangeToAdmin(this, a, newStatus);
                             }
                             // ────────────────────────────────────────────────
+
+                            // Refresh the notification badge so the count is current
+                            refreshAdminNotifBadge();
 
                             Toast.makeText(this,
                                     "Appointment " + newStatus + ".",
@@ -537,15 +622,15 @@ public class AdminDashboardActivity extends AppCompatActivity {
     /** Builds the in-app notification body shown in AppointmentsActivity. */
     private String buildApptReceiptMessage(Appointment a) {
         return  "Your booking has been confirmed!\n\n"
-              + "Receipt No. : #" + a.id                       + "\n"
-              + "Service     : " + nullSafeStr(a.serviceName)  + "\n"
-              + "Date        : " + nullSafeStr(a.date)          + "\n"
-              + "Time        : " + nullSafeStr(a.time)          + "\n"
-              + "Plate No.   : " + nullSafeStr(a.carPlate)      + "\n"
-              + String.format("Total       : \u20b1%.2f", a.totalPrice)
-              + (a.adminNote != null && !a.adminNote.isEmpty()
-                    ? "\n\nAdmin Note  : " + a.adminNote : "")
-              + "\n\nA receipt has also been sent to your registered email.";
+                + "Receipt No. : #" + a.id                       + "\n"
+                + "Service     : " + nullSafeStr(a.serviceName)  + "\n"
+                + "Date        : " + nullSafeStr(a.date)          + "\n"
+                + "Time        : " + nullSafeStr(a.time)          + "\n"
+                + "Plate No.   : " + nullSafeStr(a.carPlate)      + "\n"
+                + String.format("Total       : \u20b1%.2f", a.totalPrice)
+                + (a.adminNote != null && !a.adminNote.isEmpty()
+                ? "\n\nAdmin Note  : " + a.adminNote : "")
+                + "\n\nA receipt has also been sent to your registered email.";
     }
 
     private String nullSafeStr(String s) {
@@ -911,7 +996,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
             String q = pmsSearchQuery.toLowerCase(Locale.getDefault());
             all = all.stream().filter(a ->
                     (a.carPlate    != null && a.carPlate.toLowerCase(Locale.getDefault()).contains(q)) ||
-                    (a.customerName != null && a.customerName.toLowerCase(Locale.getDefault()).contains(q))
+                            (a.customerName != null && a.customerName.toLowerCase(Locale.getDefault()).contains(q))
             ).collect(Collectors.toList());
         }
 
@@ -1203,6 +1288,139 @@ public class AdminDashboardActivity extends AppCompatActivity {
                     loadPanelPms();
                 })
                 .setNegativeButton("Cancel", null).show();
+    }
+
+    // =========================================================================
+    // PANEL 6 — VERIFICATIONS
+    // =========================================================================
+    private void loadPanelVerifications() {
+        // Pending count badge (always reflects true pending count)
+        int pendingCount = db.countPendingVerifications();
+        if (tvVerifPendingCount != null) tvVerifPendingCount.setText(String.valueOf(pendingCount));
+
+        // Bottom nav badge
+        View navBadge = findViewById(R.id.navAdminVerifBadge);
+        if (navBadge instanceof TextView) {
+            if (pendingCount > 0) {
+                ((TextView) navBadge).setText(pendingCount > 99 ? "99+" : String.valueOf(pendingCount));
+                navBadge.setVisibility(View.VISIBLE);
+            } else {
+                navBadge.setVisibility(View.GONE);
+            }
+        }
+
+        // Load list
+        // Both methods now exclude the heavy image columns from the list query
+        // to prevent Android's 2 MB CursorWindow limit from silently nulling
+        // Base64 image strings (the "Image unavailable" bug).
+        // Images are loaded lazily per-user when the review dialog is opened.
+        List<User> users;
+        if (verifShowAll) {
+            users = db.getAllVerificationUsers();
+        } else {
+            users = db.getPendingVerificationUsers();
+        }
+
+        if (users.isEmpty()) {
+            rvVerifications.setVisibility(View.GONE);
+            tvNoVerifications.setVisibility(View.VISIBLE);
+        } else {
+            tvNoVerifications.setVisibility(View.GONE);
+            rvVerifications.setVisibility(View.VISIBLE);
+            rvVerifications.setLayoutManager(new LinearLayoutManager(this));
+            rvVerifications.setAdapter(new VerificationAdapter(
+                    this, users, db, this::loadPanelVerifications));
+        }
+    }
+
+    private void updateVerifChips() {
+        TextView chipPending = findViewById(R.id.verifChipPending);
+        TextView chipAll     = findViewById(R.id.verifChipAll);
+        if (verifShowAll) {
+            chipAll.setBackgroundColor(getResources().getColor(R.color.yellow, null));
+            chipAll.setTextColor(getResources().getColor(R.color.black, null));
+            chipAll.setTypeface(null, android.graphics.Typeface.BOLD);
+            chipPending.setBackgroundResource(R.drawable.bg_form_card);
+            chipPending.setTextColor(getResources().getColor(R.color.white, null));
+            chipPending.setTypeface(null, android.graphics.Typeface.NORMAL);
+        } else {
+            chipPending.setBackgroundColor(getResources().getColor(R.color.yellow, null));
+            chipPending.setTextColor(getResources().getColor(R.color.black, null));
+            chipPending.setTypeface(null, android.graphics.Typeface.BOLD);
+            chipAll.setBackgroundResource(R.drawable.bg_form_card);
+            chipAll.setTextColor(getResources().getColor(R.color.white, null));
+            chipAll.setTypeface(null, android.graphics.Typeface.NORMAL);
+        }
+    }
+
+    // =========================================================================
+    // ADMIN NOTIFICATION DIALOG
+    // =========================================================================
+
+    /**
+     * Opens a scrollable list dialog showing all in-app notifications addressed to
+     * the admin account.  Each row is prefixed with a type icon:
+     *   👤  Registration alert  (apptId == 0)
+     *   📅  Booking / appointment event  (apptId > 0)
+     * Unread items are additionally prefixed with a blue dot (🔵).
+     * Tapping a row opens the full message and marks it read.
+     * "Mark All Read" clears the badge instantly.
+     */
+    private void openAdminNotificationsDialog() {
+        if (adminUserId == -1) return;
+
+        List<DatabaseHelper.AppNotification> notifications =
+                db.getNotificationsForUser(adminUserId);
+
+        if (notifications.isEmpty()) {
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("Admin Notifications")
+                    .setMessage("No notifications yet.")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
+        String[] items = new String[notifications.size()];
+        for (int i = 0; i < notifications.size(); i++) {
+            DatabaseHelper.AppNotification n = notifications.get(i);
+            // Type icon: registration (apptId == 0) vs booking/appointment (apptId > 0)
+            String typeIcon = (n.apptId == 0) ? "\uD83D\uDC64 " : "\uD83D\uDCC5 ";
+            // Unread dot prepended before type icon
+            String unreadDot = n.isRead ? "   " : "\uD83D\uDD35 ";
+            items[i] = unreadDot + typeIcon + n.title + "\n      " + n.createdAt;
+        }
+
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Admin Notifications")
+                .setItems(items, (dialog, which) ->
+                        openAdminNotificationDetail(notifications.get(which)))
+                .setNeutralButton("Mark All Read", (d, w) -> {
+                    db.markAllNotificationsRead(adminUserId);
+                    refreshAdminNotifBadge();
+                })
+                .setNegativeButton("Close", null)
+                .show();
+    }
+
+    /**
+     * Opens a detail dialog for a single admin notification, marks it read,
+     * and refreshes the badge count.
+     *
+     * @param notif The notification to display.
+     */
+    private void openAdminNotificationDetail(DatabaseHelper.AppNotification notif) {
+        db.markNotificationRead(notif.id);
+        refreshAdminNotifBadge();
+
+        // Type label for the dialog title prefix
+        String typeLabel = (notif.apptId == 0) ? "\uD83D\uDC64 " : "\uD83D\uDCC5 ";
+
+        new android.app.AlertDialog.Builder(this)
+                .setTitle(typeLabel + notif.title)
+                .setMessage(notif.message)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     // =========================================================================

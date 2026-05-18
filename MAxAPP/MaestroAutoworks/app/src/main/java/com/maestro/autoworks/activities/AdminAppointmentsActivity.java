@@ -66,7 +66,15 @@ public class AdminAppointmentsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() { super.onResume(); loadAppointments(); }
+    protected void onResume() {
+        super.onResume();
+        loadAppointments();
+        // Stage 3: when the admin opens the appointments screen they are
+        // actively reviewing bookings — mark all admin notifications as read
+        // so the dashboard badge count is accurate when they navigate back.
+        int adminId = db.getAdminUserId();
+        if (adminId != -1) db.markAllNotificationsRead(adminId);
+    }
 
     private void loadAppointments() {
         int pos = spinnerStatus.getSelectedItemPosition();

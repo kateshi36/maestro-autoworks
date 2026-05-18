@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    dialog_document_review.xml  —  Stage 1C
+    ─────────────────────────────────────────────────────────────────────────
+    Full-screen-style dialog for reviewing a single user's uploaded documents.
+
+    Layout anatomy (top → bottom, scrollable):
+
+      ┌─────────────────────────────────────────────────────────────┐
+      │  ✕   Alex Bautista  ·  ABC 1234               [PENDING]    │  ← Header
+      ├─────────────────────────────────────────────────────────────┤
+      │  ┌──────────────────────────────────────────────────────┐  │
+      │  │  🪪  Driver's License                  [● uploaded]  │  │  ← Card 1
+      │  │     [thumbnail]                                       │  │
+      │  └──────────────────────────────────────────────────────┘  │
+      │  ┌──────────────────────────────────────────────────────┐  │
+      │  │  🧾  Official Receipt                  [● uploaded]  │  │  ← Card 2
+      │  │     [thumbnail]                                       │  │
+      │  └──────────────────────────────────────────────────────┘  │
+      │  ┌──────────────────────────────────────────────────────┐  │
+      │  │  📄  Certificate of Registration       [– missing]   │  │  ← Card 3
+      │  │     (no image)                                        │  │
+      │  └──────────────────────────────────────────────────────┘  │
+      ├─────────────────────────────────────────────────────────────┤
+      │  Admin Note (optional rejection reason)                     │  ← Note field
+      ├─────────────────────────────────────────────────────────────┤
+      │          [  ✗  Reject  ]       [  ✓  Verify  ]             │  ← Actions
+      └─────────────────────────────────────────────────────────────┘
+
+    View IDs
+    ─────────────────────────────────────────────────────────────────
+      tvReviewName         — "FirstName LastName"
+      tvReviewPlate        — "ABC 1234" (or "No plate on file")
+      tvReviewStatus       — status pill, background + text swapped by code
+
+      Card 1 — Driver's License
+        tvReviewDlLabel      — "Driver's License"
+        tvReviewDlBadge      — "● uploaded" / "– missing"
+        ivReviewDlThumb      — ImageView for DL photo
+        tvReviewDlEmpty      — "No image uploaded" placeholder
+
+      Card 2 — Official Receipt
+        tvReviewOrLabel
+        tvReviewOrBadge
+        ivReviewOrThumb
+        tvReviewOrEmpty
+
+      Card 3 — Certificate of Registration
+        tvReviewCrLabel
+        tvReviewCrBadge
+        ivReviewCrThumb
+        tvReviewCrEmpty
+
+      etReviewAdminNote    — optional rejection / note text
+      btnReviewReject      — red "✗ Reject" button
+      btnReviewVerify      — green "✓ Verify" button
+    ─────────────────────────────────────────────────────────────────
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/black_card">
+
+    <!-- ═══ HEADER ═══ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/black"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp">
+
+        <!-- User full name + plate (stacked, weight=1) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvReviewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvReviewPlate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/muted"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Status pill -->
+        <TextView
+            android:id="@+id/tvReviewStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.06"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_status_pill_pending"
+            android:textColor="@color/yellow" />
+
+    </LinearLayout>
+    <!-- end Header -->
+
+    <!-- ═══ Thin divider below header ═══ -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border" />
+
+    <!-- ═══ SCROLLABLE BODY ═══ -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- ─── SECTION LABEL ─── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUBMITTED DOCUMENTS"
+                android:textColor="@color/yellow"
+                android:textSize="9sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <!-- ══════════════════════════════
+                 CARD 1 — Driver's License
+            ══════════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_appt_card"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+
+                <!-- Label row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/tvReviewDlLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🪪  Driver&#8217;s License"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <!-- Badge: "● uploaded" (green) or "– missing" (muted) -->
+                    <TextView
+                        android:id="@+id/tvReviewDlBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_doc_badge"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Thumbnail — VISIBLE when DL path is set -->
+                <ImageView
+                    android:id="@+id/ivReviewDlThumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/black_input"
+                    android:visibility="gone"
+                    android:contentDescription="Driver's License photo" />
+
+                <!-- Empty state — VISIBLE when DL path is null/empty -->
+                <TextView
+                    android:id="@+id/tvReviewDlEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:text="No image uploaded"
+                    android:textColor="@color/muted2"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:background="@color/black_input"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+            <!-- end Card 1 -->
+
+            <!-- ══════════════════════════════
+                 CARD 2 — Official Receipt
+            ══════════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_appt_card"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/tvReviewOrLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🧾  Official Receipt"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvReviewOrBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_doc_badge"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivReviewOrThumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/black_input"
+                    android:visibility="gone"
+                    android:contentDescription="Official Receipt photo" />
+
+                <TextView
+                    android:id="@+id/tvReviewOrEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:text="No image uploaded"
+                    android:textColor="@color/muted2"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:background="@color/black_input"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+            <!-- end Card 2 -->
+
+            <!-- ══════════════════════════════
+                 CARD 3 — Certificate of Registration
+            ══════════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_appt_card"
+                android:padding="14dp"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/tvReviewCrLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📄  Certificate of Registration"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvReviewCrBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_doc_badge"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivReviewCrThumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/black_input"
+                    android:visibility="gone"
+                    android:contentDescription="Certificate of Registration photo" />
+
+                <TextView
+                    android:id="@+id/tvReviewCrEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:text="No image uploaded"
+                    android:textColor="@color/muted2"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:background="@color/black_input"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+            <!-- end Card 3 -->
+
+            <!-- ─── SECTION LABEL — Admin Note ─── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADMIN NOTE  (shown to user on rejection)"
+                android:textColor="@color/yellow"
+                android:textSize="9sp"
+                android:letterSpacing="0.15"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Admin note EditText -->
+            <EditText
+                android:id="@+id/etReviewAdminNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="3"
+                android:maxLines="6"
+                android:hint="Optional — e.g. ID photo is blurry, please re-upload…"
+                android:textColor="@color/white"
+                android:textColorHint="@color/muted2"
+                android:textSize="13sp"
+                android:background="@drawable/bg_input"
+                android:padding="12dp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:layout_marginBottom="20dp" />
+
+            <!-- ─── ACTION BUTTONS ─── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <!-- Reject (red, outlined ghost) -->
+                <Button
+                    android:id="@+id/btnReviewReject"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="✗  Reject"
+                    android:textColor="#FFE05252"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="#3AE05252"
+                    android:layout_marginEnd="8dp"
+                    android:stateListAnimator="@null" />
+
+                <!-- Verify (green, filled) -->
+                <Button
+                    android:id="@+id/btnReviewVerify"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="✓  Verify"
+                    android:textColor="#FF0A0A0A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="#FF4CAF7D"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+    <!-- end scrollable body -->
+
+</LinearLayout>

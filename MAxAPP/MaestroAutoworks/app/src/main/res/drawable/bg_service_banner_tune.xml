@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_service_banner_tune.xml
+    ─────────────────────────────────────────────────────────────────────────
+    Banner card background for the "Engine Tune-Up" service tile.
+
+    Gradient: left→right, deep navy → mid electric blue
+      #001225  very deep navy (left edge)
+      #001D3D  dark steel blue (centre)
+      #003366  rich blue (right edge)
+
+    The gradient conveys precision/engineering energy and pairs cleanly
+    with @color/blue (#2196F3) text/icons placed on top.
+    Corner: 16dp — matches service card radius
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="0"
+        android:startColor="#001225"
+        android:centerColor="#001D3D"
+        android:endColor="#003366" />
+    <stroke android:width="1dp" android:color="#0A3D6B" />
+    <corners android:radius="16dp" />
+</shape>

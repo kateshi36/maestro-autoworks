@@ -14,12 +14,13 @@ import java.util.List;
 
 /**
  * SQLite helper — stores users and appointments locally.
- * v2: added role column to users; admin queries for all appointments.
+ * v2:  added role column to users; admin queries for all appointments.
+ * v11: added verification_status + admin_rejection_note to users table.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "maestro_autoworks.db";
-    private static final int    DB_VERSION = 10;
+    private static final int    DB_VERSION = 11;
 
     // Tables
     public static final String TABLE_USERS        = "users";
@@ -51,6 +52,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_DL_UPLOAD     = "dl_upload_path";  // gallery-picked DL image
     public static final String COL_OR_IMAGE      = "or_image_path";   // Official Receipt upload
     public static final String COL_CR_IMAGE      = "cr_image_path";   // Certificate of Registration upload
+    // Document verification fields (added in DB_VERSION 11)
+    /** One of: "pending" | "verified" | "rejected". Default "pending" for new customers. */
+    public static final String COL_VERIFICATION_STATUS = "verification_status";
+    /** Optional note written by the admin when rejecting a user's documents. */
+    public static final String COL_ADMIN_REJECTION_NOTE = "admin_rejection_note";
 
     // Appointments columns
     public static final String COL_APPT_ID         = "id";
@@ -95,7 +101,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COL_VEHICLE_MODEL + " TEXT, " +
                     COL_DL_UPLOAD     + " TEXT, " +
                     COL_OR_IMAGE      + " TEXT, " +
-                    COL_CR_IMAGE      + " TEXT)";
+                    COL_CR_IMAGE      + " TEXT, " +
+                    COL_VERIFICATION_STATUS    + " TEXT NOT NULL DEFAULT 'pending', " +
+                    COL_ADMIN_REJECTION_NOTE   + " TEXT)";
 
     private static final String CREATE_APPOINTMENTS =
             "CREATE TABLE " + TABLE_APPOINTMENTS + " (" +
@@ -227,6 +235,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 10) {
             // In-app notifications table (Step 5 — admin confirmation receipt)
             db.execSQL(CREATE_NOTIFICATIONS);
+        }
+        if (oldVersion < 11) {
+            // Document verification status (Stage 1 — admin cross-checking tab)
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN "
+                    + COL_VERIFICATION_STATUS  + " TEXT NOT NULL DEFAULT 'pending'"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN "
+                    + COL_ADMIN_REJECTION_NOTE + " TEXT"); } catch (Exception ignored) {}
         }
     }
 
@@ -377,6 +392,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (bdIdx >= 0) user.birthdate = c.getString(bdIdx);
         int gnIdx = c.getColumnIndex(COL_GENDER);
         if (gnIdx >= 0) user.gender = c.getString(gnIdx);
+        // Document verification fields (DB_VERSION 11)
+        int vsIdx = c.getColumnIndex(COL_VERIFICATION_STATUS);
+        user.verificationStatus   = (vsIdx >= 0 && c.getString(vsIdx) != null)
+                ? c.getString(vsIdx) : "pending";
+        int rnIdx = c.getColumnIndex(COL_ADMIN_REJECTION_NOTE);
+        if (rnIdx >= 0) user.adminRejectionNote = c.getString(rnIdx);
         return user;
     }
 
@@ -641,6 +662,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // ── IN-APP NOTIFICATION OPERATIONS ───────────────────────────────────────
 
     /**
+     * Returns the user ID of the first admin account, or -1 if none exists.
+     * Used so notification callers do not need to hard-code the admin row ID.
+     */
+    public int getAdminUserId() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_USERS,
+                new String[]{COL_ID},
+                COL_ROLE + "=?", new String[]{"admin"},
+                null, null, COL_ID + " ASC", "1");
+        int adminId = -1;
+        if (c.moveToFirst()) adminId = c.getInt(0);
+        c.close();
+        db.close();
+        return adminId;
+    }
+
+    /**
+     * Convenience wrapper: inserts an in-app notification addressed to the
+     * admin account.  Safe to call from any thread; returns the inserted row
+     * ID, or -1 when no admin row exists or the insert fails.
+     *
+     * @param apptId   Related appointment ID (may be 0 if not applicable).
+     * @param title    Short notification title shown in the badge panel.
+     * @param message  Full body text.
+     */
+    public long insertAdminNotification(int apptId, String title, String message) {
+        int adminId = getAdminUserId();
+        if (adminId == -1) return -1;
+        return insertNotification(adminId, apptId, title, message);
+    }
+
+    /**
      * Inserts a new in-app notification for a specific user.
      *
      * @param userId    The customer's user ID.
@@ -695,7 +748,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(
                 "SELECT COUNT(*) FROM " + TABLE_NOTIFICATIONS +
-                " WHERE " + COL_NOTIF_USER_ID + "=? AND " + COL_NOTIF_IS_READ + "=0",
+                        " WHERE " + COL_NOTIF_USER_ID + "=? AND " + COL_NOTIF_IS_READ + "=0",
                 new String[]{String.valueOf(userId)});
         int count = c.moveToFirst() ? c.getInt(0) : 0;
         c.close(); db.close();
@@ -731,5 +784,184 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public String  message;
         public boolean isRead;
         public String  createdAt;
+    }
+
+    // ── DOCUMENT VERIFICATION OPERATIONS (Stage 1) ───────────────────────────
+
+    /**
+     * Returns every customer whose {@code verification_status} is {@code "pending"}
+     * AND who has uploaded at least one document (DL, OR, or CR).
+     *
+     * <p>The admin uses this list to decide whether to verify or reject the account.
+     * Admin rows are excluded via {@code role = 'customer'}.
+     *
+     * @return List of {@link User} objects; empty list (never null) if none pending.
+     */
+    public List<User> getPendingVerificationUsers() {
+        return queryVerificationUsers(" AND " + COL_VERIFICATION_STATUS + " = 'pending'");
+    }
+
+    /**
+     * Returns every customer who has uploaded at least one document,
+     * regardless of verification_status.  Used by the admin "All" chip.
+     */
+    public List<User> getAllVerificationUsers() {
+        return queryVerificationUsers("");
+    }
+
+    /**
+     * Shared query for both pending-only and all-customers verification lists.
+     *
+     * <p><b>IMPORTANT — CursorWindow safety:</b> Android's {@code CursorWindow}
+     * has a default 2 MB limit per row.  A single user row that carries three
+     * Base64-encoded JPEG images (~150 KB each after 800×800 compression) can
+     * easily exceed this, causing {@code getString()} to silently return
+     * {@code null} — which is exactly the "Image unavailable" bug.
+     *
+     * <p>To avoid the overflow we intentionally <em>exclude</em> the three
+     * heavyweight image columns ({@code dl_upload_path}, {@code or_image_path},
+     * {@code cr_image_path}) from the list query.  The admin's review dialog
+     * fetches images lazily via {@link #getUserDocumentImages(int)} only for the
+     * single row the admin has tapped — there is no overflow risk there because
+     * the result is always exactly one row.
+     */
+    private List<User> queryVerificationUsers(String extraWhere) {
+        List<User> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Columns selected for the list — heavy image columns deliberately excluded
+        String[] columns = {
+                COL_ID, COL_FIRST_NAME, COL_LAST_NAME, COL_USERNAME, COL_EMAIL,
+                COL_PHONE, COL_ROLE, COL_BIRTHDATE, COL_GENDER,
+                COL_LICENSE_PLATE, COL_MV_FILE_NO, COL_VEHICLE_MAKE, COL_VEHICLE_MODEL,
+                COL_VERIFICATION_STATUS, COL_ADMIN_REJECTION_NOTE,
+                // Include only a non-null check surrogate so the badge still works:
+                // We use a CASE expression via rawQuery below instead.
+        };
+
+        // Use rawQuery so we can include computed has_* columns without fetching raw BLOBs
+        String sql = "SELECT "
+                + COL_ID + ", " + COL_FIRST_NAME + ", " + COL_LAST_NAME + ", "
+                + COL_USERNAME + ", " + COL_EMAIL + ", " + COL_PHONE + ", "
+                + COL_ROLE + ", " + COL_BIRTHDATE + ", " + COL_GENDER + ", "
+                + COL_LICENSE_PLATE + ", " + COL_MV_FILE_NO + ", "
+                + COL_VEHICLE_MAKE + ", " + COL_VEHICLE_MODEL + ", "
+                + COL_VERIFICATION_STATUS + ", " + COL_ADMIN_REJECTION_NOTE + ", "
+                // Surrogate columns: 1 when the image column is non-null, 0 otherwise.
+                // These are tiny integers — safe for CursorWindow.
+                + "CASE WHEN " + COL_DL_UPLOAD + " IS NOT NULL THEN 1 ELSE 0 END AS has_dl, "
+                + "CASE WHEN " + COL_OR_IMAGE  + " IS NOT NULL THEN 1 ELSE 0 END AS has_or, "
+                + "CASE WHEN " + COL_CR_IMAGE  + " IS NOT NULL THEN 1 ELSE 0 END AS has_cr "
+                + "FROM " + TABLE_USERS
+                + " WHERE " + COL_ROLE + " = 'customer'"
+                + " AND (" + COL_DL_UPLOAD + " IS NOT NULL"
+                + "  OR "  + COL_OR_IMAGE  + " IS NOT NULL"
+                + "  OR "  + COL_CR_IMAGE  + " IS NOT NULL)"
+                + extraWhere
+                + " ORDER BY " + COL_ID + " DESC";
+
+        Cursor c = db.rawQuery(sql, null);
+        while (c.moveToNext()) {
+            User u = new User();
+            u.id        = c.getInt(c.getColumnIndexOrThrow(COL_ID));
+            u.firstName = c.getString(c.getColumnIndexOrThrow(COL_FIRST_NAME));
+            u.lastName  = c.getString(c.getColumnIndexOrThrow(COL_LAST_NAME));
+            u.username  = c.getString(c.getColumnIndexOrThrow(COL_USERNAME));
+            u.email     = c.getString(c.getColumnIndexOrThrow(COL_EMAIL));
+            u.phone     = c.getString(c.getColumnIndexOrThrow(COL_PHONE));
+            int plateIdx = c.getColumnIndex(COL_LICENSE_PLATE);
+            if (plateIdx >= 0) u.licensePlate = c.getString(plateIdx);
+            int vsIdx = c.getColumnIndex(COL_VERIFICATION_STATUS);
+            u.verificationStatus = (vsIdx >= 0 && c.getString(vsIdx) != null)
+                    ? c.getString(vsIdx) : "pending";
+            int rnIdx = c.getColumnIndex(COL_ADMIN_REJECTION_NOTE);
+            if (rnIdx >= 0) u.adminRejectionNote = c.getString(rnIdx);
+
+            // Use surrogate columns to populate the badge fields.
+            // A non-empty sentinel string signals "uploaded" to VerificationAdapter.bindDocBadge().
+            if (c.getInt(c.getColumnIndexOrThrow("has_dl")) == 1) u.dlUploadPath = "1";
+            if (c.getInt(c.getColumnIndexOrThrow("has_or")) == 1) u.orImagePath  = "1";
+            if (c.getInt(c.getColumnIndexOrThrow("has_cr")) == 1) u.crImagePath  = "1";
+
+            list.add(u);
+        }
+        c.close();
+        db.close();
+        return list;
+    }
+
+    /**
+     * Fetches only the three document image columns for a single user.
+     * Called lazily when the admin opens the review dialog so we never
+     * load more than one row's worth of image data at a time.
+     *
+     * @param userId The user's primary key.
+     * @return String array: [dlUploadPath, orImagePath, crImagePath].
+     *         Any element may be null if that document was not uploaded.
+     */
+    public String[] getUserDocumentImages(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_USERS,
+                new String[]{COL_DL_UPLOAD, COL_OR_IMAGE, COL_CR_IMAGE},
+                COL_ID + "=?", new String[]{String.valueOf(userId)},
+                null, null, null);
+        String[] images = {null, null, null};
+        if (c.moveToFirst()) {
+            images[0] = c.getString(0);
+            images[1] = c.getString(1);
+            images[2] = c.getString(2);
+        }
+        c.close();
+        db.close();
+        return images;
+    }
+
+    /**
+     * Updates the verification status of a user account and optionally stores
+     * an admin note explaining a rejection.
+     *
+     * <p>Call with {@code status = "verified"} to approve the account,
+     * or {@code status = "rejected"} with a non-null {@code adminNote} to explain
+     * why the documents were refused.
+     *
+     * @param userId    Primary key of the user to update.
+     * @param status    {@code "verified"} | {@code "rejected"} | {@code "pending"}
+     * @param adminNote Optional free-text reason (shown to the user). Pass {@code null}
+     *                  when approving or when no reason is provided.
+     * @return {@code true} if the row was updated; {@code false} if the user was not found.
+     */
+    public boolean updateVerificationStatus(int userId, String status, String adminNote) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_VERIFICATION_STATUS, status);
+        // Always write the note column — null clears a previous rejection note on re-verify
+        cv.put(COL_ADMIN_REJECTION_NOTE, adminNote);
+        int rows = db.update(TABLE_USERS, cv,
+                COL_ID + "=?", new String[]{String.valueOf(userId)});
+        db.close();
+        return rows > 0;
+    }
+
+    /**
+     * Returns the count of customer accounts with {@code verification_status = 'pending'}
+     * that have at least one uploaded document. Used to drive the badge on the
+     * "Verifications" tab chip in the admin dashboard.
+     *
+     * @return Count ≥ 0.
+     */
+    public int countPendingVerifications() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_USERS
+                        + " WHERE " + COL_ROLE + " = 'customer'"
+                        + " AND " + COL_VERIFICATION_STATUS + " = 'pending'"
+                        + " AND (" + COL_DL_UPLOAD + " IS NOT NULL"
+                        + "  OR "  + COL_OR_IMAGE  + " IS NOT NULL"
+                        + "  OR "  + COL_CR_IMAGE  + " IS NOT NULL)",
+                null);
+        int count = c.moveToFirst() ? c.getInt(0) : 0;
+        c.close();
+        db.close();
+        return count;
     }
 }

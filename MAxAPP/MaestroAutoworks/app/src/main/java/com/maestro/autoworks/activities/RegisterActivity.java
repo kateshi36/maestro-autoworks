@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.maestro.autoworks.utils.MediaPickerHelper;
+import com.maestro.autoworks.utils.NotificationHelper;
 
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.db.DatabaseHelper;
@@ -21,6 +22,11 @@ import com.maestro.autoworks.models.User;
 
 import com.maestro.autoworks.utils.DatePickerHelper;
 
+import android.util.Base64;
+import android.util.Log;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -77,10 +83,10 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView tvVehicleMakeError;
     private TextView tvVehicleModelError;
 
-    //   Document upload URI holders — stored as String paths for DB persistence
-    private android.net.Uri dlUploadUri;  // Driver's License gallery pick
-    private android.net.Uri orUploadUri;  // Official Receipt
-    private android.net.Uri crUploadUri;  // Certificate of Registration
+    //   Document images encoded to Base64 immediately on pick (URI valid at that moment)
+    private String dlBase64;   // Driver's License — encoded on pick
+    private String orBase64;   // Official Receipt  — encoded on pick
+    private String crBase64;   // Certificate of Registration — encoded on pick
 
     //   Upload status indicators (show thumbnail / "uploaded" label per document)
     private android.widget.ImageView imgDlPreview;
@@ -552,23 +558,40 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private final MediaPickerHelper dlPicker = new MediaPickerHelper(
             this, "DL",
-            (uri, path) -> applyDocUpload(DocTarget.DL, uri)
+            (uri, path) -> applyDocUpload(DocTarget.DL, uri, path)
     );
     private final MediaPickerHelper orPicker = new MediaPickerHelper(
             this, "OR",
-            (uri, path) -> applyDocUpload(DocTarget.OR, uri)
+            (uri, path) -> applyDocUpload(DocTarget.OR, uri, path)
     );
     private final MediaPickerHelper crPicker = new MediaPickerHelper(
             this, "CR",
-            (uri, path) -> applyDocUpload(DocTarget.CR, uri)
+            (uri, path) -> applyDocUpload(DocTarget.CR, uri, path)
     );
 
-    /** Called when user picks a gallery image for a document card. */
-    private void applyDocUpload(DocTarget target, android.net.Uri uri) {
+    /**
+     * Called when the user picks a gallery/camera image for a document card.
+     * The URI is read and converted to Base64 immediately while the ContentResolver
+     * grant is still active. Storing the raw URI and reading it later (at account
+     * creation time) risks a SecurityException because scoped gallery grants can
+     * expire before the user finishes all remaining registration steps.
+     *
+     * <p>We prefer {@code path} over {@code uri.toString()} for encoding:
+     * for camera captures on API < 29, {@code path} is the absolute file path
+     * which {@link BitmapFactory#decodeFile} reads without ContentResolver.
+     * For gallery picks and API ≥ 29 camera, {@code path} is the content:// string,
+     * identical to {@code uri.toString()}, and ContentResolver handles it correctly.
+     */
+    private void applyDocUpload(DocTarget target, android.net.Uri uri, String path) {
+        // Use path (absolute path for camera on API<29, content:// otherwise)
+        String encodeSource = (path != null && !path.isEmpty()) ? path : uri.toString();
+        String base64 = uriToBase64(encodeSource);
+        Log.d("MAxAPP", "applyDocUpload " + target + ": encodeSource=" + encodeSource
+                + " base64=" + (base64 != null ? base64.length() + " chars" : "NULL"));
         switch (target) {
             case DL:
-                dlUploadUri = uri;
-                isDlUploaded = true;
+                dlBase64 = base64;
+                isDlUploaded = base64 != null;
                 imgDlPreview.setImageURI(uri);
                 imgDlPreview.setVisibility(View.VISIBLE);
                 findViewById(R.id.tvDlPlaceholder).setVisibility(View.GONE);
@@ -576,8 +599,8 @@ public class RegisterActivity extends AppCompatActivity {
                 tvDlUploadStatus.setTextColor(getResources().getColor(R.color.success, null));
                 break;
             case OR:
-                orUploadUri = uri;
-                isOrUploaded = true;
+                orBase64 = base64;
+                isOrUploaded = base64 != null;
                 imgOrPreview.setImageURI(uri);
                 imgOrPreview.setVisibility(View.VISIBLE);
                 findViewById(R.id.tvOrPlaceholder).setVisibility(View.GONE);
@@ -585,8 +608,8 @@ public class RegisterActivity extends AppCompatActivity {
                 tvOrUploadStatus.setTextColor(getResources().getColor(R.color.success, null));
                 break;
             case CR:
-                crUploadUri = uri;
-                isCrUploaded = true;
+                crBase64 = base64;
+                isCrUploaded = base64 != null;
                 imgCrPreview.setImageURI(uri);
                 imgCrPreview.setVisibility(View.VISIBLE);
                 findViewById(R.id.tvCrPlaceholder).setVisibility(View.GONE);
@@ -1367,18 +1390,99 @@ public class RegisterActivity extends AppCompatActivity {
                 ? etConductorsIssuance.getText().toString().trim() : null;
         user.conductorsLicenseExpiry   = cbHasConductors.isChecked()
                 ? etConductorsExpiry.getText().toString().trim() : null;
-        user.licenseImagePath        = licenseImagePath;
+        // licenseImagePath converted to Base64 below alongside DL/OR/CR
         // Vehicle fields — were collected in the UI but previously never saved
         user.licensePlate            = etLicensePlate.getText().toString().trim();
         user.mvFileNumber            = etMvFileNumber.getText().toString().trim();
         user.vehicleMake             = etVehicleMake.getText().toString().trim();
         user.vehicleModel            = etVehicleModel.getText().toString().trim();
+        // Stage 1 fix: convert every image URI / file path to a Base64-encoded
+        // JPEG string before storing in SQLite.  Raw content:// URIs are bound
+        // to the originating app session and are completely unreadable from the
+        // admin's context — storing Base64 makes the images accessible on any
+        // device that reads from the same DB, including the admin dashboard.
+        // Images were Base64-encoded at pick time (in applyDocUpload / licensePicker callback)
+        // so the ContentResolver grant was still active. Just assign the stored strings.
+        user.licenseImagePath = uriToBase64(licenseImagePath);  // Step 5 selfie — path from camera
+        user.dlUploadPath     = dlBase64;
+        user.orImagePath      = orBase64;
+        user.crImagePath      = crBase64;
 
         long id = db.insertUser(user);
         if (id > 0) {
+            // ── Stage 4: Admin Notification on New Registration ───────────────
+            // 1. Persist an in-app badge notification for the admin so it appears
+            //    in the admin dashboard notification list (apptId=0 = not an appt).
+            db.insertAdminNotification(
+                    0,
+                    "New Registration \u2014 @" + username,
+                    "A new user has registered and submitted documents for review."
+            );
+            // 2. Post an Android push notification to the admin's device so the
+            //    registration shows up as a heads-up banner immediately.
+            NotificationHelper.postNewRegistrationToAdmin(this, user);
+            // ─────────────────────────────────────────────────────────────────
             showConfirmation(firstName);
         } else {
             Toast.makeText(this, "Registration failed. Try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Image → Base64 helper
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Converts an image URI or file path into a Base64-encoded JPEG string
+     * suitable for storing in SQLite and decoding on any device (including admin).
+     *
+     * Handles both cases delivered by MediaPickerHelper:
+     *   • Gallery pick  → content:// URI  (read via ContentResolver)
+     *   • Camera shot   → absolute path   (read via FileInputStream)
+     *
+     * Images are scaled down to max 800×800 px before encoding to keep DB size
+     * reasonable (typically 50–150 KB per image encoded as Base64).
+     *
+     * @param uriOrPath  URI string (content://) or absolute file path
+     * @return Base64 string, or null if the input is null/empty/unreadable
+     */
+    private String uriToBase64(String uriOrPath) {
+        if (uriOrPath == null || uriOrPath.trim().isEmpty()) return null;
+
+        try {
+            Bitmap bmp;
+
+            if (uriOrPath.startsWith("content://") || uriOrPath.startsWith("file://")) {
+                // Gallery / MediaStore URI — use ContentResolver
+                Uri uri = Uri.parse(uriOrPath);
+                try (InputStream is = getContentResolver().openInputStream(uri)) {
+                    if (is == null) return null;
+                    bmp = BitmapFactory.decodeStream(is);
+                }
+            } else {
+                // Absolute file path from camera capture
+                bmp = BitmapFactory.decodeFile(uriOrPath);
+            }
+
+            if (bmp == null) return null;
+
+            // Scale down to max 800×800 to keep DB row size manageable
+            int maxDim = 800;
+            int w = bmp.getWidth();
+            int h = bmp.getHeight();
+            if (w > maxDim || h > maxDim) {
+                float scale = Math.min((float) maxDim / w, (float) maxDim / h);
+                bmp = Bitmap.createScaledBitmap(bmp,
+                        Math.round(w * scale), Math.round(h * scale), true);
+            }
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+
+        } catch (Exception e) {
+            Log.e("MAxAPP", "uriToBase64 failed for: " + uriOrPath, e);
+            return null;   // URI revoked / file missing — silently skip
         }
     }
 

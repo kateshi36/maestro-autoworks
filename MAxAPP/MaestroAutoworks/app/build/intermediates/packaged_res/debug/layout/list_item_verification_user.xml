@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    list_item_verification_user.xml  —  Stage 1B
+    ─────────────────────────────────────────────────────────────────────────
+    Rich card row for each user awaiting document verification.
+
+    Card anatomy (vertical):
+
+      ┌──────────────────────────────────────────────────────────────┐
+      │  [AB]   Alex Bautista            · abc_user  [● PENDING]    │  ← row 1
+      │  avatar  Registered: 2026-05-12                              │  ← row 2
+      │  ─────────────────────────────────────────────────────────── │
+      │  [ ✔ DL ]  [ ✔ OR ]  [ – CR ]                              │  ← row 3
+      │  ─────────────────────────────────────────────────────────── │
+      │                                    [ Review Documents  → ]   │  ← row 4
+      └──────────────────────────────────────────────────────────────┘
+
+    View IDs (all bound in VerificationAdapter — Stage 1D)
+    ──────────────────────────────────────────────────────
+      tvVerifInitials      — 1–2 letter initials drawn in amber circle
+      tvVerifName          — "FirstName LastName"  (white, bold)
+      tvVerifUsername      — "@username"           (amber, 12sp)
+      tvVerifStatus        — pill: PENDING / VERIFIED / REJECTED
+                             background + text colour swapped by adapter
+      tvVerifRegistered    — "Registered: YYYY-MM-DD"  (muted)
+      tvDocBadgeDl         — "✔ DL" / "– DL"  (green / muted)
+      tvDocBadgeOr         — "✔ OR" / "– OR"
+      tvDocBadgeCr         — "✔ CR" / "– CR"
+      btnReviewDocuments   — opens document review dialog (Stage 1C)
+
+    Drawables required
+    ──────────────────
+      @drawable/bg_appt_card          — card surface + border (reused)
+      @drawable/bg_avatar_circle      — solid amber oval  (NEW — Stage 1B)
+      @drawable/bg_status_pill_pending    — amber pill (reused)
+      @drawable/bg_status_pill_confirmed  — green pill (reused, for VERIFIED)
+      @drawable/bg_status_pill_rejected   — red pill   (NEW — Stage 1B)
+      @drawable/bg_doc_badge          — neutral dark badge (NEW — Stage 1B)
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_appt_card"
+    android:elevation="2dp"
+    android:padding="16dp"
+    android:layout_marginBottom="10dp">
+
+    <!-- ═══ ROW 1 — Avatar · Name + Username · Status pill ═══ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="6dp">
+
+        <!-- Avatar circle with initials (44×44 dp, amber fill) -->
+        <TextView
+            android:id="@+id/tvVerifInitials"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_avatar_circle"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Name + username column (weight=1 pushes pill to the right) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvVerifName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvVerifUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/yellow"
+                android:textSize="12sp"
+                android:layout_marginTop="1dp" />
+
+        </LinearLayout>
+        <!-- end name/username column -->
+
+        <!-- Verification status pill — bg + text color swapped by adapter:
+               "pending"  → bg_status_pill_pending  / @color/yellow
+               "verified" → bg_status_pill_confirmed / @color/success
+               "rejected" → bg_status_pill_rejected  / @color/danger   -->
+        <TextView
+            android:id="@+id/tvVerifStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.06"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_status_pill_pending"
+            android:textColor="@color/yellow" />
+
+    </LinearLayout>
+    <!-- end Row 1 -->
+
+    <!-- ═══ ROW 2 — Registration date ═══ -->
+    <TextView
+        android:id="@+id/tvVerifRegistered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/muted"
+        android:textSize="11sp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="56dp" />
+    <!--   56dp = avatar (44dp) + marginEnd (12dp), aligns with the name text -->
+
+    <!-- ═══ DIVIDER ═══ -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:layout_marginBottom="12dp" />
+
+    <!-- ═══ ROW 3 — Document badges ═══
+         Each badge shows "✔ DL", "✔ OR", "✔ CR" (green) when the path is
+         non-null/non-empty, or "– DL", "– OR", "– CR" (muted) when missing.
+         Text and text colour are both set programmatically in the adapter.  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <!-- DL badge -->
+        <TextView
+            android:id="@+id/tvDocBadgeDl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_doc_badge"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <!-- OR badge -->
+        <TextView
+            android:id="@+id/tvDocBadgeOr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_doc_badge"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <!-- CR badge -->
+        <TextView
+            android:id="@+id/tvDocBadgeCr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_doc_badge"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    <!-- end Row 3 -->
+
+    <!-- ═══ DIVIDER ═══ -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:layout_marginBottom="12dp" />
+
+    <!-- ═══ ROW 4 — Review button ═══
+         Right-aligned. Disabled + tinted muted when status is already
+         "verified" or "rejected" (adapter sets enabled/alpha). -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnReviewDocuments"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Review Documents  →"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:backgroundTint="@color/yellow"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:stateListAnimator="@null" />
+
+    </LinearLayout>
+    <!-- end Row 4 -->
+
+</LinearLayout>

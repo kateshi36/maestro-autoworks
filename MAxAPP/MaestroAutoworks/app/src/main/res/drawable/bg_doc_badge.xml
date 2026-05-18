@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_doc_badge.xml
+    ─────────────────────────────────────────────────────────────────────────
+    Base background for the 3 mini document badges (DL / OR / CR) in the
+    verification list card. The adapter overlays text color to indicate state:
+      Uploaded → text @color/success  (#4CAF7D)  — green tick "✔ DL"
+      Missing  → text @color/muted   (#888888)   — grey dash  "– DL"
+    Fill:   #222222  — @color/black_ele, one step above the card surface
+    Border: #2E2E2E  — subtle lift, same as bg_appt_card border
+    Corner: 6dp     — small radius keeps badge compact
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#222222" />
+    <stroke android:width="1dp" android:color="#2E2E2E" />
+    <corners android:radius="6dp" />
+</shape>

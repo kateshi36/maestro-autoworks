@@ -3,9 +3,12 @@ package com.maestro.autoworks.activities;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.maestro.autoworks.R;
 import com.maestro.autoworks.adapters.AppointmentAdapter;
 import com.maestro.autoworks.db.DatabaseHelper;
@@ -18,11 +21,8 @@ import java.util.List;
 /**
  * AppointmentsActivity — My Appointments + In-App Notifications.
  *
- * Step 5 additions:
- *  - Notification bell badge shows unread count.
- *  - Tapping the badge opens a dialog listing all notifications (newest first).
- *  - Tapping any individual notification shows the full receipt message and marks it read.
- *  - "Mark all as read" clears the badge.
+ * Stage 4D change: ListView → RecyclerView + AppointmentAdapter (ViewHolder).
+ * Everything else (notification bell, badge, dialogs) is preserved from Step 5.
  */
 public class AppointmentsActivity extends AppCompatActivity {
 
@@ -38,23 +38,34 @@ public class AppointmentsActivity extends AppCompatActivity {
         session = new SessionManager(this);
         db      = new DatabaseHelper(this);
 
-        ListView listAppts = findViewById(R.id.listAppointments);
-        TextView tvEmpty   = findViewById(R.id.tvEmpty);
-        tvNotifBadge       = findViewById(R.id.tvNotifBadge);
+        // ── Back button ──────────────────────────────────────────────────
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
-        // Appointments list
+        // ── Appointment list ─────────────────────────────────────────────
+        RecyclerView rvAppts = findViewById(R.id.listAppointments);
+        TextView     tvEmpty = findViewById(R.id.tvEmpty);
+        tvNotifBadge         = findViewById(R.id.tvNotifBadge);
+
         List<Appointment> appointments = db.getAppointmentsByUser(session.getUserId());
 
         if (appointments.isEmpty()) {
             tvEmpty.setVisibility(View.VISIBLE);
-            listAppts.setVisibility(View.GONE);
+            rvAppts.setVisibility(View.GONE);
         } else {
             tvEmpty.setVisibility(View.GONE);
-            AppointmentAdapter adapter = new AppointmentAdapter(this, appointments);
-            listAppts.setAdapter(adapter);
+            rvAppts.setVisibility(View.VISIBLE);
+
+            // RecyclerView setup — layout manager already declared in XML
+            // (app:layoutManager), but we set it programmatically too for
+            // safety in case the XML attribute is stripped at build time.
+            if (rvAppts.getLayoutManager() == null) {
+                rvAppts.setLayoutManager(new LinearLayoutManager(this));
+            }
+            rvAppts.setAdapter(new AppointmentAdapter(this, appointments));
         }
 
-        // Notification bell
+        // ── Notification bell ────────────────────────────────────────────
         refreshNotifBadge();
         tvNotifBadge.setOnClickListener(v -> openNotificationsDialog());
     }
@@ -65,11 +76,16 @@ public class AppointmentsActivity extends AppCompatActivity {
         refreshNotifBadge();
     }
 
+    // ════════════════════════════════════════════════════════════════════
+    //  Notification helpers (unchanged from Step 5)
+    // ════════════════════════════════════════════════════════════════════
+
     private void refreshNotifBadge() {
         int unread = db.countUnreadNotifications(session.getUserId());
         if (unread > 0) {
             tvNotifBadge.setVisibility(View.VISIBLE);
-            tvNotifBadge.setText("\uD83D\uDD14 " + unread + " new notification" + (unread > 1 ? "s" : ""));
+            tvNotifBadge.setText("\uD83D\uDD14 " + unread
+                    + " new notification" + (unread > 1 ? "s" : ""));
         } else {
             tvNotifBadge.setVisibility(View.GONE);
         }
@@ -91,7 +107,8 @@ public class AppointmentsActivity extends AppCompatActivity {
         String[] items = new String[notifications.size()];
         for (int i = 0; i < notifications.size(); i++) {
             AppNotification n = notifications.get(i);
-            items[i] = (n.isRead ? "   " : "\uD83D\uDD35 ") + n.title + "\n      " + n.createdAt;
+            items[i] = (n.isRead ? "   " : "\uD83D\uDD35 ")
+                    + n.title + "\n      " + n.createdAt;
         }
 
         new AlertDialog.Builder(this)

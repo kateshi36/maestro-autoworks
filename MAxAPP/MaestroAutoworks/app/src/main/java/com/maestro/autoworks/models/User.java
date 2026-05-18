@@ -63,4 +63,17 @@ public class User {
 
     public String getFullName() { return firstName + " " + lastName; }
     public boolean isAdmin()    { return "admin".equals(role); }
+
+    // ── Document verification fields (DB_VERSION 11) ──────────────────────────
+    /**
+     * Admin-controlled verification state for this user's uploaded documents.
+     * Values: {@code "pending"} (default) | {@code "verified"} | {@code "rejected"}.
+     */
+    public String verificationStatus = "pending";
+
+    /**
+     * Free-text note written by the admin when rejecting this user's documents.
+     * {@code null} when the account is pending or verified.
+     */
+    public String adminRejectionNote;
 }

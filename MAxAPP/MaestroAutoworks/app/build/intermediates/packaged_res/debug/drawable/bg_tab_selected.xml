@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_tab_selected.xml
+    ─────────────────────────────────────────────────────────────────────────
+    Background for the ACTIVE role-selector tab (Customer or Admin).
+    Fill:   @color/yellow  (#F5A623)
+    Corner: 12dp — matches btn_primary and bg_input radius
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#F5A623" />
+    <corners android:radius="12dp" />
+</shape>

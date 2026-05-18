@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_service_banner_oil.xml
+    ─────────────────────────────────────────────────────────────────────────
+    Banner card background for the "Oil Change & Filter" service tile.
+
+    Gradient: left→right, dark amber brown → brand yellow dark
+      #1C0E00  deep burnt-amber dark (left edge, rich depth)
+      #2C1800  mid amber brown
+      #4A2D00  warm amber (right end)
+
+    The gradient reads as a warm, oil-amber glow that complements the
+    brand yellow (#F5A623) text and icons placed on top.
+    Corner: 16dp — matches service card radius
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="0"
+        android:startColor="#1C0E00"
+        android:centerColor="#2C1800"
+        android:endColor="#4A2D00" />
+    <stroke android:width="1dp" android:color="#6B4100" />
+    <corners android:radius="16dp" />
+</shape>

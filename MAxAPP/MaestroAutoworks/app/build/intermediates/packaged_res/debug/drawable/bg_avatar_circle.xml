@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_avatar_circle.xml
+    ─────────────────────────────────────────────────────────────────────────
+    Solid amber circle used as the background for the user initials avatar
+    in list_item_verification_user.xml.
+    Fill:   #F5A623  — brand yellow (@color/yellow) — stands out on dark cards
+    Corner: 100dp   — fully round at any size (set fixed 44×44dp in layout)
+    ─────────────────────────────────────────────────────────────────────────
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#F5A623" />
+</shape>

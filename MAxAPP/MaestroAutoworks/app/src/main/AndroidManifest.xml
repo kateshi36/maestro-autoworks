@@ -63,6 +63,14 @@
         <!-- ADMIN SECTION -->
         <!-- A1. Admin Dashboard -->
         <activity android:name=".activities.AdminDashboardActivity" android:exported="false"/>
+        <!-- A2. Admin Appointments (standalone) -->
+        <activity android:name=".activities.AdminAppointmentsActivity" android:exported="false"/>
+        <!-- A3. Admin Services (standalone) -->
+        <activity android:name=".activities.AdminServicesActivity" android:exported="false"/>
+        <!-- A4. Admin Reports (standalone) -->
+        <activity android:name=".activities.AdminReportsActivity" android:exported="false"/>
+        <!-- A5. Admin PMS / Repair Tracker (standalone) -->
+        <activity android:name=".activities.AdminPmsActivity" android:exported="false"/>
 
 
         <!-- FileProvider for OR/CR camera capture on Android 9 and below -->
