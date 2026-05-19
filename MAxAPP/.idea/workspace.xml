@@ -5,7 +5,74 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fd521c7-48fa-45c8-ba67-aff125b4c137" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/deploymentTargetDropDown.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MAxAPP.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/APP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/APP.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.gradle/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.gradle/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/migrations.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/migrations.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build.gradle.bak" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build.gradle.bak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/apk_ide_redirect_file/debug/redirect.txt" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/apk_ide_redirect_file/debug/redirect.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/incremental/debug/mergeDebugResources/compile-file-map.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/incremental/debug/mergeDebugResources/compile-file-map.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/merged_manifest/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/merged_manifest/debug/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_manifests/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_manifests/debug/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/bg_login_card.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/bg_login_card.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/bg_step_pill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/bg_step_pill.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_booking.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_booking.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_certified.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_certified.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_pricing.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_pricing.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_turnaround.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_feature_turnaround.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_launcher_foreground.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/drawable/ic_launcher_foreground.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/dialog_add_service.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/dialog_add_service.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/dialog_admin_action.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/dialog_admin_action.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/list_item_admin_appointment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/list_item_admin_appointment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/list_item_admin_service.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/list_item_admin_service.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/list_item_service.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/build/intermediates/packaged_res/debug/layout/list_item_service.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AboutActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AboutActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AdminPmsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AdminPmsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AdminReportsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AdminReportsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AdminServicesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/AdminServicesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/SearchActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/SearchActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/ServicesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/activities/ServicesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/adapters/AdminAppointmentAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/adapters/AdminAppointmentAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/adapters/AdminServiceAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/adapters/AdminServiceAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/adapters/ServiceAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/adapters/ServiceAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/db/ServiceData.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/db/ServiceData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/db/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/db/SessionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/models/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/java/com/maestro/autoworks/models/Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/bg_login_card.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/bg_login_card.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/bg_step_pill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/bg_step_pill.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_booking.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_booking.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_certified.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_certified.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_pricing.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_pricing.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_turnaround.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_feature_turnaround.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_launcher_foreground.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/drawable/ic_launcher_foreground.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/dialog_add_service.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/dialog_add_service.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/dialog_admin_action.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/dialog_admin_action.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/list_item_admin_appointment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/list_item_admin_appointment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/list_item_admin_service.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/list_item_admin_service.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/list_item_service.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/layout/list_item_service.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MaestroAutoworks/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/MaestroAutoworks/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MAxWebsite.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../MAxWebsite.zip" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,12 +82,22 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/MaestroAutoworks/build.gradle">
+          <activation />
+        </task>
+        <projects_view />
+      </state>
+    </system>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="3DdE8obxXOWpWfmhbk8NdBJu8UF" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -34,9 +111,37 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/xampp/htdocs/Maestro-Autoworks/APP"
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Maestro-Autoworks/MAxAPP/MaestroAutoworks"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="C:/xampp/htdocs/Maestro-Autoworks/MAxAPP/MaestroAutoworks/build.gradle" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/MaestroAutoworks/build.gradle" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.C:/xampp/htdocs/Maestro-Autoworks/MAxAPP/MaestroAutoworks/build.gradle" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

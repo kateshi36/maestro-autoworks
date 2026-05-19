@@ -30,8 +30,8 @@ public class ReceiptEmailSender {
     private static final String TAG = "ReceiptEmailSender";
 
     // ── Same credentials used by EmailOtpSender ───────────────────────────────
-    private static final String SENDER_EMAIL        = "ilardeclyde@gmail.com";
-    private static final String SENDER_APP_PASSWORD = "yhhe vtmi ssmd fbdm";
+    private static final String SENDER_EMAIL        = "maestrocpy@gmail.com";
+    private static final String SENDER_APP_PASSWORD = "sxwu hlkk ljcl uteo";
     // ─────────────────────────────────────────────────────────────────────────
 
     /** Callback interface for send result. */
